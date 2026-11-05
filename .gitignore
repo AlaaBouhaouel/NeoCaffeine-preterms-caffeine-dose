@@ -19,3 +19,7 @@ CLAUDE.local.md
 
 *.edf
 *.bdf
+
+# Webapp working proposal/context docs
+webapp/docs/api-contract.md
+webapp/docs/ui-text.md

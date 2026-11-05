@@ -1,16 +1,19 @@
 ﻿# runs
 
 ## Purpose
-To be defined in approved implementation batches.
+Persists simulation run snapshots in PostgreSQL with state versioning and retention metadata.
 
 ## Contents
-To be defined in approved implementation batches.
+- `models.py`: snapshot model.
+- `repositories.py`: read/write/delete operations.
+- `migrations/`: schema migrations.
 
 ## Inputs/Outputs
-To be defined in approved implementation batches.
+- Inputs: run IDs, state versions, and full state JSON objects.
+- Outputs: persisted snapshots and retention cleanup results.
 
 ## Depends on
-To be defined in approved implementation batches.
+- Django ORM and configured database.
 
 ## Used by
-To be defined in approved implementation batches.
+- Backend implementations and API action handlers.

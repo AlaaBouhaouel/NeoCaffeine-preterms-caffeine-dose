@@ -1,16 +1,21 @@
 ﻿# backend
 
 ## Purpose
-To be defined in approved implementation batches.
+Single simulation boundary for the web app, with an interface and selectable backend implementation.
 
 ## Contents
-To be defined in approved implementation batches.
+- `interfaces/`: abstract backend contract.
+- `contracts/`: canonical enums and schema keys.
+- `demo/`: deterministic demo backend behavior.
+- `selectors.py`: active backend selection in one place.
 
 ## Inputs/Outputs
-To be defined in approved implementation batches.
+- Inputs: run actions from API handlers and current persisted state.
+- Outputs: state envelopes and summaries in approved JSON shapes.
 
 ## Depends on
-To be defined in approved implementation batches.
+- Webapp run persistence layer.
+- Approved API/state contract.
 
 ## Used by
-To be defined in approved implementation batches.
+- `simulator/views/api_*` handlers.

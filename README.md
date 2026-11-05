@@ -197,7 +197,7 @@ Every variable has exactly one role.
 | **Observations** | Noisy measurements used to correct the model | Hourly apnea counts N, blood caffeine levels when available |
 | **Computed state** | Fully determined by inputs and parameters | Caffeine amount in the body A(t) |
 | **Estimated parameters (theta)** | Unknown, estimated hourly | Clearance CL (allowed to drift), volume V, Emax, EC50, maturity fade rate beta_M |
-| **Fixed from registry** | Sourced values, not estimated | Hill coefficient h, reference maturity M_ref, concentration bounds, all priors and variabilities |
+| **Fixed from registry** | Sourced values, not estimated | Hill coefficient h, concentration bounds, all priors and variabilities |
 
 The conversion factor between caffeine citrate and caffeine base is a registry entry. Every dose and every formula states which one it uses.
 
@@ -228,11 +228,14 @@ The estimator treats M(t) as given. How the module combines its inputs is specif
 **Step 3: baseline apnea rate.** Apnea of prematurity fades as the infant matures. The rate of apneas the infant would have without caffeine is:
 
 ```
-lambda0(t) = lambda0_ref x exp( -beta_M x (M(t) - M_ref) )
+lambda0(t) = lambda0_measured x exp( -beta_M x (M(t) - M_window) )
 ```
 
-- `lambda0_ref`: baseline rate at the reference maturity M_ref (derived from the pre-dose window, see 4.5).
+- `lambda0_measured`: baseline rate measured in the pre-dose window (see 4.5).
+- `M_window`: maturity during the pre-dose window. Writing the model relative to the window needs no global reference maturity.
 - `beta_M`: how fast apneas fade per week of maturity (estimated).
+
+This form is a design assumption of NeoCaffeine, not a published model. It encodes the qualitative finding that apnea frequency falls with maturity. Its evidence tier is C, and every run lists it as a limitation.
 
 Modeling this fade is essential: without it, improvement caused by maturation would be wrongly credited to caffeine.
 
@@ -279,7 +282,7 @@ theta = ( log CL , log V , logit Emax , log EC50 , log beta_M )
 - `log` keeps CL, V, EC50, and beta_M positive.
 - `logit(Emax) = log(Emax / (1 - Emax))` keeps Emax between 0 and 1.
 
-**Baseline apnea rate.** Computed in the features layer from the pre-dose window: total qualifying events divided by total valid hours. It is a fixed input, not part of theta. Its conversion to the reference maturity, `lambda0_ref = lambda0_measured / exp(-beta_M x (M_window - M_ref))`, happens inside the model chain, since beta_M is estimated. Its Poisson standard error (square root of the count, divided by valid hours) is stored for reporting. If no pre-dose window exists, a population fallback from the registry is used and every output carries the flag `no_baseline_window`.
+**Baseline apnea rate.** Computed in the features layer from the pre-dose window: total qualifying events divided by total valid hours, with the maturity during the window, M_window. Both are fixed inputs, not part of theta; the model chain uses them directly. Its Poisson standard error (square root of the count, divided by valid hours) is stored for reporting. If no pre-dose window exists, a population fallback from the registry supplies both a rate and the maturity at which it was reported, which replaces M_window, and every output carries the flag `no_baseline_window`.
 
 **The loss at hour k.**
 

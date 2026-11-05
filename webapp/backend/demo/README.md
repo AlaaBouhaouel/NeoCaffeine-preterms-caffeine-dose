@@ -1,16 +1,21 @@
 ﻿# demo
 
 ## Purpose
-To be defined in approved implementation batches.
+Implements a reproducible fake simulation backend for end-to-end webapp behavior before real model integration.
 
 ## Contents
-To be defined in approved implementation batches.
+- `demo_simulation_backend.py`: backend stub implementation.
+- `generators.py`: trace/event generation helpers.
+- `updater.py`: state update and estimator placeholders.
+- `thresholds.py`: demo-only thresholds.
 
 ## Inputs/Outputs
-To be defined in approved implementation batches.
+- Inputs: backend interface calls and persisted run snapshots.
+- Outputs: plausible state transitions marked as demo data.
 
 ## Depends on
-To be defined in approved implementation batches.
+- `backend/interfaces/` contract.
+- `backend/contracts/` enum constants.
 
 ## Used by
-To be defined in approved implementation batches.
+- Active backend selector when `ACTIVE_SIMULATION_BACKEND=demo`.

@@ -1,16 +1,19 @@
 ﻿# docs
 
 ## Purpose
-To be defined in approved implementation batches.
+Working documentation for webapp API boundaries and approved UI copy.
 
 ## Contents
-To be defined in approved implementation batches.
+- `api-contract.md`: endpoint and state-shape contract.
+- `ui-text.md`: proposed landing/dashboard copy and visual tokens.
 
 ## Inputs/Outputs
-To be defined in approved implementation batches.
+- Inputs: approved product decisions.
+- Outputs: implementation-ready specs for views, APIs, and frontend behavior.
 
 ## Depends on
-To be defined in approved implementation batches.
+- Root `README.md` and accepted project decisions.
 
 ## Used by
-To be defined in approved implementation batches.
+- Webapp implementation batches.
+- Review and approval by Ala.

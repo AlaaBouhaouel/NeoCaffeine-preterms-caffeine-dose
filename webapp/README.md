@@ -1,17 +1,25 @@
-# webapp
+﻿# webapp
 
 ## Purpose
-The user interface, to be developed. The web framework is decided later. Playback speed for demonstrations will be a setting of this layer only and never affects the model.
+Django web interface for NeoCaffeine, running as a public research demo and consuming simulation data only through the backend boundary.
 
 ## Contents
-No files yet.
+- `manage.py`: Django management entrypoint.
+- `neocaffeine_web/`: Django project settings and root URLs.
+- `simulator/`: pages, API handlers, templates, and static assets.
+- `backend/`: simulation interface, selector, and demo backend.
+- `runs/`: snapshot persistence models and repositories.
+- `docs/`: webapp-scoped contract and copy drafts.
 
 ## Inputs/Outputs
-- Inputs: run outputs and dose suggestions.
-- Outputs: views for clinicians, with times shown in local time.
+- Inputs: backend state payloads, user interventions, and run identifiers.
+- Outputs: landing page, simulator dashboard, and JSON API responses.
 
 ## Depends on
-- `neocaffeine/runner/`, `neocaffeine/decision/`, `neocaffeine/clock/`.
+- Django.
+- PostgreSQL in deployment environments.
+- uPlot for charts in simulator pages.
 
 ## Used by
-Clinicians and reviewers.
+- Clinicians and researchers reviewing virtual-infant simulations.
+- Future backend implementation that plugs into the interface boundary.

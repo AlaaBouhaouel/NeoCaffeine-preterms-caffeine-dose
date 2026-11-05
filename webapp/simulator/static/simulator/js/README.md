@@ -1,16 +1,22 @@
 ﻿# js
 
 ## Purpose
-To be defined in approved implementation batches.
+Client-side logic for clock control, API calls, state handling, tooltips, and charts.
 
 ## Contents
-To be defined in approved implementation batches.
+- `api-client.js`: HTTP client helpers.
+- `state-store.js`: state and version tracking.
+- `clock-controller.js`: browser-side play/pause/speed loop.
+- `dashboard-ui.js`: panel rendering and interaction wiring.
+- `charts-uplot.js`: uPlot chart integration.
+- `tooltips.js`: hover/tap info behavior.
 
 ## Inputs/Outputs
-To be defined in approved implementation batches.
+- Inputs: user actions and server state responses.
+- Outputs: API requests and updated DOM state.
 
 ## Depends on
-To be defined in approved implementation batches.
+- Approved API contract and template markup.
 
 ## Used by
-To be defined in approved implementation batches.
+- `dashboard.html` and related partials.

@@ -1,16 +1,19 @@
 ﻿# interfaces
 
 ## Purpose
-To be defined in approved implementation batches.
+Defines the backend protocol consumed by all views and frontend flows.
 
 ## Contents
-To be defined in approved implementation batches.
+- `simulation_backend.py`: `SimulationBackend` protocol and payload aliases.
 
 ## Inputs/Outputs
-To be defined in approved implementation batches.
+- Inputs: typed method parameters for run creation, advancing, interventions, and summary retrieval.
+- Outputs: state and summary envelopes.
 
 ## Depends on
-To be defined in approved implementation batches.
+- Approved endpoint and state contract.
 
 ## Used by
-To be defined in approved implementation batches.
+- Backend selector.
+- Demo backend implementation.
+- Future real backend implementation.

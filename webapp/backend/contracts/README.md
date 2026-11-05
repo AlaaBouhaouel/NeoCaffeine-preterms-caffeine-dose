@@ -1,16 +1,17 @@
 ﻿# contracts
 
 ## Purpose
-To be defined in approved implementation batches.
+Holds canonical enum values and shared contract constants for backend/frontend consistency.
 
 ## Contents
-To be defined in approved implementation batches.
+- `schemas.py`: phases, event types, dose enums, support enums, and route/form enums.
 
 ## Inputs/Outputs
-To be defined in approved implementation batches.
+- Inputs: approved naming decisions.
+- Outputs: reusable constants referenced by backend and API handlers.
 
 ## Depends on
-To be defined in approved implementation batches.
+- Product decisions recorded in docs and approvals.
 
 ## Used by
-To be defined in approved implementation batches.
+- Demo backend and request validation layers.

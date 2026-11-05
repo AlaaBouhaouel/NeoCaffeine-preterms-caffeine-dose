@@ -1,16 +1,18 @@
 ﻿# partials
 
 ## Purpose
-To be defined in approved implementation batches.
+Reusable dashboard panel fragments and shared UI snippets.
 
 ## Contents
-To be defined in approved implementation batches.
+- Monitor, pharmacology, estimator, patient-file, decision panels.
+- Footer notice and demo-data badge fragments.
 
 ## Inputs/Outputs
-To be defined in approved implementation batches.
+- Inputs: panel data from state payloads.
+- Outputs: reusable HTML blocks inserted into dashboard template.
 
 ## Depends on
-To be defined in approved implementation batches.
+- Dashboard template structure.
 
 ## Used by
-To be defined in approved implementation batches.
+- `simulator/templates/dashboard.html`.

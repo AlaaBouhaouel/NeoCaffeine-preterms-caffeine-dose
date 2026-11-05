@@ -1,16 +1,17 @@
 ﻿# static
 
 ## Purpose
-To be defined in approved implementation batches.
+Static asset root for simulator frontend resources.
 
 ## Contents
-To be defined in approved implementation batches.
+- `simulator/`: app-scoped assets.
 
 ## Inputs/Outputs
-To be defined in approved implementation batches.
+- Inputs: source CSS/JS/vendor files.
+- Outputs: collected static files served via WhiteNoise.
 
 ## Depends on
-To be defined in approved implementation batches.
+- Django static files pipeline.
 
 ## Used by
-To be defined in approved implementation batches.
+- Landing and dashboard templates.

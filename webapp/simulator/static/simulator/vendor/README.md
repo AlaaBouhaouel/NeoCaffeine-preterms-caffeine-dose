@@ -1,16 +1,17 @@
 ﻿# vendor
 
 ## Purpose
-To be defined in approved implementation batches.
+Stores third-party frontend assets vendored into the project.
 
 ## Contents
-To be defined in approved implementation batches.
+- `uplot/`: uPlot library files used by chart components.
 
 ## Inputs/Outputs
-To be defined in approved implementation batches.
+- Inputs: pinned third-party asset files.
+- Outputs: static resources loaded by frontend code.
 
 ## Depends on
-To be defined in approved implementation batches.
+- Chosen charting library and version pinning policy.
 
 ## Used by
-To be defined in approved implementation batches.
+- `charts-uplot.js`.

@@ -1,16 +1,19 @@
 ﻿# css
 
 ## Purpose
-To be defined in approved implementation batches.
+Stylesheet files for landing and dashboard layouts.
 
 ## Contents
-To be defined in approved implementation batches.
+- `base.css`: shared primitives.
+- `landing.css`: landing-specific design.
+- `dashboard.css`: dense monitor-style dashboard.
 
 ## Inputs/Outputs
-To be defined in approved implementation batches.
+- Inputs: approved color/font/layout decisions.
+- Outputs: rendered visual styling in browser.
 
 ## Depends on
-To be defined in approved implementation batches.
+- Template DOM structure.
 
 ## Used by
-To be defined in approved implementation batches.
+- Landing and dashboard pages.

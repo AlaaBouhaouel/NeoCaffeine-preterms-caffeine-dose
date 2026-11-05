@@ -1,16 +1,17 @@
 ﻿# migrations
 
 ## Purpose
-To be defined in approved implementation batches.
+Stores Django migrations for the run snapshot persistence schema.
 
 ## Contents
-To be defined in approved implementation batches.
+- Migration files generated from `runs.models`.
 
 ## Inputs/Outputs
-To be defined in approved implementation batches.
+- Inputs: model changes.
+- Outputs: database schema updates.
 
 ## Depends on
-To be defined in approved implementation batches.
+- Django migration framework.
 
 ## Used by
-To be defined in approved implementation batches.
+- `python webapp/manage.py migrate` in deployment and local setup.

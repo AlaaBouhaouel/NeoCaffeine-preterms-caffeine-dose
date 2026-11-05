@@ -1,16 +1,19 @@
 ﻿# simulator
 
 ## Purpose
-To be defined in approved implementation batches.
+Holds CSS, JavaScript, and vendor libraries for the simulator UI.
 
 ## Contents
-To be defined in approved implementation batches.
+- `css/`: stylesheets.
+- `js/`: browser logic and API client.
+- `vendor/`: third-party assets including uPlot.
 
 ## Inputs/Outputs
-To be defined in approved implementation batches.
+- Inputs: approved UI design and API behavior.
+- Outputs: browser assets loaded by templates.
 
 ## Depends on
-To be defined in approved implementation batches.
+- Dashboard and landing HTML.
 
 ## Used by
-To be defined in approved implementation batches.
+- `simulator/templates/` pages.

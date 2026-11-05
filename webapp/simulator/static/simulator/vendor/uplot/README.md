@@ -1,16 +1,17 @@
 ﻿# uplot
 
 ## Purpose
-To be defined in approved implementation batches.
+Contains uPlot distribution files required by simulator charts.
 
 ## Contents
-To be defined in approved implementation batches.
+- uPlot JS/CSS files pinned for the webapp.
 
 ## Inputs/Outputs
-To be defined in approved implementation batches.
+- Inputs: selected uPlot release assets.
+- Outputs: chart runtime dependency available through static files.
 
 ## Depends on
-To be defined in approved implementation batches.
+- Vendor asset management in `simulator/static/simulator/vendor/`.
 
 ## Used by
-To be defined in approved implementation batches.
+- Frontend chart rendering code.

@@ -1,16 +1,20 @@
 ﻿# settings
 
 ## Purpose
-To be defined in approved implementation batches.
+Environment-specific Django settings for local development and Railway deployment.
 
 ## Contents
-To be defined in approved implementation batches.
+- `base.py`: shared defaults.
+- `dev.py`: local development overrides.
+- `prod.py`: environment-variable-driven production settings.
 
 ## Inputs/Outputs
-To be defined in approved implementation batches.
+- Inputs: `DATABASE_URL`, `DJANGO_SECRET_KEY`, `DJANGO_DEBUG`, `DJANGO_ALLOWED_HOSTS`, `ACTIVE_SIMULATION_BACKEND`.
+- Outputs: Django settings values consumed at process startup.
 
 ## Depends on
-To be defined in approved implementation batches.
+- Django settings system.
+- WhiteNoise for static files.
 
 ## Used by
-To be defined in approved implementation batches.
+- Django runtime and management commands.

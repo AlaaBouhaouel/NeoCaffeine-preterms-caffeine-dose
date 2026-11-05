@@ -1,16 +1,19 @@
 ﻿# neocaffeine_web
 
 ## Purpose
-To be defined in approved implementation batches.
+Django project package that configures settings, root routing, and deployment entrypoints.
 
 ## Contents
-To be defined in approved implementation batches.
+- `settings/`: environment-specific settings modules.
+- `urls.py`: root URL configuration including health endpoint.
+- `asgi.py`, `wsgi.py`: deployment entrypoints.
 
 ## Inputs/Outputs
-To be defined in approved implementation batches.
+- Inputs: environment variables and installed app routes.
+- Outputs: configured Django application object and root URL mapping.
 
 ## Depends on
-To be defined in approved implementation batches.
+- Django core settings and routing.
 
 ## Used by
-To be defined in approved implementation batches.
+- `manage.py`, Gunicorn, and ASGI servers.

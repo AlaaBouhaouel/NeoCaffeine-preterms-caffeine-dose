@@ -1,16 +1,20 @@
 ﻿# templates
 
 ## Purpose
-To be defined in approved implementation batches.
+HTML templates for the landing page, simulator dashboard, and shared layout.
 
 ## Contents
-To be defined in approved implementation batches.
+- `base.html`: shared page shell.
+- `landing.html`: entry page.
+- `dashboard.html`: simulator page.
+- `partials/`: panel and shared fragments.
 
 ## Inputs/Outputs
-To be defined in approved implementation batches.
+- Inputs: template context values such as `run_id` and UI flags.
+- Outputs: rendered HTML.
 
 ## Depends on
-To be defined in approved implementation batches.
+- Django templating engine.
 
 ## Used by
-To be defined in approved implementation batches.
+- Page views in `simulator/views/`.
