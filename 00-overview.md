@@ -31,25 +31,36 @@ Date: Nov 2026
 8. [Roadmap](#8-roadmap)
 9. [References](#9-references)
 
-## Structure of the folder
-neocaffeine/
+## Structure
+
+See [5. Repository structure](#5-repository-structure).
+
+```
+NeoCaffeine-preterms-caffeine-dose/
+├── 00-overview.md
 ├── README.md
-├── requirements.txt
+├── pyproject.toml
+├── .gitignore
+├── config/
+├── docs/
+│   ├── DECISIONS.md
+│   └── proposals/
 ├── neocaffeine/
-│   ├── __init__.py
-│   ├── constants.py
-│   ├── patient.py
-│   ├── pk.py
-│   ├── efficacy.py
-│   ├── toxicity.py
-│   ├── events.py
-│   ├── biomarkers.py
-│   ├── devices.py
-│   ├── dosing.py
-│   ├── scenario.py
-│   └── metrics.py
-└── tests/
-    └── __init__.py
+│   ├── patient/
+│   ├── registry/
+│   ├── clock/
+│   ├── ingest/
+│   ├── features/
+│   ├── maturity/
+│   ├── models/
+│   ├── estimator/
+│   ├── decision/
+│   ├── simulator/
+│   ├── runner/
+│   └── evaluation/
+├── tests/
+└── webapp/
+```
 
 ---
 
@@ -92,7 +103,7 @@ NeoCaffeine treats each infant as a system with **hidden properties** (how fast 
 | **Apnea** | A pause in breathing. Exact detection criteria are defined in the parameter registry. |
 | **Bradycardia** | A drop in heart rate below a defined threshold. |
 | **Desaturation** | A drop in blood oxygen saturation (SpO2) below a defined threshold. |
-| **GA (gestational age)** | Age of the pregnancy at birth, in weeks. |
+| **GA (gestational age)** | Age of the pregnancy at birth, in days. |
 | **PNA (postnatal age)** | Time since birth. |
 | **PMA (postmenstrual age)** | GA plus PNA. The infant's total age counted from the start of pregnancy. |
 | **SpO2** | Peripheral oxygen saturation: the percentage of hemoglobin carrying oxygen, measured by a pulse oximeter on the hand or foot. |
@@ -166,9 +177,9 @@ The loop is: **predict, compare, correct**, every hour. At each dosing time, the
 ### 4.1 Time model
 
 - **Inside the model**, time is a single number: **hours elapsed since birth**. Every dose, observation, and update lives on this one axis.
-  - PNA is the time itself; PMA (in weeks) is `GA + t / (24 x 7)`. Neither is stored separately, which prevents contradictions.
+  - GA is stored in days. PNA is the time itself; PMA is computed on demand as `pma_days = GA_days + t / 24` and `pma_weeks = pma_days / 7`. Neither PNA nor PMA is stored separately, which prevents contradictions. Each formula uses the unit declared in its registry entry.
 - **At the boundaries** (data ingestion and display), real timestamps are timezone-aware and stored in **UTC** (Coordinated Universal Time), which avoids daylight-saving jumps. Ingestion converts them to hours since birth; display converts back to local time.
-- A **clock abstraction** has two implementations:
+- A **clock abstraction**, in its own `clock/` folder, has two implementations:
   - a **data clock**, which follows real timestamps;
   - a **simulation clock**, which advances instantly from event to event, so days of a virtual infant run in seconds.
 - Playback speed for demonstrations is a display setting of the web app only and never affects the model.
@@ -179,7 +190,7 @@ Every variable has exactly one role.
 
 | Role | Meaning | Variables |
 |---|---|---|
-| **Control input** | What is given to the infant | Dose log: time, amount, route (intravenous or oral), and whether the amount is caffeine citrate or caffeine base |
+| **Control input** | What is given to the infant | Dose log: time, amount, route (intravenous only in this version), and whether the amount is caffeine citrate or caffeine base |
 | **Known covariates** | Measured facts, treated as true | GA, birth time, birth weight, weight over time, sex |
 | **Exogenous context** | Known conditions not controlled by the model | FiO2, breathing support mode |
 | **Measured before caffeine** | Computed from the pre-dose window | Baseline apnea rate at the time of the window |
@@ -189,7 +200,7 @@ Every variable has exactly one role.
 | **Estimated parameters (theta)** | Unknown, estimated hourly | Clearance CL (allowed to drift), volume V, Emax, EC50, maturity fade rate beta_M |
 | **Fixed from registry** | Sourced values, not estimated | Hill coefficient h, reference maturity M_ref, concentration bounds, all priors and variabilities |
 
-Caffeine citrate contains half its mass as caffeine base. Every dose and every formula states which one it uses.
+The conversion factor between caffeine citrate and caffeine base is a registry entry. Every dose and every formula states which one it uses.
 
 ### 4.3 The model chain
 
@@ -204,7 +215,7 @@ C(t)  = A(t) / V
 ```
 
 - An **intravenous** dose adds `F x dose` to A instantly (F = 1).
-- An **oral** dose first enters a gut compartment and moves into the blood at an absorption rate `ka`, with bioavailability F. Both values come from the registry.
+- **Planned, not accepted in this version:** an **oral** dose first enters a gut compartment and moves into the blood at an absorption rate `ka`, with bioavailability F. Their registry entries exist so the route can be enabled later.
 - A(t) has a closed-form (exact formula) solution for both routes, so no numerical integration is needed.
 
 **Step 2: maturity (independent module).** The maturity module combines inputs such as functional brain age, brain recording features, the SpO2/FiO2 ratio, and breathing continuity into one value per hour:
@@ -282,7 +293,7 @@ Loss_k(theta) =
 ```
 
 - **Apnea term:** the negative log of the Poisson likelihood (constant terms dropped). It is small when the predicted count matches the observed one.
-- **Blood term:** the error between measured and predicted concentration in log space, since laboratory error scales with the value.
+- **Blood term:** the error between measured and predicted concentration in log space, since laboratory error scales with the value. A level below the assay's detection limit is stored without a value and flagged; it enters as a censored observation (the probability that the true level is below the limit). The exact term will be confirmed at the estimator step.
 - **Memory term:** summarizes all earlier hours as a penalty around last hour's estimate. Yesterday's posterior becomes today's prior. This is equivalent to regularization (weight decay) in neural network training.
 - **Bounds term:** a barrier that grows steeply as the predicted concentration approaches the sourced bounds.
 
@@ -354,11 +365,11 @@ Clearance sets the maintenance dose; volume sets the loading dose. The caffeine 
 
 **Safety check.** Parameter samples are drawn from the current estimate and its uncertainty. Each sample is simulated forward with the candidate dose. The share of samples whose concentration exceeds C_max must stay below epsilon (from the registry); otherwise the dose is lowered.
 
-**Confidence gate.** While uncertainty is wide, the suggestion stays at the standard regimen. It may deviate only as the uncertainty narrows.
+**Confidence gate.** While uncertainty is wide, the suggestion stays at the standard regimen. It may deviate only as the uncertainty narrows. The standard regimen and the uncertainty threshold are registry entries.
 
 **Output.** The suggested dose, the predicted concentration range, the current parameter estimates with their uncertainty, and flags (high heart rate, wide uncertainty, excluded hours, no baseline window). Always for clinician review.
 
-**Toxicity in this version** is handled entirely by the sourced concentration bounds. Heart rate is used as a safety flag only.
+**Toxicity in this version** is handled entirely by the sourced concentration bounds. Heart rate is used as a safety flag only: the heart-rate signal is stored by reference, like SpO2, and the flag threshold is a registry entry.
 
 ### 4.8 Parameter registry
 
@@ -376,9 +387,9 @@ Every physiological value, formula, and threshold lives in the registry, never i
 
 | Tier | Meaning |
 |---|---|
-| **A** | Replicated across several independent studies |
-| **B** | One solid study, or several small consistent studies |
-| **C** | A single exploratory study, a preprint, or evidence from a related but different context |
+| **A** | A guideline, or multiple consistent studies |
+| **B** | A single study |
+| **C** | Exploratory or derived evidence |
 
 ### 4.9 Run configuration
 
@@ -407,6 +418,7 @@ Doses are never varied on purpose to help the model learn.
 
 ```
 NeoCaffeine-preterms-caffeine-dose/
+  00-overview.md          this document
   README.md
   pyproject.toml
   .gitignore
@@ -417,6 +429,7 @@ NeoCaffeine-preterms-caffeine-dose/
   neocaffeine/            the Python package
     patient/              patient object, dose log, observation logs
     registry/             registry data files, loader, validator
+    clock/                data clock and simulation clock
     ingest/               loading real patient records
     features/             event detection, valid time, pre-dose baseline
     maturity/             independent maturity module
