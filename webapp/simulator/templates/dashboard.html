@@ -6,274 +6,218 @@
 {% endblock %}
 
 {% block content %}
-<main class="dashboard-root" data-run-id="{{ run_id }}">
-  <header class="top-bar">
-    <div class="top-left">
-      <h1>NeoCaffeine</h1>
-      <span class="demo-chip">DEMO</span>
-      <span id="top-phase-badge" class="phase-chip">-</span>
-    </div>
-    <div class="top-controls">
-      <label>Speed
-        <select id="speed-select">
-          <option value="0.25">0.25</option>
-          <option value="0.5">0.5</option>
-          <option value="1" selected>1</option>
-          <option value="2">2</option>
-          <option value="5">5</option>
-          <option value="10">10</option>
-          <option value="60">60</option>
-        </select>
-      </label>
-      <button id="play-pause-button" type="button">Play</button>
-      <label>N mode
-        <select id="n-mode-select">
-          <option value="manual" selected>manual</option>
-          <option value="auto">auto</option>
-        </select>
-      </label>
-      <label>Show true values
-        <input id="show-true-toggle" type="checkbox">
-      </label>
-      <a href="/" class="new-run-link">New run</a>
-    </div>
-  </header>
+<div id="dashboard-stage" class="dashboard-stage">
+  <main id="dashboard-canvas" class="dashboard-canvas" data-run-id="{{ run_id }}">
+    <header class="top-bar panel-surface">
+      <div class="top-left">
+        <h1>NeoCaffeine</h1>
+        <span class="demo-chip">DEMO</span>
+        <span id="top-phase-badge" class="phase-chip">-</span>
+      </div>
+      <div class="top-controls">
+        <label>Speed
+          <select id="speed-select">
+            <option value="0.25">0.25</option>
+            <option value="0.5">0.5</option>
+            <option value="1" selected>1</option>
+            <option value="2">2</option>
+            <option value="5">5</option>
+            <option value="10">10</option>
+            <option value="60">60</option>
+          </select>
+        </label>
+        <button id="play-pause-button" type="button">Play</button>
+        <label>N mode
+          <select id="n-mode-select">
+            <option value="manual" selected>manual</option>
+            <option value="auto">auto</option>
+          </select>
+        </label>
+        <label><input id="show-true-toggle" type="checkbox"> True values</label>
+        <a href="/" class="new-run-link">New run</a>
+      </div>
+    </header>
 
-  <section id="run-missing-panel" class="run-missing-panel" hidden>
-    <div class="run-missing-card panel">
-      <h2>This run no longer exists (expired or reset).</h2>
-      <p>Possible reasons:</p>
-      <ul>
-        <li>Server restarted with a non-persistent or reset database.</li>
-        <li>The run was deleted by the 30-day retention cleanup.</li>
-        <li>The URL contains a stale run ID.</li>
-      </ul>
-      <p>With a persistent database, runs survive normal app restarts.</p>
-      <a href="/" class="button-link">Start a new run</a>
-    </div>
-  </section>
-
-  <section id="dashboard-main-grid" class="main-grid">
-    <aside class="sidebar panel">
-      <section class="meta-section">
-        <h2>Patient</h2>
-        <div class="kv-grid">
-          <span>Sex</span><span id="patient-sex">-</span>
-          <span>GA</span><span id="patient-ga-weeks-days">-</span>
-          <span>Birth wt</span><span><span id="patient-bw">-</span> g</span>
-          <span>Current wt</span><span><span id="patient-current-weight">-</span> g</span>
-          <span>PNA</span><span id="patient-pna-display">-</span>
-          <span>PMA</span><span id="patient-pma-display">-</span>
-          <span>Flags</span>
-          <span>
-            <span id="flags-count">0</span>
-            <button id="flags-info" class="info-icon" type="button" data-tooltip="No flags">i</button>
-          </span>
-        </div>
-      </section>
-      <section class="meta-section">
-        <h2>Run</h2>
-        <div class="kv-grid">
-          <span>Run ID</span><span id="run-id-short">-</span>
-          <span>Phase</span><span id="side-phase-badge" class="phase-chip">-</span>
-          <span>Sim time</span><span><span id="sim-time-text">-</span> h</span>
-          <span>Hour idx</span><span id="hour-index-text">-</span>
-          <span>Version</span><span id="state-version-text">-</span>
-          <span>Convergence</span><span id="convergence-status-text">-</span>
-        </div>
-      </section>
-      <section class="meta-section">
-        <h2>Counts</h2>
-        <div class="kv-grid">
-          <span>Doses</span><span id="dose-log-count">-</span>
-          <span>Blood levels</span><span id="blood-log-count">-</span>
-          <span>Context changes</span><span id="context-log-count">-</span>
-        </div>
-      </section>
-    </aside>
-
-    <section class="center-column">
-      <section class="panel monitor-panel">
-        <div class="panel-head">
-          <h2>NICU monitor</h2>
-          <label class="monitoring-toggle">Monitoring
-            <div class="segment-control" data-target="monitoring-value">
-              <input id="monitoring-value" type="hidden" value="true">
-              <button type="button" class="segment-option active" data-value="true">On</button>
-              <button type="button" class="segment-option" data-value="false">Off</button>
-            </div>
-          </label>
-        </div>
-        <div class="monitor-grid">
-          <div class="tile">
-            <div class="tile-head"><strong>Heart rate</strong><span class="vital vital-hr" id="tile-heart-rate">-</span></div>
-            <div class="trace-canvas" id="trace-heart-rate"></div>
+    <section id="dashboard-main-grid" class="main-grid">
+      <aside class="sidebar panel-surface">
+        <section class="meta-section">
+          <h2>PATIENT</h2>
+          <div class="kv-grid">
+            <span>Sex</span><span id="patient-sex">-</span>
+            <span>GA</span><span id="patient-ga-weeks-days">-</span>
+            <span>Birth wt</span><span><span id="patient-bw">-</span> g</span>
+            <span>Weight</span><span><span id="patient-current-weight">-</span> g</span>
+            <span>PNA</span><span id="patient-pna-display">-</span>
+            <span>PMA</span><span id="patient-pma-display">-</span>
+            <span>Flags</span><span><span id="flags-count">0</span> <button id="flags-info" class="info-icon" type="button" data-tooltip="No flags">i</button></span>
           </div>
-          <div class="tile">
-            <div class="tile-head"><strong>SpO2</strong><span class="vital vital-spo2" id="tile-spo2-value">-</span></div>
-            <div class="trace-canvas" id="trace-spo2"></div>
-          </div>
-          <div class="tile">
-            <div class="tile-head"><strong>Respiration</strong><span class="vital vital-resp" id="tile-resp-value">-</span></div>
-            <div class="trace-canvas" id="trace-resp"></div>
-          </div>
-          <div class="tile">
-            <div class="tile-head"><strong>Caffeine concentration</strong><span class="vital" id="conc-est-latest">-</span></div>
-            <div class="trace-canvas" id="trace-caffeine"></div>
-          </div>
-        </div>
-      </section>
+        </section>
 
-      <section class="panel estimator-panel">
-        <h2>Estimator</h2>
-        <div class="estimator-table-wrap">
-          <table class="estimator-table">
-            <thead>
-              <tr>
-                <th>Parameter</th>
-                <th>Estimate</th>
-                <th>90% interval</th>
-                <th>Sparkline</th>
-                <th>True</th>
-              </tr>
-            </thead>
-            <tbody id="theta-table-body"></tbody>
-          </table>
-        </div>
-        <p class="meta-line">
-          Pred/Obs N: <span id="last-hour-n">-</span> |
-          Loss: <span id="loss-latest">-</span> |
-          Newton: <span id="newton-iter">-</span> |
-          Grad: <span id="grad-norm">-</span>
-        </p>
-        <p class="meta-line">
-          Target: <span id="target-conc">-</span> mg/L |
-          Suggested: <span id="suggested-dose">-</span> |
-          Safety: <span id="safety-share">-</span> |
-          Gate: <span id="confidence-gate">-</span>
-        </p>
-      </section>
+        <section class="meta-section">
+          <h2>RUN</h2>
+          <div class="kv-grid">
+            <span>ID</span><span id="run-id-short">-</span>
+            <span>Phase</span><span id="side-phase-badge" class="phase-chip">-</span>
+            <span>Sim time</span><span><span id="sim-time-text">-</span> h</span>
+            <span>Hour</span><span id="hour-index-text">-</span>
+            <span>Version</span><span id="state-version-text">-</span>
+            <span>Status</span><span id="convergence-status-text">-</span>
+          </div>
+        </section>
 
-      <section id="intervention-strip" class="panel intervention-strip">
-        <h2>Clinician actions</h2>
-        <div class="actions-grid">
-          <section class="action-group">
-            <h3>Caffeine</h3>
-            <form id="dose-form" class="dose-form-grid">
-              <label>Amount
-                <input id="dose-amount" type="number" step="0.1" value="5" required>
-                <span>mg/kg</span>
-              </label>
-              <label>Route</label>
-              <div class="segment-control" data-target="dose-route">
-                <input id="dose-route" type="hidden" value="intravenous">
-                <button type="button" class="segment-option active" data-value="intravenous">Intravenous</button>
-                <button type="button" class="segment-option" data-value="oral">Oral</button>
+        <section class="meta-section no-divider">
+          <h2>COUNTS</h2>
+          <div class="kv-grid">
+            <span>Doses</span><span id="dose-log-count">-</span>
+            <span>Blood lvls</span><span id="blood-log-count">-</span>
+            <span>Context ?</span><span id="context-log-count">-</span>
+          </div>
+        </section>
+      </aside>
+
+      <section class="center-column">
+        <section class="panel-surface monitor-panel">
+          <div class="panel-head">
+            <h2>NICU MONITOR</h2>
+            <label class="monitoring-toggle">Monitoring
+              <div class="segment-control" data-target="monitoring-value">
+                <input id="monitoring-value" type="hidden" value="true">
+                <button type="button" class="segment-option active" data-value="true">On</button>
+                <button type="button" class="segment-option" data-value="false">Off</button>
               </div>
-              <button type="submit">Give dose</button>
-            </form>
-            <button id="accept-suggested-dose" type="button">Accept suggestion</button>
-            <p id="dose-error" class="error action-error"></p>
-          </section>
-
-          <section class="action-group">
-            <h3>Care settings</h3>
-            <label class="fio2-row">FiO2
-              <input id="context-fio2-slider" type="range" min="21" max="100" step="1" value="30">
-              <input id="context-fio2-percent" type="number" min="21" max="100" step="1" value="30">
-              <span>%</span>
             </label>
-            <label>Support
-              <select id="context-support">
-                <option value="room_air">Room air</option>
-                <option value="low_flow_cannula">Low-flow nasal cannula</option>
-                <option value="high_flow_cannula">High-flow nasal cannula</option>
-                <option value="cpap">CPAP (continuous positive airway pressure)</option>
-                <option value="nippv">NIPPV (nasal intermittent positive pressure ventilation)</option>
-                <option value="invasive_ventilation">Invasive mechanical ventilation</option>
-              </select>
-            </label>
-            <p id="context-feedback" class="action-feedback"></p>
-            <p id="context-error" class="error action-error"></p>
-            <p id="monitoring-feedback" class="action-feedback"></p>
-            <p id="monitoring-error" class="error action-error"></p>
-          </section>
+          </div>
+          <div class="monitor-grid">
+            <div class="tile">
+              <div class="tile-head"><strong>Heart rate</strong><span class="vital vital-hr" id="tile-heart-rate">-</span></div>
+              <div class="trace-canvas" id="trace-heart-rate"></div>
+            </div>
+            <div class="tile">
+              <div class="tile-head"><strong>SpO2</strong><span class="vital vital-spo2" id="tile-spo2-value">-</span></div>
+              <div class="trace-canvas" id="trace-spo2"></div>
+            </div>
+            <div class="tile">
+              <div class="tile-head"><strong>Respiration</strong><span class="vital vital-resp" id="tile-resp-value">-</span></div>
+              <div class="trace-canvas" id="trace-resp"></div>
+            </div>
+            <div class="tile">
+              <div class="tile-head"><strong>Caffeine concentration</strong><span class="vital" id="conc-est-latest">-</span></div>
+              <div class="trace-canvas" id="trace-caffeine"></div>
+            </div>
+          </div>
+        </section>
 
-          <section class="action-group">
-            <h3>Measurements</h3>
-            <form id="blood-form" class="blood-form-grid">
-              <label>Blood level
-                <input id="blood-concentration" type="number" step="0.1" value="10">
-                <span>mg/L</span>
+        <section class="panel-surface estimator-panel">
+          <h2>ESTIMATOR</h2>
+          <div class="estimator-table-wrap">
+            <table class="estimator-table">
+              <thead>
+                <tr>
+                  <th>Parameter</th>
+                  <th>Estimate</th>
+                  <th>90% interval</th>
+                  <th>Sparkline</th>
+                  <th>True</th>
+                </tr>
+              </thead>
+              <tbody id="theta-table-body"></tbody>
+            </table>
+          </div>
+          <p class="meta-line">Pred/Obs N: <span id="last-hour-n">-</span> | Loss: <span id="loss-latest">-</span> | Newton: <span id="newton-iter">-</span> | Grad: <span id="grad-norm">-</span></p>
+          <p class="meta-line">Target: <span id="target-conc">-</span> <span class="unit-blue">mg/L</span> | Suggested: <span id="suggested-dose">-</span> | Safety: <span id="safety-share">-</span> | Gate: <span id="confidence-gate">-</span></p>
+        </section>
+
+        <section id="intervention-strip" class="panel-surface intervention-strip">
+          <h2>CLINICIAN ACTIONS</h2>
+          <div class="actions-grid">
+            <section class="action-group">
+              <h3>Caffeine</h3>
+              <form id="dose-form" class="dose-form-grid">
+                <label>Amount <input id="dose-amount" type="number" step="0.1" value="5" required> <span>mg/kg</span></label>
+                <label class="route-inline">Route <div class="segment-control" data-target="dose-route"><input id="dose-route" type="hidden" value="intravenous"><button type="button" class="segment-option active" data-value="intravenous">IV</button><button type="button" class="segment-option" data-value="oral">Ol</button></div></label>
+                <button type="submit">Give dose</button>
+              </form>
+              <p id="dose-error" class="error action-error"></p>
+            </section>
+
+            <section class="action-group care-settings-group">
+              <h3>Care settings</h3>
+              <label class="fio2-row">FiO2 <input id="context-fio2-slider" type="range" min="21" max="100" step="1" value="30"> <input id="context-fio2-percent" type="number" min="21" max="100" step="1" value="30"> <span>%</span></label>
+              <label>Support
+                <select id="context-support">
+                  <option value="room_air">Room air</option>
+                  <option value="low_flow_cannula">Low-flow nasal cannula</option>
+                  <option value="high_flow_cannula">High-flow nasal cannula</option>
+                  <option value="cpap">CPAP (continuous positive airway pressure)</option>
+                  <option value="nippv">NIPPV (nasal intermittent positive pressure ventilation)</option>
+                  <option value="invasive_ventilation">Invasive mechanical ventilation</option>
+                </select>
               </label>
-              <label class="checkbox-row">
-                <input id="blood-below-dl" type="checkbox">
-                below detection limit
-              </label>
-              <label id="blood-dl-row">Detection limit
-                <input id="blood-dl" type="number" step="0.1" value="0">
-                <span>mg/L</span>
-              </label>
-              <button type="submit">Add blood level</button>
-            </form>
-            <p id="blood-error" class="error action-error"></p>
-          </section>
-        </div>
+              <p id="context-feedback" class="action-feedback"></p>
+              <p id="context-error" class="error action-error"></p>
+              <p id="monitoring-feedback" class="action-feedback"></p>
+              <p id="monitoring-error" class="error action-error"></p>
+            </section>
+
+            <section class="action-group">
+              <h3>Measurements</h3>
+              <form id="blood-form" class="blood-form-grid">
+                <label>Blood level <input id="blood-concentration" type="number" step="0.1" value="10"> <span>mg/L</span></label>
+                <button type="submit">Add blood level</button>
+              </form>
+              <p id="blood-error" class="error action-error"></p>
+            </section>
+          </div>
+        </section>
+      </section>
+
+      <section class="right-column">
+        <section id="n-card-panel" class="panel-surface n-card-panel">
+          <div class="n-inline">
+            <strong>N</strong>
+            <input id="observed-n-input" type="number" min="0" step="1">
+            <button id="submit-n-button" type="button">Submit</button>
+            <button id="n-info" class="info-icon" type="button" data-tooltip="Observed event count for the pending hour.">i</button>
+            <span id="n-status-text" class="n-status-text">locked</span>
+          </div>
+          <input id="awaiting-hour-text" type="hidden" value="-">
+          <input id="n-hour-ended-text" type="hidden" value="-">
+          <input id="n-time-remaining-text" type="hidden" value="-">
+          <input id="prefill-n-text" type="hidden" value="-">
+          <p id="n-error" class="error action-error"></p>
+        </section>
+
+        <section class="panel-surface convergence-panel">
+          <div class="panel-head">
+            <h2>3D CONVERGENCE</h2>
+            <div class="conv-controls">
+              <label>X <select id="conv-x-param"><option value="log_cl" selected>log_cl</option><option value="log_v">log_v</option><option value="logit_emax">logit_emax</option><option value="log_ec50">log_ec50</option><option value="log_beta_m">log_beta_m</option></select></label>
+              <label>Y <select id="conv-y-param"><option value="log_cl">log_cl</option><option value="log_v">log_v</option><option value="logit_emax">logit_emax</option><option value="log_ec50" selected>log_ec50</option><option value="log_beta_m">log_beta_m</option></select></label>
+              <button id="conv-reset" type="button">Reset</button>
+            </div>
+          </div>
+          <div id="convergence-plot-host" class="plot-host">3D view pending step 4</div>
+        </section>
       </section>
     </section>
 
-    <section class="right-column">
-      <section id="n-card-panel" class="panel n-card-panel">
-        <div class="n-inline">
-          <strong>N</strong>
-          <input id="observed-n-input" type="number" min="0" step="1">
-          <button id="submit-n-button" type="button">Submit</button>
-          <button id="n-info" class="info-icon" type="button" data-tooltip="Observed event count for the pending hour.">i</button>
-          <span id="n-status-text" class="n-status-text">locked</span>
-        </div>
-        <input id="awaiting-hour-text" type="hidden" value="-">
-        <input id="n-hour-ended-text" type="hidden" value="-">
-        <input id="n-time-remaining-text" type="hidden" value="-">
-        <input id="prefill-n-text" type="hidden" value="-">
-        <p id="n-error" class="error action-error"></p>
-      </section>
+    <footer class="footer-notice">Research tool only. Not a medical device.</footer>
+  </main>
+</div>
 
-      <section class="panel convergence-panel">
-        <h2>
-          3D convergence view
-          <button class="info-icon" type="button" data-tooltip="This is a 2D slice of a 5D cumulative loss landscape.">i</button>
-        </h2>
-        <div class="conv-controls">
-          <label>X
-            <select id="conv-x-param">
-              <option value="log_cl" selected>log_cl</option>
-              <option value="log_v">log_v</option>
-              <option value="logit_emax">logit_emax</option>
-              <option value="log_ec50">log_ec50</option>
-              <option value="log_beta_m">log_beta_m</option>
-            </select>
-          </label>
-          <label>Y
-            <select id="conv-y-param">
-              <option value="log_cl">log_cl</option>
-              <option value="log_v">log_v</option>
-              <option value="logit_emax">logit_emax</option>
-              <option value="log_ec50" selected>log_ec50</option>
-              <option value="log_beta_m">log_beta_m</option>
-            </select>
-          </label>
-          <button id="conv-reset" type="button">Reset view</button>
-        </div>
-        <div id="convergence-plot-host" class="plot-host">3D view pending step 4</div>
-      </section>
-    </section>
-  </section>
-
-  <footer class="footer-notice">Research tool only, not a medical device.</footer>
-</main>
 <script src="{% static 'simulator/js/api-client.js' %}"></script>
 <script src="{% static 'simulator/js/state-store.js' %}"></script>
 <script src="{% static 'simulator/js/clock-controller.js' %}"></script>
 <script src="{% static 'simulator/js/dashboard-ui.js' %}"></script>
 <script src="{% static 'simulator/js/tooltips.js' %}"></script>
 {% endblock %}
+
+
+
+
+
+
+
+
+
+

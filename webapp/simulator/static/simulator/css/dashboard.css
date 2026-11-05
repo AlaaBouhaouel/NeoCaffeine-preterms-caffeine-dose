@@ -1,185 +1,256 @@
-/* Purpose: Dashboard v3 layout, compact readable single-screen view. */
+/* Dashboard v3 adapted from visual reference file. */
 
-.dashboard-root {
-  height: 100vh;
-  min-height: 720px;
-  max-height: 100vh;
+html,
+body {
+  width: 100%;
+  height: 100%;
+  margin: 0;
   overflow: hidden;
-  display: grid;
-  grid-template-rows: 44px minmax(0, 1fr) 24px;
-  gap: 6px;
-  padding: 6px;
 }
 
-.top-bar,
-.panel,
-.footer-notice {
-  border: 1px solid var(--border);
-  background: var(--panel);
+.dashboard-stage {
+  position: fixed;
+  inset: 0;
+  background: #050505;
+  overflow: hidden;
+}
+
+.dashboard-canvas {
+  width: 100%;
+  height: 100%;
+  position: relative;
+  box-sizing: border-box;
+  background: #050505;
+  color: #d6dde6;
+  font-family: "JetBrains Mono", ui-monospace, monospace;
+  font-size: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 8px;
+}
+
+.panel-surface {
+  border: 1px solid #1f242b;
+  border-radius: 6px;
+  background: #0a0c0f;
 }
 
 .top-bar {
+  height: 44px;
+  flex-shrink: 0;
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  padding: 0 10px;
-  min-height: 0;
-  gap: 8px;
+  gap: 16px;
+  padding: 0 14px;
 }
 
 .top-left,
 .top-controls {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 4px;
 }
 
 .top-left h1 {
   margin: 0;
-  font-size: 14px;
+  font-size: 16px;
+  color: #f2f5f8;
+  letter-spacing: 0.5px;
 }
 
-.demo-chip {
-  border: 1px solid var(--border);
-  color: var(--muted);
-  padding: 1px 6px;
+.top-controls {
+  margin-left: auto;
 }
 
 .top-controls label {
   display: inline-flex;
   align-items: center;
   gap: 4px;
+  color: #8a94a3;
+}
+
+.demo-chip {
+  font-size: 11px;
+  color: #e0a24a;
+  border: 1px solid #5a4220;
+  padding: 2px 8px;
+  border-radius: 3px;
+}
+
+.phase-chip {
+  font-size: 11px;
+  border: 1px solid #234a33;
+  padding: 2px 8px;
+  border-radius: 3px;
+}
+
+.phase-playing {
+  color: #5fd38d;
+}
+
+.phase-awaiting_n {
+  color: #e0a24a;
+  border-color: #5a4220;
+}
+
+.phase-converged {
+  color: #4fc3d9;
+  border-color: #2a5964;
+}
+
+.phase-paused,
+.phase-ready {
+  color: #8a94a3;
+  border-color: #2a2f38;
+}
+
+.top-controls select,
+.top-controls button,
+.top-controls input {
+  font: inherit;
 }
 
 .main-grid {
+  flex: 1;
   min-height: 0;
   display: grid;
-  grid-template-columns: minmax(210px, 15%) minmax(520px, 50%) minmax(420px, 35%);
-  gap: 6px;
-  overflow: hidden;
+  grid-template-columns: 15fr 50fr 35fr;
+  gap: 4px;
 }
 
 .sidebar,
 .center-column,
 .right-column {
   min-height: 0;
-  display: grid;
-  gap: 6px;
 }
 
 .sidebar {
-  padding: 6px;
-  grid-template-rows: repeat(3, minmax(0, auto));
-  align-content: start;
-}
-
-.center-column {
-  grid-template-rows: minmax(0, 44%) minmax(0, 28%) minmax(0, 28%);
-}
-
-.right-column {
-  grid-template-rows: minmax(0, 10%) minmax(0, 90%);
-}
-
-.panel {
-  min-height: 0;
-  padding: 6px;
-  overflow: hidden;
-}
-
-.panel h2,
-.panel h3 {
-  margin: 0;
-  font-size: 12px;
+  padding: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
 }
 
 .meta-section {
-  border-bottom: 1px solid var(--border);
-  padding: 4px 0 6px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  border-bottom: 1px solid #1f242b;
+  padding-bottom: 8px;
 }
 
-.meta-section:last-child {
+.meta-section.no-divider {
   border-bottom: 0;
   padding-bottom: 0;
 }
 
+.meta-section h2 {
+  margin: 0;
+  font-size: 10px;
+  letter-spacing: 1.5px;
+  color: #6b7685;
+}
+
 .kv-grid {
-  margin-top: 4px;
   display: grid;
-  grid-template-columns: auto 1fr;
-  gap: 2px 8px;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  row-gap: 4px;
+  column-gap: 6px;
 }
 
 .kv-grid > span:nth-child(odd) {
-  color: var(--muted);
+  color: #6b7685;
 }
 
-.phase-chip {
-  border: 1px solid var(--border);
-  padding: 1px 6px;
+.center-column {
+  display: grid;
+  grid-template-rows: 41% 25% 34%;
+  gap: 4px;
 }
 
-.phase-playing { color: var(--hr); }
-.phase-awaiting_n { color: #f4d35e; }
-.phase-converged { color: var(--spo2); }
-.phase-paused,
-.phase-ready { color: var(--muted); }
+.monitor-panel,
+.estimator-panel,
+.intervention-strip,
+.n-card-panel,
+.convergence-panel {
+  min-height: 0;
+  padding: 8px 10px;
+  overflow: hidden;
+}
 
 .panel-head {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 8px;
-  margin-bottom: 4px;
+  gap: 4px;
+  margin-bottom: 6px;
+}
+
+.monitor-panel h2,
+.estimator-panel h2,
+.intervention-strip h2,
+.convergence-panel h2 {
+  margin: 0;
+  font-size: 11px;
+  letter-spacing: 1.5px;
+  color: #8a94a3;
 }
 
 .monitoring-toggle {
   display: inline-flex;
   align-items: center;
-  gap: 6px;
+  gap: 4px;
+  color: #8a94a3;
 }
 
 .monitor-grid {
+  height: calc(100% - 24px);
   min-height: 0;
   display: grid;
   grid-template-columns: 1fr 1fr;
   grid-template-rows: 1fr 1fr;
-  gap: 6px;
+  gap: 4px;
 }
 
 .tile {
   min-height: 0;
-  border: 1px solid var(--border);
+  border: 1px solid #1f242b;
+  border-radius: 4px;
   display: grid;
   grid-template-rows: auto minmax(0, 1fr);
   gap: 4px;
-  padding: 4px;
+  padding: 5px;
+  background: #07090b;
 }
 
 .tile-head {
   display: flex;
-  align-items: center;
   justify-content: space-between;
-  gap: 6px;
+  gap: 4px;
+}
+
+.tile-head strong {
+  font-size: 11px;
 }
 
 .vital {
-  font-size: 11px;
-  font-weight: 600;
+  font-size: 16px;
+  font-weight: 700;
 }
 
-.vital-hr { color: var(--hr); }
-.vital-spo2 { color: var(--spo2); }
-.vital-resp { color: var(--resp); }
+.vital-hr { color: #5fd38d; }
+.vital-spo2 { color: #4fc3d9; }
+.vital-resp { color: #f2f5f8; }
 
 .trace-canvas {
-  border: 1px solid var(--border);
+  border: 1px solid #1f242b;
+  border-radius: 3px;
   min-height: 0;
   background-image:
-    linear-gradient(to right, rgba(255,255,255,0.08) 1px, transparent 1px),
-    linear-gradient(to top, rgba(255,255,255,0.08) 1px, transparent 1px);
-  background-size: 24px 24px, 24px 24px;
-  background-position: 0 100%, 0 100%;
+    linear-gradient(to right, rgba(140, 155, 175, 0.16) 1px, transparent 1px),
+    linear-gradient(to top, rgba(140, 155, 175, 0.16) 1px, transparent 1px);
+  background-size: 28px 28px;
 }
 
 .estimator-panel {
@@ -190,8 +261,9 @@
 
 .estimator-table-wrap {
   min-height: 0;
+  border: 1px solid #1f242b;
+  border-radius: 3px;
   overflow: hidden;
-  border: 1px solid var(--border);
 }
 
 .estimator-table {
@@ -202,12 +274,17 @@
 
 .estimator-table th,
 .estimator-table td {
-  border-bottom: 1px solid var(--border);
-  padding: 2px 4px;
+  border-bottom: 1px solid #1f242b;
+  padding: 3px 4px;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+}
+
+.estimator-table th {
+  color: #8a94a3;
   font-size: 11px;
+  font-weight: 600;
 }
 
 .estimator-table tr:last-child td {
@@ -215,7 +292,7 @@
 }
 
 .sparkline-cell {
-  color: var(--muted);
+  color: #7f8a99;
 }
 
 .meta-line {
@@ -235,16 +312,23 @@
   min-height: 0;
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 6px;
+  gap: 4px;
 }
 
 .action-group {
-  min-height: 0;
-  border: 1px solid var(--border);
-  padding: 4px;
+  border: 1px solid #1f242b;
+  border-radius: 4px;
+  padding: 5px;
   display: grid;
   align-content: start;
   gap: 4px;
+  min-height: 0;
+}
+
+.action-group h3 {
+  margin: 0;
+  color: #9ea8b8;
+  font-size: 11px;
 }
 
 .action-group label {
@@ -258,7 +342,7 @@
 .action-group select,
 .action-group button {
   min-width: 0;
-  max-width: 100%;
+  font: inherit;
 }
 
 .dose-form-grid,
@@ -281,20 +365,70 @@
 #blood-concentration,
 #blood-dl,
 #observed-n-input {
-  width: 78px;
+  width: 80px;
+}
+
+.right-column {
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr);
+  gap: 4px;
+}
+
+.n-card-panel {
+  display: grid;
+  grid-template-rows: auto auto;
+  gap: 4px;
+}
+
+.n-inline {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.n-status-text {
+  margin-left: auto;
+  color: #7f8a99;
+}
+
+.n-awaiting-active {
+  border-color: #8a6a35;
+}
+
+.conv-controls {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.convergence-panel {
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr);
+  gap: 4px;
+}
+
+.plot-host {
+  min-height: 0;
+  border: 1px solid #1f242b;
+  border-radius: 4px;
+  background: #07090b;
+  padding: 5px;
 }
 
 .segment-control {
   display: inline-flex;
-  border: 1px solid var(--border);
+  border: 1px solid #262c34;
+  border-radius: 3px;
+  overflow: hidden;
 }
 
 .segment-option {
   border: 0;
-  border-right: 1px solid var(--border);
-  background: #090909;
-  color: var(--text);
-  padding: 2px 8px;
+  border-right: 1px solid #262c34;
+  background: #0f1216;
+  color: #8a94a3;
+  font: inherit;
+  padding: 4px 8px;
 }
 
 .segment-option:last-child {
@@ -302,119 +436,85 @@
 }
 
 .segment-option.active {
-  background: #151515;
+  color: #f2f5f8;
+  background: #181d24;
 }
 
-.checkbox-row {
-  justify-content: flex-start;
+select,
+button,
+input[type="number"] {
+  background: #0f1216;
+  color: #d6dde6;
+  border: 1px solid #262c34;
+  border-radius: 3px;
+  font: inherit;
+  padding: 4px 6px;
 }
 
-.action-feedback {
-  margin: 0;
-  color: var(--muted);
-  min-height: 12px;
-}
-
-.action-error {
-  margin: 0;
-  color: #f2a3a3;
-  min-height: 12px;
-}
-
-.n-card-panel {
-  display: grid;
-  grid-template-rows: minmax(0, 1fr) auto;
-  gap: 4px;
-}
-
-.n-inline {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  min-width: 0;
-  height: 100%;
-}
-
-.n-status-text {
-  color: var(--muted);
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-.n-awaiting-active {
-  border-color: #f4d35e;
-}
-
-.convergence-panel {
-  display: grid;
-  grid-template-rows: auto auto minmax(0, 1fr);
-  gap: 6px;
-}
-
-.conv-controls {
-  display: flex;
-  gap: 6px;
-  align-items: center;
-}
-
-.plot-host {
-  border: 1px solid var(--border);
-  background: #050505;
-  min-height: 0;
-  padding: 6px;
+input[type="checkbox"] {
+  accent-color: #e0a24a;
 }
 
 .info-icon {
   width: 16px;
   height: 16px;
   min-width: 16px;
-  border: 1px solid var(--border);
+  border: 1px solid #262c34;
   border-radius: 50%;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  line-height: 1;
   padding: 0;
-  background: #111;
-  color: var(--muted);
+  line-height: 1;
+  background: #0f1216;
+  color: #7f8a99;
+}
+
+.error {
+  color: #efb2b2;
+}
+
+.action-feedback,
+.action-error {
+  margin: 0;
+  min-height: 12px;
 }
 
 .tooltip-layer {
   position: fixed;
-  z-index: 1100;
+  z-index: 3000;
   pointer-events: none;
   max-width: 280px;
-  border: 1px solid var(--border);
-  background: #050505;
-  color: var(--text);
+  border: 1px solid #262c34;
+  background: #05070a;
+  color: #d6dde6;
   padding: 6px 8px;
 }
 
 .footer-notice {
+  height: 18px;
+  flex-shrink: 0;
+  color: #4b5563;
+  font-size: 11px;
+  padding: 0 6px;
   display: flex;
   align-items: center;
-  padding: 0 8px;
-  color: var(--muted);
 }
 
 .run-missing-panel {
-  position: fixed;
-  top: 50px;
-  left: 0;
-  right: 0;
-  bottom: 0;
+  position: absolute;
+  inset: 44px 0 0 0;
+  background: rgba(0, 0, 0, 0.75);
   display: grid;
   place-items: center;
-  padding: 12px;
-  background: rgba(0, 0, 0, 0.78);
-  z-index: 1050;
+  padding: 8px;
+  z-index: 500;
 }
 
 .run-missing-card {
-  width: min(740px, calc(100vw - 24px));
-  max-height: calc(100vh - 72px);
-  overflow: auto;
+  max-width: 760px;
+  width: calc(100% - 24px);
+  padding: 14px;
 }
 
 .run-missing-card h2,
@@ -423,33 +523,535 @@
   white-space: normal;
 }
 
-.button-link {
-  display: inline-flex;
-  border: 1px solid var(--border);
-  padding: 4px 8px;
+.new-run-link {
+  color: #9aa4b2;
 }
 
-@media (max-width: 1450px) {
-  .main-grid {
-    grid-template-columns: minmax(200px, 15%) minmax(460px, 50%) minmax(380px, 35%);
-  }
-
-  .meta-line {
-    font-size: 10px;
-  }
-}
-
-@media (max-height: 820px) {
-  .dashboard-root {
-    grid-template-rows: 42px minmax(0, 1fr) 22px;
-  }
-
-  .panel {
-    padding: 4px;
-  }
-
-  .panel h2,
-  .panel h3 {
+@media (max-height: 760px) {
+  .dashboard-canvas {
     font-size: 11px;
   }
+
+  .vital {
+    font-size: 14px;
+  }
+}
+
+
+
+
+/* Tightening overrides to prevent leakage/clipping */
+.center-column {
+  grid-template-rows: 37% 23% 40%;
+}
+
+.intervention-strip,
+.actions-grid,
+.action-group,
+.dose-form-grid,
+.blood-form-grid {
+  min-height: 0;
+}
+
+.action-group {
+  overflow: hidden;
+  padding: 4px;
+  gap: 3px;
+}
+
+.action-group h3 {
+  line-height: 1.15;
+}
+
+.action-group label {
+  line-height: 1.1;
+}
+
+#dose-amount,
+#context-fio2-percent,
+#blood-concentration,
+#blood-dl,
+#observed-n-input {
+  width: 70px;
+}
+
+.dose-form-grid button,
+#accept-suggested-dose,
+.blood-form-grid button,
+.n-inline button {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+#accept-suggested-dose,
+.dose-form-grid button,
+.blood-form-grid button {
+  width: 100%;
+}
+
+.meta-line,
+.n-status-text,
+.footer-notice {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.footer-notice {
+  padding-right: 2px;
+}
+/* Extra compact pass for estimator + clinician actions */
+.center-column {
+  grid-template-rows: 39% 25% 36%;
+}
+
+.estimator-panel {
+  padding: 6px 8px;
+  gap: 3px;
+}
+
+.estimator-panel h2,
+.intervention-strip h2 {
+  letter-spacing: 1.2px;
+}
+
+.estimator-table th,
+.estimator-table td {
+  padding: 2px 3px;
+  font-size: 11px;
+  line-height: 1.15;
+}
+
+.meta-line {
+  font-size: 11px;
+  line-height: 1.15;
+}
+
+.intervention-strip {
+  padding: 6px 8px;
+  gap: 3px;
+}
+
+.actions-grid {
+  gap: 4px;
+  align-items: start;
+}
+
+.action-group {
+  padding: 4px;
+  gap: 3px;
+  align-content: start;
+}
+
+.action-group h3 {
+  font-size: 10.5px;
+  margin-bottom: 1px;
+}
+
+.action-group label {
+  gap: 3px;
+  line-height: 1.05;
+}
+
+.dose-form-grid,
+.blood-form-grid {
+  gap: 3px;
+}
+
+.fio2-row {
+  grid-template-columns: auto minmax(60px, 1fr) 38px auto;
+}
+
+#dose-amount,
+#context-fio2-percent,
+#blood-concentration,
+#blood-dl,
+#observed-n-input {
+  width: 64px;
+}
+
+.segment-option {
+  padding: 3px 7px;
+  line-height: 1.1;
+}
+
+select,
+button,
+input[type="number"] {
+  padding: 3px 5px;
+  line-height: 1.1;
+}
+
+.route-inline {
+  display: inline-flex !important;
+  align-items: center;
+  justify-content: space-between;
+  gap: 6px;
+}
+
+.route-inline .segment-control {
+  margin-left: auto;
+}
+
+/* Rebalance height: prioritize estimator readability */
+.center-column {
+  grid-template-rows: 39% 29% 32%;
+}
+
+.intervention-strip {
+  padding: 5px 8px;
+}
+
+.action-group {
+  padding: 3px;
+  gap: 2px;
+}
+
+.action-group h3 {
+  font-size: 10px;
+}
+
+.action-group label,
+.action-group button,
+.action-group select,
+.action-group input {
+  font-size: 11px;
+}
+
+/* Route toggle clarity fix */
+.route-inline {
+  width: 100%;
+}
+
+.route-inline .segment-control {
+  margin-left: auto;
+  flex: 0 0 auto;
+  min-width: 86px;
+}
+
+.route-inline .segment-option {
+  min-width: 38px;
+  text-align: center;
+  padding: 2px 6px;
+}
+
+/* Final readability pass: enlarge estimator, shrink clinician actions */
+.center-column {
+  grid-template-rows: 39% 34% 27% !important;
+}
+
+.estimator-panel {
+  padding: 6px 8px !important;
+  gap: 2px !important;
+}
+
+.estimator-table th,
+.estimator-table td {
+  padding: 1px 3px !important;
+  font-size: 10.5px !important;
+  line-height: 1.1 !important;
+}
+
+.estimator-panel .meta-line {
+  font-size: 10.5px !important;
+  line-height: 1.15 !important;
+  white-space: normal !important;
+  overflow: visible !important;
+  text-overflow: clip !important;
+}
+
+.intervention-strip {
+  padding: 4px 8px !important;
+  gap: 2px !important;
+}
+
+.actions-grid {
+  gap: 3px !important;
+}
+
+.action-group {
+  padding: 2px 3px !important;
+  gap: 2px !important;
+}
+
+.action-group h3 {
+  font-size: 10px !important;
+  margin-bottom: 0 !important;
+}
+
+.action-group label,
+.action-group button,
+.action-group select,
+.action-group input {
+  font-size: 10.5px !important;
+  line-height: 1.05 !important;
+}
+
+#dose-amount,
+#context-fio2-percent,
+#blood-concentration,
+#observed-n-input {
+  width: 60px !important;
+}
+
+/* Footer visibility fix */
+.dashboard-canvas {
+  position: relative;
+  padding-bottom: 28px;
+}
+
+.main-grid {
+  overflow: hidden;
+}
+
+.footer-notice {
+  position: absolute;
+  left: 6px;
+  right: 6px;
+  bottom: 4px;
+  height: 18px;
+  display: flex;
+  align-items: center;
+  padding-left: 6px;
+  padding-right: 6px;
+  background: #050505;
+  z-index: 10;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Care settings tightening */
+.action-feedback,
+.action-error {
+  min-height: 0 !important;
+}
+
+.action-feedback:empty,
+.action-error:empty {
+  display: none;
+}
+
+.care-settings-group {
+  grid-template-rows: auto auto auto;
+  align-content: start;
+}
+
+.care-settings-group .fio2-row {
+  grid-template-columns: 38px minmax(70px, 1fr) 50px 12px;
+  align-items: center;
+}
+
+.care-settings-group > label:not(.fio2-row) {
+  display: grid !important;
+  grid-template-columns: 62px 1fr;
+  align-items: center;
+  gap: 6px;
+}
+
+#context-support {
+  width: 100%;
+  max-width: 100%;
+}
+
+/* Fixed equal heights for clinician action cards */
+.actions-grid {
+  align-items: stretch;
+}
+
+.actions-grid > .action-group {
+  height: 94px !important;
+  min-height: 94px !important;
+  max-height: 94px !important;
+  overflow: hidden;
+}
+
+
+/* Estimator readability + table height tightening */
+.estimator-panel {
+  grid-template-rows: auto auto auto auto !important;
+  align-content: start;
+}
+
+.estimator-table-wrap {
+  height: auto !important;
+  max-height: 172px;
+  align-self: start;
+}
+
+.estimator-panel .meta-line {
+  font-size: 12px !important;
+  line-height: 1.2 !important;
+}
+
+/* Small spacing under estimator table */
+.estimator-table-wrap {
+  margin-bottom: 6px !important;
+}
+
+/* Estimator table contrast: names white, values grey */
+.estimator-table tbody td {
+  color: #9ea8b8;
+}
+
+.estimator-table tbody td:first-child {
+  color: #f2f5fb;
+}
+
+/* Estimator colors: estimate column green, meta values grey */
+.estimator-table tbody td:nth-child(2) {
+  color: #73c991;
+}
+
+#last-hour-n,
+#loss-latest,
+#newton-iter,
+#grad-norm,
+#target-conc,
+#suggested-dose,
+#safety-share,
+#confidence-gate {
+  color: #9ea8b8;
+}
+
+/* Estimator interval column red */
+.estimator-table tbody td:nth-child(3) {
+  color: #d77a7a;
+}
+
+/* Top bar polish pass */
+.top-bar {
+  height: 40px !important;
+  gap: 10px !important;
+  padding: 0 12px !important;
+}
+
+.top-left {
+  gap: 8px !important;
+}
+
+.top-controls {
+  gap: 8px !important;
+}
+
+.top-controls label {
+  gap: 5px !important;
+  line-height: 1;
+}
+
+.top-controls select,
+.top-controls button,
+.new-run-link {
+  height: 28px;
+  padding: 0 10px;
+  border-radius: 4px;
+}
+
+.top-controls select,
+.top-controls button {
+  border: 1px solid #2a3038;
+  background: #11151b;
+  color: #e7edf7;
+}
+
+.top-controls button:hover,
+.new-run-link:hover {
+  border-color: #3a434f;
+}
+
+.new-run-link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid #2a3038;
+  background: #11151b;
+  color: #cfd7e3;
+  text-decoration: none;
+}
+
+#show-true-toggle {
+  width: 14px;
+  height: 14px;
+  margin: 0 3px 0 0;
+  accent-color: #7fa6d8;
+}
+
+.phase-ready,
+.phase-paused {
+  color: #a8b4c5;
+  border-color: #3a4658;
+}
+
+/* Decision line emphasis */
+#target-conc,
+#suggested-dose {
+  color: #7fb2ff;
+}
+
+/* Unit color styling */
+.unit-blue {
+  color: #7fb2ff;
+}
+
+/* Extra spacing between clinician action groups */
+.actions-grid {
+  column-gap: 8px !important;
+}
+
+/* Extra breathing room where vertical space is available */
+.estimator-panel .meta-line:last-of-type {
+  margin-bottom: 8px !important;
+}
+
+.actions-grid > .action-group {
+  padding-bottom: 8px !important;
+}
+
+/* Visible spacing adjustments (post-override) */
+.estimator-panel {
+  padding-bottom: 12px !important;
+}
+
+.estimator-panel .meta-line:last-of-type {
+  margin-bottom: 14px !important;
+}
+
+.actions-grid > .action-group {
+  height: 108px !important;
+  min-height: 108px !important;
+  max-height: 108px !important;
+  padding-bottom: 12px !important;
+}
+
+
+
+/* Subtle breathing space tune */
+.monitor-grid {
+  margin-bottom: 6px !important;
+}
+
+.estimator-table-wrap {
+  margin-bottom: 8px !important;
+}
+
+.estimator-panel .meta-line:last-of-type {
+  margin-bottom: 8px !important;
+}
+
+.actions-grid {
+  margin-bottom: 6px !important;
+}
+
+/* Breathing room under section titles */
+.monitor-panel > h2,
+.estimator-panel > h2,
+.intervention-strip > h2 {
+  margin-bottom: 6px !important;
+}
+
+
+/* More space under estimator table */
+.estimator-table-wrap {
+  margin-bottom: 12px !important;
 }

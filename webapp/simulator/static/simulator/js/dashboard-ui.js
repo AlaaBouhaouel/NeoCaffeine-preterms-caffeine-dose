@@ -1,18 +1,12 @@
-/* Purpose: Dashboard flow wiring without polling, with compact clinician-action UX. */
+/* Purpose: Dashboard flow wiring without polling, adapted for v3 layout. */
 
 (function () {
-  const root = document.querySelector('.dashboard-root')
+  const root = document.getElementById('dashboard-canvas')
   if (!root) {
     return
   }
 
   const runId = root.dataset.runId
-
-  const topBar = document.querySelector('.top-bar')
-  const mainGrid = document.getElementById('dashboard-main-grid')
-  const footerNotice = document.querySelector('.footer-notice')
-  const runMissingPanel = document.getElementById('run-missing-panel')
-  const runMissingClose = document.getElementById('run-missing-close')
 
   const phaseTop = document.getElementById('top-phase-badge')
   const phaseSide = document.getElementById('side-phase-badge')
@@ -36,7 +30,9 @@
   const bloodLogCount = document.getElementById('blood-log-count')
   const contextLogCount = document.getElementById('context-log-count')
 
-  const nCard = document.getElementById('n-submission-row')
+  const nCardPanel = document.getElementById('n-card-panel')
+  const nInfo = document.getElementById('n-info')
+  const nStatusText = document.getElementById('n-status-text')
   const awaitingHourText = document.getElementById('awaiting-hour-text')
   const nHourEndedText = document.getElementById('n-hour-ended-text')
   const nTimeRemainingText = document.getElementById('n-time-remaining-text')
@@ -59,10 +55,7 @@
   const showTrueToggle = document.getElementById('show-true-toggle')
 
   const doseAmountInput = document.getElementById('dose-amount')
-  const doseUnitSelect = document.getElementById('dose-unit')
   const doseRouteInput = document.getElementById('dose-route')
-  const doseFormInput = document.getElementById('dose-form-select')
-  const acceptSuggestedDoseButton = document.getElementById('accept-suggested-dose')
 
   const fio2Slider = document.getElementById('context-fio2-slider')
   const fio2PercentInput = document.getElementById('context-fio2-percent')
@@ -70,21 +63,13 @@
   const monitoringValueInput = document.getElementById('monitoring-value')
 
   const bloodConcentrationInput = document.getElementById('blood-concentration')
-  const bloodBelowDlCheckbox = document.getElementById('blood-below-dl')
-  const bloodDlInput = document.getElementById('blood-dl')
-  const bloodDlRow = document.getElementById('blood-dl-row')
 
   const tileHr = document.getElementById('tile-heart-rate')
   const tileSpo2 = document.getElementById('tile-spo2-value')
   const tileResp = document.getElementById('tile-resp-value')
-  const hrMarkerCount = document.getElementById('hr-marker-count')
-  const spo2MarkerCount = document.getElementById('spo2-marker-count')
-  const respMarkerCount = document.getElementById('resp-marker-count')
-
   const concEstLatest = document.getElementById('conc-est-latest')
-  const doseMarkerCount = document.getElementById('dose-marker-count')
 
-  const thetaPreview = document.getElementById('theta-preview')
+  const thetaTableBody = document.getElementById('theta-table-body')
   const lastHourN = document.getElementById('last-hour-n')
   const lossLatest = document.getElementById('loss-latest')
   const newtonIter = document.getElementById('newton-iter')
@@ -102,8 +87,6 @@
   let wasAwaiting = false
   let contextApplyTimer = null
   let feedbackClearTimer = null
-  const disableRunMissingOverlayForEditing = true
-  const suppressRunMissingErrorsForEditing = true
 
   const errorTimers = new Map()
 
@@ -133,7 +116,7 @@
     if (!fullRunId || fullRunId.length < 13) {
       return fullRunId
     }
-    return `${fullRunId.slice(0, 8)}â€¦${fullRunId.slice(-4)}`
+    return `${fullRunId.slice(0, 8)}…${fullRunId.slice(-4)}`
   }
 
   function displayPhaseForUi(serverPhase) {
@@ -249,9 +232,7 @@
   }
 
   function showRunMissingState() {
-    window.simulatorClockController.stop()
-    setClockVisualState(false)
-    runMissingPanel.hidden = false
+    return
   }
 
   function handleApiError(response, errorNode, fallbackMessage) {
@@ -259,14 +240,6 @@
       return false
     }
     if (response?.error?.code === 'run_not_found') {
-      if (suppressRunMissingErrorsForEditing) {
-        return true
-      }
-      if (disableRunMissingOverlayForEditing) {
-        showTimedError(errorNode, 'This run no longer exists. Start a new run to continue.')
-      } else {
-        showRunMissingState()
-      }
       return true
     }
     showTimedError(errorNode, plainErrorMessage(response, fallbackMessage))
@@ -304,14 +277,6 @@
     })
   }
 
-  function setBloodFieldsState() {
-    const belowDl = bloodBelowDlCheckbox.checked
-    bloodConcentrationInput.disabled = belowDl
-    bloodConcentrationInput.required = !belowDl
-    bloodDlInput.required = belowDl
-    bloodDlRow.hidden = !belowDl
-  }
-
   function updateNCardState(state) {
     const simHourIndex = Number(state.time.sim_hour_index)
     const currentProgress = Number(state.time.hour_progress_01)
@@ -319,38 +284,56 @@
     const prefill = state.hour_gate.n_prefill_value
     const awaiting = state.meta.phase === 'awaiting_n'
 
-    if (nSubmitInFlight) {
-      nCard.classList.remove('n-state-idle', 'n-state-awaiting')
-      nCard.classList.add('n-state-updating')
-    } else if (awaiting) {
-      nCard.classList.remove('n-state-idle', 'n-state-updating')
-      nCard.classList.add('n-state-awaiting')
-    } else {
-      nCard.classList.remove('n-state-awaiting', 'n-state-updating')
-      nCard.classList.add('n-state-idle')
-    }
-
     const nextHour = awaiting ? awaitingHour + 1 : simHourIndex + 1
     const timeRemaining = awaiting ? 0 : Math.max(0, 1 - currentProgress)
 
-    awaitingHourText.textContent = String(nextHour)
-    nHourEndedText.textContent = awaitingHour === null ? '-' : String(awaitingHour)
-    nTimeRemainingText.textContent = formatNumber(timeRemaining, 2)
-    prefillNText.textContent = prefill === null ? '-' : String(prefill)
+    awaitingHourText.value = String(nextHour)
+    nHourEndedText.value = awaitingHour === null ? '-' : String(awaitingHour)
+    nTimeRemainingText.value = formatNumber(timeRemaining, 2)
+    prefillNText.value = prefill === null ? '-' : String(prefill)
 
     observedNInput.disabled = !awaiting || nSubmitInFlight
     submitNButton.disabled = !awaiting || nSubmitInFlight
+    nCardPanel.classList.toggle('n-awaiting-active', awaiting)
+
+    if (nSubmitInFlight) {
+      nStatusText.textContent = 'updating...'
+    } else if (awaiting) {
+      nStatusText.textContent = `hour ${awaitingHour}`
+    } else {
+      nStatusText.textContent = `next h${nextHour} in ${formatNumber(timeRemaining, 2)}h`
+    }
+
+    nInfo.setAttribute('data-tooltip', awaiting
+      ? `Observed event count for hour ${awaitingHour}.`
+      : `N is used at hour boundaries. Next submission is for hour ${nextHour}.`)
 
     if (awaiting) {
       observedNInput.value = prefill ?? ''
       if (!wasAwaiting) {
         observedNInput.focus()
-        nCard.classList.remove('pulse')
-        void nCard.offsetWidth
-        nCard.classList.add('pulse')
       }
     }
     wasAwaiting = awaiting
+  }
+
+  function renderThetaTable(thetaRows) {
+    const showTrue = window.simulatorStateStore.showTrueValues
+    const rowsHtml = thetaRows.map((row) => {
+      const transformed = `transformed=${formatSignificant(row.transformed_estimate, 4)}, sd=${formatSignificant(row.transformed_sd, 4)}`
+      const estimate = `<span class="estimate-value">${formatSignificant(row.natural_estimate, 3)}</span> <span class="unit-blue">${row.natural_unit}</span>`
+      const interval = `[${formatSignificant(row.natural_interval_90.lo, 3)}, ${formatSignificant(row.natural_interval_90.hi, 3)}]`
+      const sparklineText = row.sparkline_transformed.slice(-8).map((entry) => formatSignificant(entry.v, 3)).join(' · ')
+      const trueText = showTrue ? `${formatSignificant(row.true_natural, 3)}` : 'hidden'
+      return `<tr>
+        <td title="${transformed}">${row.label}</td>
+        <td>${estimate}</td>
+        <td>${interval}</td>
+        <td class="sparkline-cell">${sparklineText || '-'}</td>
+        <td>${trueText}</td>
+      </tr>`
+    }).join('')
+    thetaTableBody.innerHTML = rowsHtml
   }
 
   function renderState(envelope) {
@@ -370,9 +353,7 @@
 
     patientSex.textContent = state.patient.covariates.sex
     const gaDays = Number(state.patient.covariates.gestational_age_days)
-    const gaWeeks = Math.floor(gaDays / 7)
-    const gaDaysExtra = gaDays % 7
-    patientGaWeeksDays.textContent = `${gaWeeks}w + ${gaDaysExtra}d`
+    patientGaWeeksDays.textContent = `${Math.floor(gaDays / 7)}w + ${gaDays % 7}d`
     patientBw.textContent = String(state.patient.covariates.birth_weight_g)
     patientCurrentWeight.textContent = String(latest(state.patient.weight_log, 'weight_g') ?? '-')
     patientPnaDisplay.textContent = formatPna(Number(state.patient.postnatal_age_hours))
@@ -391,7 +372,6 @@
     fio2PercentInput.value = fio2Slider.value
     supportSelect.value = state.context.breathing_support
     setSegmentValue(monitoringValueInput, state.context.monitoring_on ? 'true' : 'false')
-    setBloodFieldsState()
     isHydrating = false
 
     updateNCardState(state)
@@ -399,20 +379,9 @@
     tileHr.textContent = formatNumber(state.monitor_panel.tiles.heart_rate_bpm, 1)
     tileSpo2.textContent = formatNumber(state.monitor_panel.tiles.spo2_pct, 1)
     tileResp.textContent = formatNumber(state.monitor_panel.tiles.resp_rate_bpm, 1)
-
-    const events = state.monitor_panel.events || []
-    hrMarkerCount.textContent = String(events.filter((entry) => entry.type === 'bradycardia').length)
-    spo2MarkerCount.textContent = String(events.filter((entry) => entry.type === 'desaturation').length)
-    respMarkerCount.textContent = String(events.filter((entry) => entry.type === 'apnea').length)
-
     concEstLatest.textContent = formatNumber(latest(state.pharmacology_panel.concentration_est_mg_per_l, 'v'), 3)
-    doseMarkerCount.textContent = String(state.pharmacology_panel.dose_markers.length)
 
-    const thetaLines = state.estimator_panel.theta.map((row) => {
-      const trueNatural = window.simulatorStateStore.showTrueValues ? formatSignificant(row.true_natural, 3) : 'hidden'
-      return `${row.label}: nat=${formatSignificant(row.natural_estimate, 3)} ${row.natural_unit}, 90%=[${formatSignificant(row.natural_interval_90.lo, 3)}, ${formatSignificant(row.natural_interval_90.hi, 3)}], tr=${formatSignificant(row.transformed_estimate, 4)}, true=${trueNatural}`
-    })
-    thetaPreview.textContent = thetaLines.join('\n')
+    renderThetaTable(state.estimator_panel.theta)
 
     lastHourN.textContent = `${formatNumber(state.estimator_panel.last_hour.predicted_n, 2)} / ${state.estimator_panel.last_hour.observed_n ?? '-'}`
     lossLatest.textContent = formatNumber(latest(state.estimator_panel.diagnostics.loss_negative_log_likelihood, 'value'), 4)
@@ -421,10 +390,9 @@
 
     const decision = state.decision_panel
     targetConc.textContent = formatNumber(decision.target_concentration_mg_per_l, 3)
-    suggestedDose.textContent = `${formatNumber(decision.suggested_dose.amount, 3)} ${decision.suggested_dose.amount_unit}, ${formatRoute(decision.suggested_dose.route)}, ${formatForm(decision.suggested_dose.form)}`
+    suggestedDose.textContent = `${formatNumber(decision.suggested_dose.amount, 3)} mg/kg ${formatRoute(decision.suggested_dose.route)} citrate`
     safetyShare.textContent = formatNumber(decision.safety_share_vs_limit, 4)
     confidenceGate.textContent = decision.confidence_gate.open ? `open (${decision.confidence_gate.reason})` : `closed (${decision.confidence_gate.reason})`
-    acceptSuggestedDoseButton.textContent = `Accept: ${formatNumber(decision.suggested_dose.amount, 3)} ${decision.suggested_dose.amount_unit} ${formatRoute(decision.suggested_dose.route)} ${formatForm(decision.suggested_dose.form)}`
 
     if (state.meta.phase === 'converged') {
       window.simulatorClockController.stop()
@@ -503,13 +471,6 @@
     }
   }
 
-  function currentContextPayload() {
-    return {
-      fiO2_fraction: Number(fio2PercentInput.value) / 100,
-      breathing_support: supportSelect.value,
-    }
-  }
-
   async function submitContextChange() {
     if (isHydrating) {
       return
@@ -520,7 +481,8 @@
     }
     const payload = {
       state_version: envelope.state_version,
-      ...currentContextPayload(),
+      fiO2_fraction: Number(fio2PercentInput.value) / 100,
+      breathing_support: supportSelect.value,
     }
     const response = await window.simulatorApiClient.setContext(runId, payload)
     if (handleApiError(response, contextError, 'Could not apply care settings.')) {
@@ -616,26 +578,13 @@
     const payload = {
       state_version: envelope.state_version,
       amount: Number(doseAmountInput.value),
-      amount_unit: doseUnitSelect.value,
+      amount_unit: 'mg_per_kg',
       route: doseRouteInput.value,
-      form: doseFormInput.value,
+      form: 'citrate',
       source: 'manual',
     }
     const response = await window.simulatorApiClient.giveDose(runId, payload)
     if (handleApiError(response, doseError, 'Could not apply dose.')) {
-      return
-    }
-    clearError(doseError)
-    renderState(response)
-  })
-
-  acceptSuggestedDoseButton.addEventListener('click', async () => {
-    const envelope = window.simulatorStateStore.stateEnvelope
-    if (!envelope) {
-      return
-    }
-    const response = await window.simulatorApiClient.acceptSuggestedDose(runId, envelope.state_version)
-    if (handleApiError(response, doseError, 'Could not accept suggested dose.')) {
       return
     }
     clearError(doseError)
@@ -660,22 +609,18 @@
     queueContextApply()
   })
 
-  bloodBelowDlCheckbox.addEventListener('change', () => {
-    setBloodFieldsState()
-  })
-
   document.getElementById('blood-form').addEventListener('submit', async (event) => {
     event.preventDefault()
     const envelope = window.simulatorStateStore.stateEnvelope
     if (!envelope) {
       return
     }
-    const belowDl = bloodBelowDlCheckbox.checked
+    const concentration = Number(bloodConcentrationInput.value)
     const payload = {
       state_version: envelope.state_version,
-      below_detection_limit: belowDl,
-      detection_limit_mg_per_l: Number(bloodDlInput.value),
-      concentration_mg_per_l: belowDl ? null : Number(bloodConcentrationInput.value),
+      below_detection_limit: false,
+      detection_limit_mg_per_l: 0,
+      concentration_mg_per_l: concentration,
     }
     const response = await window.simulatorApiClient.addBloodLevel(runId, payload)
     if (handleApiError(response, bloodError, 'Could not add blood level.')) {
@@ -686,16 +631,19 @@
   })
 
   initializeSegmentControls()
-  setBloodFieldsState()
-
-  if (runMissingClose) {
-    runMissingClose.addEventListener('click', () => {
-      window.location.href = '/'
-    })
-  }
 
   window.simulatorClockController.setSpeed(Number(speedSelect.value))
   window.simulatorStateStore.nMode = nModeSelect.value
   setClockVisualState(false)
   refreshInitialState()
 })()
+
+
+
+
+
+
+
+
+
+

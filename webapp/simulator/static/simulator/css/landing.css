@@ -1,49 +1,391 @@
-﻿/* Purpose: Layout styles for landing content and create-run form. */
+/* Purpose: Landing page v3 fit-to-screen layout and interactions. */
 
-.landing-root {
+@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&display=swap');
+
+html,
+body {
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  overflow: hidden;
+  background: #050505;
+}
+
+.landing-stage {
+  position: fixed;
+  inset: 0;
+  overflow: hidden;
+  background: #050505;
+}
+
+.landing-canvas {
+  position: absolute;
+  width: 100vw;
+  height: 100vh;
+  left: 0;
+  top: 0;
+  transform-origin: top left;
+  background: #050505;
+  color: #d6dde6;
+  font-family: 'JetBrains Mono', ui-monospace, monospace;
+  font-size: 12px;
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-  gap: 16px;
-  min-height: 100vh;
-  padding: 24px;
-  background-image:
-    repeating-linear-gradient(
-      0deg,
-      rgba(255, 255, 255, 0.04),
-      rgba(255, 255, 255, 0.04) 1px,
-      transparent 1px,
-      transparent 32px
-    ),
-    repeating-linear-gradient(
-      90deg,
-      rgba(255, 255, 255, 0.03),
-      rgba(255, 255, 255, 0.03) 1px,
-      transparent 1px,
-      transparent 48px
-    );
+  grid-template-columns: 60fr 40fr;
+  gap: 12px;
+  padding: 14px;
 }
 
-.landing-card {
-  border: 1px solid var(--border);
-  background: var(--panel);
-  padding: 16px;
+.panel-surface {
+  border: 1px solid #1f242b;
+  border-radius: 6px;
+  background: #0a0c0f;
 }
 
-.landing-card h1,
-.landing-card h2 {
-  margin-top: 0;
+.project-column {
+  min-height: 0;
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr) auto auto;
+  gap: 10px;
+  padding: 12px;
+}
+
+.project-header h1 {
+  margin: 0;
+  font-size: 40px;
+  line-height: 1;
+  color: #f2f5fb;
+}
+
+.tagline {
+  margin: 8px 0 0;
+  color: #b8c2d0;
+  font-size: 14px;
+  line-height: 1.25;
+}
+
+.motif-panel {
+  min-height: 0;
+  padding: 8px;
+  overflow: hidden;
+}
+
+#motif-canvas {
+  width: 100%;
+  height: 100%;
+  display: block;
+  border: 1px solid #1f242b;
+  border-radius: 4px;
+  background: #07090c;
+}
+
+.how-panel {
+  padding: 8px;
+}
+
+.how-panel h2 {
+  margin: 0 0 8px;
+  font-size: 12px;
+  color: #98a3b5;
+  letter-spacing: 1.1px;
+}
+
+.steps-row {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.step-card {
+  border: 1px solid #1f242b;
+  border-radius: 4px;
+  padding: 6px;
+  min-height: 0;
+}
+
+.step-card h3 {
+  margin: 0 0 4px;
+  font-size: 12px;
+  color: #e0a24a;
+}
+
+.step-card p {
+  margin: 0;
+  color: #a9b4c4;
+  line-height: 1.25;
+}
+
+.notice {
+  margin: 0;
+  color: #566172;
+  font-size: 11px;
+}
+
+.form-column {
+  min-height: 0;
+  padding: 10px;
+}
+
+.form-card {
+  height: 100%;
+  padding: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  min-height: 0;
+}
+
+.form-card h2 {
+  margin: 0;
+  font-size: 18px;
+  color: #f2f5fb;
 }
 
 #create-run-form {
-  display: grid;
-  gap: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
 }
 
-#create-run-form label {
+.field-group {
   display: grid;
   gap: 4px;
 }
 
-.notice {
-  color: var(--muted);
+.field-group > label {
+  color: #9aa6b8;
 }
+
+.inline-fields {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-width: 0;
+}
+
+.ga-row input {
+  width: 68px;
+}
+
+.suffix {
+  color: #8793a8;
+}
+
+input,
+select,
+button {
+  font: inherit;
+  color: #e7edf7;
+  background: #11151b;
+  border: 1px solid #2a3038;
+  border-radius: 4px;
+  height: 30px;
+  padding: 0 8px;
+}
+
+input[type='number'] {
+  width: 112px;
+}
+
+input[type='range'] {
+  width: 156px;
+  padding: 0;
+  height: auto;
+  accent-color: #7fa6d8;
+}
+
+#fio2-percent {
+  width: 68px;
+}
+
+.segment-control {
+  display: inline-flex;
+  border: 1px solid #2a3038;
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.segment-option {
+  min-width: 88px;
+  border: 0;
+  border-right: 1px solid #2a3038;
+  background: #10141a;
+  color: #9fb0c8;
+}
+
+.segment-option:last-child {
+  border-right: 0;
+}
+
+.segment-option.active {
+  background: #1a222e;
+  color: #f2f5fb;
+}
+
+.initial-care {
+  border: 1px solid #1f242b;
+  border-radius: 4px;
+  padding: 8px;
+  display: grid;
+  gap: 8px;
+}
+
+.initial-care h3 {
+  margin: 0;
+  font-size: 12px;
+  letter-spacing: 1px;
+  color: #98a3b5;
+}
+
+.fio2-row {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.monitoring-note {
+  margin: 0;
+  color: #98a3b5;
+}
+
+.monitoring-note strong {
+  color: #5fd38d;
+}
+
+.advanced-box {
+  border: 1px solid #1f242b;
+  border-radius: 4px;
+  padding: 6px 8px;
+  margin-bottom: 2px;
+}
+
+.advanced-box summary {
+  cursor: pointer;
+  color: #9aa6b8;
+}
+
+.advanced-inner {
+  margin-top: 8px;
+}
+
+.info-icon {
+  width: 16px;
+  height: 16px;
+  min-width: 16px;
+  border-radius: 50%;
+  border: 1px solid #2e3642;
+  color: #8a95a6;
+  background: transparent;
+  padding: 0;
+  line-height: 14px;
+  font-size: 11px;
+  cursor: default;
+}
+
+.start-button {
+  width: 100%;
+  background: #e0a24a;
+  border-color: #b17a33;
+  color: #120e07;
+  font-weight: 700;
+}
+
+.start-button:hover {
+  background: #e7ae5a;
+}
+
+.resume-box {
+  display: grid;
+  gap: 6px;
+  margin-top: 2px;
+}
+
+.resume-link {
+  width: auto;
+  justify-self: start;
+  border: 0;
+  background: transparent;
+  color: #9eb3d3;
+  text-decoration: underline;
+  padding: 0;
+  height: auto;
+}
+
+.resume-controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  align-items: center;
+}
+
+.resume-controls input {
+  width: 100%;
+  max-width: 430px;
+  min-width: 220px;
+  flex: 1 1 280px;
+}
+
+.hidden {
+  display: none;
+}
+
+.field-error,
+.error {
+  margin: 0;
+  min-height: 14px;
+  font-size: 11px;
+}
+
+.field-error {
+  color: #e59f9f;
+}
+
+.error {
+  color: #efb2b2;
+}
+
+.tooltip-layer {
+  position: fixed;
+  z-index: 3000;
+  pointer-events: none;
+  max-width: 280px;
+  border: 1px solid #262c34;
+  background: #05070a;
+  color: #d6dde6;
+  padding: 6px 8px;
+  font-family: 'JetBrains Mono', ui-monospace, monospace;
+  font-size: 11px;
+}
+
+
+
+/* Uniform regular text size (except main title) */
+.landing-canvas,
+.landing-canvas p,
+.landing-canvas span,
+.landing-canvas label,
+.landing-canvas input,
+.landing-canvas select,
+.landing-canvas button,
+.landing-canvas summary,
+.landing-canvas .suffix,
+.landing-canvas .field-error,
+.landing-canvas .error,
+.landing-canvas .notice,
+.landing-canvas .monitoring-note,
+.landing-canvas .step-card p,
+.landing-canvas .step-card h3,
+.landing-canvas .how-panel h2,
+.landing-canvas .initial-care h3,
+.landing-canvas .form-card h2 {
+  font-size: 11px !important;
+}
+
+.project-header h1 {
+  font-size: 40px !important;
+}
+
+
+#resume-run-button {
+  flex: 0 0 auto;
+}
+
