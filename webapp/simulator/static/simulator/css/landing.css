@@ -1,0 +1,49 @@
+﻿/* Purpose: Layout styles for landing content and create-run form. */
+
+.landing-root {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: 16px;
+  min-height: 100vh;
+  padding: 24px;
+  background-image:
+    repeating-linear-gradient(
+      0deg,
+      rgba(255, 255, 255, 0.04),
+      rgba(255, 255, 255, 0.04) 1px,
+      transparent 1px,
+      transparent 32px
+    ),
+    repeating-linear-gradient(
+      90deg,
+      rgba(255, 255, 255, 0.03),
+      rgba(255, 255, 255, 0.03) 1px,
+      transparent 1px,
+      transparent 48px
+    );
+}
+
+.landing-card {
+  border: 1px solid var(--border);
+  background: var(--panel);
+  padding: 16px;
+}
+
+.landing-card h1,
+.landing-card h2 {
+  margin-top: 0;
+}
+
+#create-run-form {
+  display: grid;
+  gap: 10px;
+}
+
+#create-run-form label {
+  display: grid;
+  gap: 4px;
+}
+
+.notice {
+  color: var(--muted);
+}

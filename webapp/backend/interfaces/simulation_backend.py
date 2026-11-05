@@ -15,6 +15,8 @@ ContextPayload = dict[str, Any]
 MonitoringPayload = dict[str, Any]
 BloodLevelPayload = dict[str, Any]
 
+ADVANCE_HOUR_BOUNDARY_REQUIREMENT = "advance must stop exactly at hour boundary and return awaiting_n when boundary is reached"
+
 
 class SimulationBackend(Protocol):
     def create_run(

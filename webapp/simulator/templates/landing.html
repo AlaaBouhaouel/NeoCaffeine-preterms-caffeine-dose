@@ -1,9 +1,64 @@
 {% extends "base.html" %}
+{% load static %}
+
+{% block extra_head %}
+<link rel="stylesheet" href="{% static 'simulator/css/landing.css' %}">
+{% endblock %}
 
 {% block content %}
-<main>
-  <h1>NeoCaffeine</h1>
-  <p>Landing copy is pending approval in webapp/docs/ui-text.md.</p>
-  <p>Research tool notice copy is pending approval in webapp/docs/ui-text.md.</p>
+<main class="landing-root">
+  <section class="landing-card">
+    <h1>NeoCaffeine</h1>
+    <p>NeoCaffeine is a research simulator for apnea of prematurity. It estimates each infant's hidden caffeine-response parameters hour by hour from apnea counts, blood caffeine levels when available, and respiratory context, then presents individualized dose suggestions for clinician review.</p>
+    <p class="notice">Research tool only. Not a medical device. Outputs are suggestions for qualified clinical review and must never be used for direct patient dosing.</p>
+  </section>
+
+  <section class="landing-card">
+    <h2>Open simulator</h2>
+    <form id="create-run-form">
+      <label>Gestational age (weeks)
+        <input id="ga-weeks" name="ga_weeks" type="number" value="28" required>
+      </label>
+      <label>Gestational age extra days
+        <input id="ga-days" name="ga_days" type="number" value="0" required>
+      </label>
+      <label>Birth weight (g)
+        <input id="birth-weight" name="birth_weight" type="number" value="980" required>
+      </label>
+      <label>Sex
+        <select id="sex" name="sex" required>
+          <option value="male">male</option>
+          <option value="female">female</option>
+          <option value="unknown">unknown</option>
+        </select>
+      </label>
+      <label>FiO2 fraction
+        <input id="fio2" name="fio2" type="number" step="0.01" value="0.30" required>
+      </label>
+      <label>Breathing support
+        <select id="breathing-support" name="breathing_support" required>
+          <option value="room_air">Room air</option>
+          <option value="low_flow_cannula">Low-flow nasal cannula</option>
+          <option value="high_flow_cannula">High-flow nasal cannula</option>
+          <option value="cpap">CPAP (continuous positive airway pressure)</option>
+          <option value="nippv">NIPPV (nasal intermittent positive pressure ventilation)</option>
+          <option value="invasive_ventilation">Invasive mechanical ventilation</option>
+        </select>
+      </label>
+      <label>Monitoring on
+        <select id="monitoring-on" name="monitoring_on" required>
+          <option value="true">true</option>
+          <option value="false">false</option>
+        </select>
+      </label>
+      <label>Random seed (optional)
+        <input id="random-seed" name="random_seed" type="number">
+      </label>
+      <button type="submit">Open simulator</button>
+    </form>
+    <p id="landing-error" class="error"></p>
+  </section>
 </main>
+<script src="{% static 'simulator/js/api-client.js' %}"></script>
+<script src="{% static 'simulator/js/landing.js' %}"></script>
 {% endblock %}

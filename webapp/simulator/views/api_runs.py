@@ -3,9 +3,10 @@
 from __future__ import annotations
 
 from django.http import HttpRequest, JsonResponse
+from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_POST
 
-from backend.selectors import get_active_simulation_backend
+from backend.selectors import get_backend_runtime
 from simulator.views.api_utils import (
     error_response,
     has_field,
@@ -28,6 +29,7 @@ BREATHING_SUPPORT_VALUES = {
 }
 
 
+@csrf_exempt
 @require_POST
 def create_run(request: HttpRequest) -> JsonResponse:
     payload, error = parse_json_body(request)
@@ -86,8 +88,8 @@ def create_run(request: HttpRequest) -> JsonResponse:
     if random_seed is not None and not is_int_not_bool(random_seed):
         return error_response("invalid_type", "Field random_seed must be an integer or null.")
 
-    backend = get_active_simulation_backend()
-    result = backend.create_run(patient=patient, initial_context=initial_context, random_seed=random_seed)
+    runtime = get_backend_runtime()
+    result = runtime.create_run(patient=patient, initial_context=initial_context, random_seed=random_seed)
     if not result.get("ok"):
         err = result.get("error", {})
         return error_response(err.get("code", "invalid_json"), err.get("message", "Request failed."), err.get("details", {}), result.get("run_id"))

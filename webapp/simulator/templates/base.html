@@ -1,9 +1,12 @@
 <!doctype html>
 <html lang="en">
 <head>
+  {% load static %}
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>NeoCaffeine</title>
+  <link rel="stylesheet" href="{% static 'simulator/css/base.css' %}">
+  {% block extra_head %}{% endblock %}
 </head>
 <body>
   {% block content %}{% endblock %}

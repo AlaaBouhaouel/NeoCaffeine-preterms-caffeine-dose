@@ -5,9 +5,10 @@ from __future__ import annotations
 from uuid import UUID
 
 from django.http import HttpRequest, JsonResponse
+from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_POST
 
-from backend.selectors import get_active_simulation_backend
+from backend.selectors import get_backend_runtime
 from simulator.views.api_utils import (
     error_response,
     has_field,
@@ -46,6 +47,7 @@ def _validate_state_version(payload: dict) -> JsonResponse | None:
     return None
 
 
+@csrf_exempt
 @require_POST
 def advance_run(request: HttpRequest, run_id: UUID) -> JsonResponse:
     payload, error = parse_json_body(request)
@@ -63,13 +65,14 @@ def advance_run(request: HttpRequest, run_id: UUID) -> JsonResponse:
     if float(payload["delta_sim_hours"]) <= 0:
         return error_response("out_of_definition", "Field delta_sim_hours must be greater than 0.")
 
-    backend = get_active_simulation_backend()
-    result = backend.advance(run_id=run_id, delta_sim_hours=float(payload["delta_sim_hours"]), state_version=payload["state_version"])
+    runtime = get_backend_runtime()
+    result = runtime.advance(run_id=run_id, delta_sim_hours=float(payload["delta_sim_hours"]), state_version=payload["state_version"])
     if not result.get("ok"):
         return _backend_error(result)
     return JsonResponse(result)
 
 
+@csrf_exempt
 @require_POST
 def submit_hour_n(request: HttpRequest, run_id: UUID, hour_index: int) -> JsonResponse:
     payload, error = parse_json_body(request)
@@ -87,8 +90,8 @@ def submit_hour_n(request: HttpRequest, run_id: UUID, hour_index: int) -> JsonRe
     if payload["observed_n"] < 0:
         return error_response("out_of_definition", "Field observed_n must be greater than or equal to 0.")
 
-    backend = get_active_simulation_backend()
-    result = backend.submit_observed_n(
+    runtime = get_backend_runtime()
+    result = runtime.submit_observed_n(
         run_id=run_id,
         hour_index=hour_index,
         observed_n=payload["observed_n"],
@@ -99,6 +102,7 @@ def submit_hour_n(request: HttpRequest, run_id: UUID, hour_index: int) -> JsonRe
     return JsonResponse(result)
 
 
+@csrf_exempt
 @require_POST
 def give_dose(request: HttpRequest, run_id: UUID) -> JsonResponse:
     payload, error = parse_json_body(request)
@@ -136,13 +140,14 @@ def give_dose(request: HttpRequest, run_id: UUID) -> JsonResponse:
     if payload["source"] not in DOSE_SOURCES:
         return error_response("invalid_enum", "Field source has an invalid value.")
 
-    backend = get_active_simulation_backend()
-    result = backend.give_dose(run_id=run_id, payload=payload, state_version=payload["state_version"])
+    runtime = get_backend_runtime()
+    result = runtime.give_dose(run_id=run_id, payload=payload, state_version=payload["state_version"])
     if not result.get("ok"):
         return _backend_error(result)
     return JsonResponse(result)
 
 
+@csrf_exempt
 @require_POST
 def accept_suggested_dose(request: HttpRequest, run_id: UUID) -> JsonResponse:
     payload, error = parse_json_body(request)
@@ -154,13 +159,14 @@ def accept_suggested_dose(request: HttpRequest, run_id: UUID) -> JsonResponse:
     if version_error is not None:
         return version_error
 
-    backend = get_active_simulation_backend()
-    result = backend.accept_suggested_dose(run_id=run_id, state_version=payload["state_version"])
+    runtime = get_backend_runtime()
+    result = runtime.accept_suggested_dose(run_id=run_id, state_version=payload["state_version"])
     if not result.get("ok"):
         return _backend_error(result)
     return JsonResponse(result)
 
 
+@csrf_exempt
 @require_POST
 def change_context(request: HttpRequest, run_id: UUID) -> JsonResponse:
     payload, error = parse_json_body(request)
@@ -186,13 +192,14 @@ def change_context(request: HttpRequest, run_id: UUID) -> JsonResponse:
     if payload["breathing_support"] not in BREATHING_SUPPORT_VALUES:
         return error_response("invalid_enum", "Field breathing_support has an invalid value.")
 
-    backend = get_active_simulation_backend()
-    result = backend.change_context(run_id=run_id, payload=payload, state_version=payload["state_version"])
+    runtime = get_backend_runtime()
+    result = runtime.change_context(run_id=run_id, payload=payload, state_version=payload["state_version"])
     if not result.get("ok"):
         return _backend_error(result)
     return JsonResponse(result)
 
 
+@csrf_exempt
 @require_POST
 def set_monitoring(request: HttpRequest, run_id: UUID) -> JsonResponse:
     payload, error = parse_json_body(request)
@@ -208,13 +215,14 @@ def set_monitoring(request: HttpRequest, run_id: UUID) -> JsonResponse:
     if not is_bool(payload["monitoring_on"]):
         return error_response("invalid_type", "Field monitoring_on must be a boolean.")
 
-    backend = get_active_simulation_backend()
-    result = backend.set_monitoring(run_id=run_id, payload=payload, state_version=payload["state_version"])
+    runtime = get_backend_runtime()
+    result = runtime.set_monitoring(run_id=run_id, payload=payload, state_version=payload["state_version"])
     if not result.get("ok"):
         return _backend_error(result)
     return JsonResponse(result)
 
 
+@csrf_exempt
 @require_POST
 def add_blood_level(request: HttpRequest, run_id: UUID) -> JsonResponse:
     payload, error = parse_json_body(request)
@@ -251,8 +259,8 @@ def add_blood_level(request: HttpRequest, run_id: UUID) -> JsonResponse:
     payload["below_detection_limit"] = below_detection_limit
     payload["detection_limit_mg_per_l"] = detection_limit
 
-    backend = get_active_simulation_backend()
-    result = backend.add_blood_level(run_id=run_id, payload=payload, state_version=payload["state_version"])
+    runtime = get_backend_runtime()
+    result = runtime.add_blood_level(run_id=run_id, payload=payload, state_version=payload["state_version"])
     if not result.get("ok"):
         return _backend_error(result)
     return JsonResponse(result)

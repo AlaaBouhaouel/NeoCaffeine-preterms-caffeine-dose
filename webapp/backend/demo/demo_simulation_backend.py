@@ -51,12 +51,6 @@ class DemoSimulationBackend:
         seeded = random.Random(random_seed + hour_index * 7919)
         return seeded.randint(0, 6)
 
-    def _phase(self, state: dict[str, Any]) -> str:
-        return str(state["meta"]["phase"])
-
-    def _is_converged(self, state: dict[str, Any]) -> bool:
-        return bool(state["convergence"]["is_converged"])
-
     def _update_derived_times(self, state: dict[str, Any]) -> None:
         sim_time_hours = float(state["time"]["sim_time_hours"])
         ga_days = int(state["patient"]["covariates"]["gestational_age_days"])
@@ -72,13 +66,6 @@ class DemoSimulationBackend:
             "breathing_support": str(state["context"]["breathing_support"]),
             "monitoring_on": bool(state["context"]["monitoring_on"]),
         }
-
-    def _assert_mutation_allowed(self, state: dict[str, Any], run_id: UUID, disallow_awaiting_n: bool) -> dict[str, Any] | None:
-        if self._is_converged(state):
-            return self._error("run_converged_locked", "Run is converged and controls are locked.", run_id=run_id)
-        if disallow_awaiting_n and self._phase(state) == "awaiting_n":
-            return self._error("phase_awaiting_n_locked", "Interventions are locked while waiting for N submission.", run_id=run_id)
-        return None
 
     def _persist_and_wrap(self, snapshot, state: dict[str, Any]) -> dict[str, Any]:
         next_version = snapshot.state_version + 1
@@ -289,13 +276,7 @@ class DemoSimulationBackend:
         snapshot = self._get_snapshot(run_id)
         if snapshot is None:
             return self._error("run_not_found", "Run was not found.", run_id=run_id)
-        if snapshot.state_version != state_version:
-            return self._error("stale_state_version", "state_version is stale.", run_id=run_id)
         state = snapshot.state_json
-        if self._is_converged(state):
-            return self._error("run_converged_locked", "Run is converged and controls are locked.", run_id=run_id)
-        if self._phase(state) == "awaiting_n":
-            return self._error("phase_awaiting_n_requires_submission", "Cannot advance while awaiting N submission.", run_id=run_id)
         current_time = float(state["time"]["sim_time_hours"])
         current_hour = int(math.floor(current_time))
         boundary = float(current_hour + 1)
@@ -323,16 +304,7 @@ class DemoSimulationBackend:
         snapshot = self._get_snapshot(run_id)
         if snapshot is None:
             return self._error("run_not_found", "Run was not found.", run_id=run_id)
-        if snapshot.state_version != state_version:
-            return self._error("stale_state_version", "state_version is stale.", run_id=run_id)
         state = snapshot.state_json
-        if self._is_converged(state):
-            return self._error("run_converged_locked", "Run is converged and controls are locked.", run_id=run_id)
-        if self._phase(state) != "awaiting_n":
-            return self._error("phase_not_awaiting_n", "N submission is only allowed while awaiting N.", run_id=run_id)
-        expected_hour = state["hour_gate"]["awaiting_n_for_hour_index"]
-        if expected_hour != hour_index:
-            return self._error("hour_index_mismatch", "hour_index does not match the awaiting hour.", {"expected": expected_hour}, run_id=run_id)
 
         predicted = float(state["hour_gate"]["n_prefill_value"])
         state["estimator_panel"]["last_hour"] = {
@@ -368,12 +340,7 @@ class DemoSimulationBackend:
         snapshot = self._get_snapshot(run_id)
         if snapshot is None:
             return self._error("run_not_found", "Run was not found.", run_id=run_id)
-        if snapshot.state_version != state_version:
-            return self._error("stale_state_version", "state_version is stale.", run_id=run_id)
         state = snapshot.state_json
-        block = self._assert_mutation_allowed(state, run_id, disallow_awaiting_n=True)
-        if block is not None:
-            return block
         now_t = float(state["time"]["sim_time_hours"])
         marker = {
             "id": f"dose_{len(state['patient_file_panel']['dose_log']) + 1}",
@@ -392,12 +359,7 @@ class DemoSimulationBackend:
         snapshot = self._get_snapshot(run_id)
         if snapshot is None:
             return self._error("run_not_found", "Run was not found.", run_id=run_id)
-        if snapshot.state_version != state_version:
-            return self._error("stale_state_version", "state_version is stale.", run_id=run_id)
         state = snapshot.state_json
-        block = self._assert_mutation_allowed(state, run_id, disallow_awaiting_n=True)
-        if block is not None:
-            return block
         suggested = state["decision_panel"]["suggested_dose"].copy()
         return self.give_dose(
             run_id,
@@ -415,12 +377,7 @@ class DemoSimulationBackend:
         snapshot = self._get_snapshot(run_id)
         if snapshot is None:
             return self._error("run_not_found", "Run was not found.", run_id=run_id)
-        if snapshot.state_version != state_version:
-            return self._error("stale_state_version", "state_version is stale.", run_id=run_id)
         state = snapshot.state_json
-        block = self._assert_mutation_allowed(state, run_id, disallow_awaiting_n=True)
-        if block is not None:
-            return block
         state["context"]["fiO2_fraction"] = payload["fiO2_fraction"]
         state["context"]["breathing_support"] = payload["breathing_support"]
         state["patient_file_panel"]["context_log"].append(self._current_context_row(state))
@@ -430,12 +387,7 @@ class DemoSimulationBackend:
         snapshot = self._get_snapshot(run_id)
         if snapshot is None:
             return self._error("run_not_found", "Run was not found.", run_id=run_id)
-        if snapshot.state_version != state_version:
-            return self._error("stale_state_version", "state_version is stale.", run_id=run_id)
         state = snapshot.state_json
-        block = self._assert_mutation_allowed(state, run_id, disallow_awaiting_n=True)
-        if block is not None:
-            return block
         state["context"]["monitoring_on"] = payload["monitoring_on"]
         state["patient_file_panel"]["context_log"].append(self._current_context_row(state))
         return self._persist_and_wrap(snapshot, state)
@@ -444,12 +396,7 @@ class DemoSimulationBackend:
         snapshot = self._get_snapshot(run_id)
         if snapshot is None:
             return self._error("run_not_found", "Run was not found.", run_id=run_id)
-        if snapshot.state_version != state_version:
-            return self._error("stale_state_version", "state_version is stale.", run_id=run_id)
         state = snapshot.state_json
-        block = self._assert_mutation_allowed(state, run_id, disallow_awaiting_n=True)
-        if block is not None:
-            return block
         state["patient_file_panel"]["blood_levels"].append(
             {
                 "id": f"bl_{len(state['patient_file_panel']['blood_levels']) + 1}",
