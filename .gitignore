@@ -9,8 +9,7 @@ dist/
 .vscode/
 .idea/
 
-/docs/DECISIONS.md
-/docs/proposals/
+/docs/
 .claude/
 CLAUDE.md
 CLAUDE.local.md

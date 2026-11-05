@@ -1,0 +1,177 @@
+# Registry category: decision.
+# Every value is supplied by Ala; null means empty. Schema: see README.md in this folder.
+
+target_effect_fraction:
+  value: null
+  unit: null
+  meaning: null
+  evidence_tier: null
+  population:
+    gestational_age: {min: null, max: null, unit: null}
+    postnatal_age: {min: null, max: null, unit: null}
+    weight: {min: null, max: null, unit: null}
+  citations:
+    - authors: null
+      year: null
+      title: null
+      journal_or_source: null
+      location: null
+      doi: null
+      pmid: null
+      url: null
+      volume: null
+      issue: null
+      pages: null
+      notes: null
+  conflicts_with: []
+  conflict_note: null
+
+safety_exceedance_probability:
+  value: null
+  unit: null
+  meaning: null
+  evidence_tier: null
+  population:
+    gestational_age: {min: null, max: null, unit: null}
+    postnatal_age: {min: null, max: null, unit: null}
+    weight: {min: null, max: null, unit: null}
+  citations:
+    - authors: null
+      year: null
+      title: null
+      journal_or_source: null
+      location: null
+      doi: null
+      pmid: null
+      url: null
+      volume: null
+      issue: null
+      pages: null
+      notes: null
+  conflicts_with: []
+  conflict_note: null
+
+dosing_interval:
+  value: null
+  unit: null
+  meaning: null
+  evidence_tier: null
+  population:
+    gestational_age: {min: null, max: null, unit: null}
+    postnatal_age: {min: null, max: null, unit: null}
+    weight: {min: null, max: null, unit: null}
+  citations:
+    - authors: null
+      year: null
+      title: null
+      journal_or_source: null
+      location: null
+      doi: null
+      pmid: null
+      url: null
+      volume: null
+      issue: null
+      pages: null
+      notes: null
+  conflicts_with: []
+  conflict_note: null
+
+maximum_dose:
+  value: null
+  unit: null
+  meaning: null
+  evidence_tier: null
+  population:
+    gestational_age: {min: null, max: null, unit: null}
+    postnatal_age: {min: null, max: null, unit: null}
+    weight: {min: null, max: null, unit: null}
+  citations:
+    - authors: null
+      year: null
+      title: null
+      journal_or_source: null
+      location: null
+      doi: null
+      pmid: null
+      url: null
+      volume: null
+      issue: null
+      pages: null
+      notes: null
+  conflicts_with: []
+  conflict_note: null
+
+loading_dose_rule:
+  value: null
+  unit: null
+  meaning: null
+  evidence_tier: null
+  population:
+    gestational_age: {min: null, max: null, unit: null}
+    postnatal_age: {min: null, max: null, unit: null}
+    weight: {min: null, max: null, unit: null}
+  citations:
+    - authors: null
+      year: null
+      title: null
+      journal_or_source: null
+      location: null
+      doi: null
+      pmid: null
+      url: null
+      volume: null
+      issue: null
+      pages: null
+      notes: null
+  conflicts_with: []
+  conflict_note: null
+
+maintenance_dose_rule:
+  value: null
+  unit: null
+  meaning: null
+  evidence_tier: null
+  population:
+    gestational_age: {min: null, max: null, unit: null}
+    postnatal_age: {min: null, max: null, unit: null}
+    weight: {min: null, max: null, unit: null}
+  citations:
+    - authors: null
+      year: null
+      title: null
+      journal_or_source: null
+      location: null
+      doi: null
+      pmid: null
+      url: null
+      volume: null
+      issue: null
+      pages: null
+      notes: null
+  conflicts_with: []
+  conflict_note: null
+
+standard_regimen:
+  value: null
+  unit: null
+  meaning: null
+  evidence_tier: null
+  population:
+    gestational_age: {min: null, max: null, unit: null}
+    postnatal_age: {min: null, max: null, unit: null}
+    weight: {min: null, max: null, unit: null}
+  citations:
+    - authors: null
+      year: null
+      title: null
+      journal_or_source: null
+      location: null
+      doi: null
+      pmid: null
+      url: null
+      volume: null
+      issue: null
+      pages: null
+      notes: null
+  conflicts_with: []
+  conflict_note: null

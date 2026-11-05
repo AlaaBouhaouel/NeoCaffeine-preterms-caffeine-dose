@@ -1,0 +1,103 @@
+# Registry category: baseline.
+# Every value is supplied by Ala; null means empty. Schema: see README.md in this folder.
+
+models:
+  maturity_exponential:
+    entry_type: design_assumption
+    equation: null
+    symbols:
+      - symbol: null
+        meaning: null
+        unit: null
+    meaning: null
+    rationale: null
+    citations:
+      - authors: null
+        year: null
+        title: null
+        journal_or_source: null
+        location: null
+        doi: null
+        pmid: null
+        url: null
+        volume: null
+        issue: null
+        pages: null
+        notes: null
+
+pre_dose_window_duration:
+  value: null
+  unit: null
+  meaning: null
+  evidence_tier: null
+  population:
+    gestational_age: {min: null, max: null, unit: null}
+    postnatal_age: {min: null, max: null, unit: null}
+    weight: {min: null, max: null, unit: null}
+  citations:
+    - authors: null
+      year: null
+      title: null
+      journal_or_source: null
+      location: null
+      doi: null
+      pmid: null
+      url: null
+      volume: null
+      issue: null
+      pages: null
+      notes: null
+  conflicts_with: []
+  conflict_note: null
+
+pre_dose_window_minimum_valid_hours:
+  value: null
+  unit: null
+  meaning: null
+  evidence_tier: null
+  population:
+    gestational_age: {min: null, max: null, unit: null}
+    postnatal_age: {min: null, max: null, unit: null}
+    weight: {min: null, max: null, unit: null}
+  citations:
+    - authors: null
+      year: null
+      title: null
+      journal_or_source: null
+      location: null
+      doi: null
+      pmid: null
+      url: null
+      volume: null
+      issue: null
+      pages: null
+      notes: null
+  conflicts_with: []
+  conflict_note: null
+
+baseline_apnea_rate_fallback:
+  rate: null
+  rate_unit: null
+  reported_maturity: null
+  reported_maturity_unit: null
+  meaning: null
+  evidence_tier: null
+  population:
+    gestational_age: {min: null, max: null, unit: null}
+    postnatal_age: {min: null, max: null, unit: null}
+    weight: {min: null, max: null, unit: null}
+  citations:
+    - authors: null
+      year: null
+      title: null
+      journal_or_source: null
+      location: null
+      doi: null
+      pmid: null
+      url: null
+      volume: null
+      issue: null
+      pages: null
+      notes: null
+  conflicts_with: []
+  conflict_note: null

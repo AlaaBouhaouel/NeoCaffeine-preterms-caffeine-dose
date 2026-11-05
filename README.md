@@ -37,7 +37,6 @@ See [5. Repository structure](#5-repository-structure).
 
 ```
 NeoCaffeine-preterms-caffeine-dose/
-├── 00-overview.md
 ├── README.md
 ├── pyproject.toml
 ├── .gitignore
@@ -418,8 +417,7 @@ Doses are never varied on purpose to help the model learn.
 
 ```
 NeoCaffeine-preterms-caffeine-dose/
-  00-overview.md          this document
-  README.md
+  README.md               this document
   pyproject.toml
   .gitignore
   config/                 run configuration

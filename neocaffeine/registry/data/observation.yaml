@@ -1,0 +1,137 @@
+# Registry category: observation.
+# Every value is supplied by Ala; null means empty. Schema: see README.md in this folder.
+
+assay_error:
+  value: null
+  unit: null
+  meaning: null
+  evidence_tier: null
+  population:
+    gestational_age: {min: null, max: null, unit: null}
+    postnatal_age: {min: null, max: null, unit: null}
+    weight: {min: null, max: null, unit: null}
+  citations:
+    - authors: null
+      year: null
+      title: null
+      journal_or_source: null
+      location: null
+      doi: null
+      pmid: null
+      url: null
+      volume: null
+      issue: null
+      pages: null
+      notes: null
+  conflicts_with: []
+  conflict_note: null
+
+detection_limit:
+  value: null
+  unit: null
+  meaning: null
+  evidence_tier: null
+  population:
+    gestational_age: {min: null, max: null, unit: null}
+    postnatal_age: {min: null, max: null, unit: null}
+    weight: {min: null, max: null, unit: null}
+  citations:
+    - authors: null
+      year: null
+      title: null
+      journal_or_source: null
+      location: null
+      doi: null
+      pmid: null
+      url: null
+      volume: null
+      issue: null
+      pages: null
+      notes: null
+  conflicts_with: []
+  conflict_note: null
+
+valid_time_exclusions:
+  monitoring_off:
+    entry_type: structural
+    meaning: null
+  
+  signal_artifact: {}
+  
+  handling:
+    enabled: null
+    value: null
+    unit: null
+    meaning: null
+    evidence_tier: null
+    population:
+      gestational_age: {min: null, max: null, unit: null}
+      postnatal_age: {min: null, max: null, unit: null}
+      weight: {min: null, max: null, unit: null}
+    citations:
+      - authors: null
+        year: null
+        title: null
+        journal_or_source: null
+        location: null
+        doi: null
+        pmid: null
+        url: null
+        volume: null
+        issue: null
+        pages: null
+        notes: null
+    conflicts_with: []
+    conflict_note: null
+  
+  feeding:
+    enabled: null
+    value: null
+    unit: null
+    meaning: null
+    evidence_tier: null
+    population:
+      gestational_age: {min: null, max: null, unit: null}
+      postnatal_age: {min: null, max: null, unit: null}
+      weight: {min: null, max: null, unit: null}
+    citations:
+      - authors: null
+        year: null
+        title: null
+        journal_or_source: null
+        location: null
+        doi: null
+        pmid: null
+        url: null
+        volume: null
+        issue: null
+        pages: null
+        notes: null
+    conflicts_with: []
+    conflict_note: null
+  
+  procedure:
+    enabled: null
+    value: null
+    unit: null
+    meaning: null
+    evidence_tier: null
+    population:
+      gestational_age: {min: null, max: null, unit: null}
+      postnatal_age: {min: null, max: null, unit: null}
+      weight: {min: null, max: null, unit: null}
+    citations:
+      - authors: null
+        year: null
+        title: null
+        journal_or_source: null
+        location: null
+        doi: null
+        pmid: null
+        url: null
+        volume: null
+        issue: null
+        pages: null
+        notes: null
+    conflicts_with: []
+    conflict_note: null
