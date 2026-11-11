@@ -116,7 +116,7 @@
     if (!fullRunId || fullRunId.length < 13) {
       return fullRunId
     }
-    return `${fullRunId.slice(0, 8)}…${fullRunId.slice(-4)}`
+    return `${fullRunId.slice(0, 8)}â€¦${fullRunId.slice(-4)}`
   }
 
   function displayPhaseForUi(serverPhase) {
@@ -322,7 +322,7 @@
       const transformed = `transformed=${formatSignificant(row.transformed_estimate, 4)}, sd=${formatSignificant(row.transformed_sd, 4)}`
       const estimate = `<span class="estimate-value">${formatSignificant(row.natural_estimate, 3)}</span> <span class="unit-blue">${row.natural_unit}</span>`
       const interval = `[${formatSignificant(row.natural_interval_90.lo, 3)}, ${formatSignificant(row.natural_interval_90.hi, 3)}]`
-      const sparklineText = row.sparkline_transformed.slice(-8).map((entry) => formatSignificant(entry.v, 3)).join(' · ')
+      const sparklineText = row.sparkline_transformed.slice(-8).map((entry) => formatSignificant(entry.v, 3)).join(' Â· ')
       const trueText = showTrue ? `${formatSignificant(row.true_natural, 3)}` : 'hidden'
       return `<tr>
         <td title="${transformed}">${row.label}</td>
