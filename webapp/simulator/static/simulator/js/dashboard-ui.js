@@ -163,8 +163,7 @@
   }
 
   function formatRoute(value) {
-    if (value === 'intravenous') return 'IV'
-    if (value === 'oral') return 'Oral'
+    if (value === 'iv') return 'IV'
     return value
   }
 
@@ -355,7 +354,7 @@
     const gaDays = Number(state.patient.covariates.gestational_age_days)
     patientGaWeeksDays.textContent = `${Math.floor(gaDays / 7)}w + ${gaDays % 7}d`
     patientBw.textContent = String(state.patient.covariates.birth_weight_g)
-    patientCurrentWeight.textContent = String(latest(state.patient.weight_log, 'weight_g') ?? '-')
+    patientCurrentWeight.textContent = String(state.patient.current_weight_g ?? latest(state.patient.weight_log, 'weight_g') ?? '-')
     patientPnaDisplay.textContent = formatPna(Number(state.patient.postnatal_age_hours))
     patientPmaDisplay.textContent = formatWeeksDays(Number(state.patient.postmenstrual_age_days))
 

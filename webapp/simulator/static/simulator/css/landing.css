@@ -197,6 +197,10 @@ input[type='range'] {
   width: 68px;
 }
 
+input[type='datetime-local'] {
+  color-scheme: dark;
+}
+
 .segment-control {
   display: inline-flex;
   border: 1px solid #2a3038;

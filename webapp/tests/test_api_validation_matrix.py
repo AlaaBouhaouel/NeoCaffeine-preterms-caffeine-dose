@@ -74,6 +74,47 @@ def test_out_of_definition_on_create_fields(client, create_run_payload) -> None:
     assert body["error"]["code"] == "out_of_definition"
 
 
+def test_missing_birth_time_returns_missing_field(client, create_run_payload) -> None:
+    create_run_payload["patient"].pop("birth_time")
+    response = _post_json(client, "/api/v1/runs", create_run_payload)
+    assert response.status_code == 400
+    assert response.json()["error"]["code"] == "missing_field"
+
+
+def test_birth_time_without_time_zone_or_not_iso_returns_invalid_type(client, create_run_payload) -> None:
+    for bad_value in ["2026-01-15T08:30:00", "yesterday", 20260115]:
+        create_run_payload["patient"]["birth_time"] = bad_value
+        response = _post_json(client, "/api/v1/runs", create_run_payload)
+        assert response.status_code == 400
+        assert response.json()["error"]["code"] == "invalid_type"
+
+
+def test_old_support_mode_values_are_rejected(client, create_run_payload) -> None:
+    for old_value in ["low_flow_cannula", "high_flow_cannula"]:
+        create_run_payload["initial_context"]["breathing_support"] = old_value
+        response = _post_json(client, "/api/v1/runs", create_run_payload)
+        assert response.status_code == 400
+        assert response.json()["error"]["code"] == "invalid_enum"
+
+
+def test_old_dose_route_values_are_rejected(client, created_run) -> None:
+    for old_route in ["intravenous", "oral"]:
+        response = _post_json(
+            client,
+            f"/api/v1/runs/{created_run['run_id']}/interventions/dose",
+            {
+                "state_version": created_run["state_version"],
+                "amount": 5.0,
+                "amount_unit": "mg_per_kg",
+                "route": old_route,
+                "form": "citrate",
+                "source": "manual",
+            },
+        )
+        assert response.status_code == 400
+        assert response.json()["error"]["code"] == "invalid_enum"
+
+
 def test_run_not_found_returns_404(client) -> None:
     response = client.get("/api/v1/runs/11111111-1111-1111-1111-111111111111/state")
     body = response.json()
@@ -191,7 +232,7 @@ def test_out_of_definition_for_dose_and_blood_fields(client, created_run) -> Non
             "state_version": created_run["state_version"],
             "amount": 0,
             "amount_unit": "mg",
-            "route": "oral",
+            "route": "iv",
             "form": "base",
             "source": "manual",
         },

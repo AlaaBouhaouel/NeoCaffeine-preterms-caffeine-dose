@@ -12,6 +12,7 @@ Holds canonical enum values and shared contract constants for backend/frontend c
 
 ## Depends on
 - Product decisions recorded in docs and approvals.
+- `neocaffeine.patient.vocabularies` for sex, breathing support, dose route and dose form values.
 
 ## Used by
 - Demo backend and request validation layers.

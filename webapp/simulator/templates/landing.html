@@ -75,6 +75,15 @@
             <p id="sex-error" class="field-error"></p>
           </div>
 
+          <div class="field-group">
+            <label for="birth-time">Birth date and time</label>
+            <div class="inline-fields">
+              <input id="birth-time" name="birth_time" type="datetime-local" step="1" required>
+              <span class="suffix">local time</span>
+            </div>
+            <p id="birth-time-error" class="field-error"></p>
+          </div>
+
           <section class="initial-care panel-surface">
             <h3>Initial care</h3>
             <div class="field-group">
@@ -91,8 +100,8 @@
               <label for="breathing-support">Breathing support</label>
               <select id="breathing-support" name="breathing_support" required>
                 <option value="room_air">Room air</option>
-                <option value="low_flow_cannula">Low-flow nasal cannula</option>
-                <option value="high_flow_cannula">High-flow nasal cannula</option>
+                <option value="low_flow">Low-flow nasal cannula</option>
+                <option value="hfnc">HFNC (high-flow nasal cannula)</option>
                 <option value="cpap">CPAP (continuous positive airway pressure)</option>
                 <option value="nippv">NIPPV (nasal intermittent positive pressure ventilation)</option>
                 <option value="invasive_ventilation">Invasive mechanical ventilation</option>

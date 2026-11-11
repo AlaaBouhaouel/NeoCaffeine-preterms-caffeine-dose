@@ -8,6 +8,13 @@ from django.http import HttpRequest, JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_POST
 
+from backend.contracts.schemas import (
+    BREATHING_SUPPORT_VALUES,
+    DOSE_UNIT_MG,
+    DOSE_UNIT_MG_PER_KG,
+    FORM_VALUES,
+    ROUTE_VALUES,
+)
 from backend.selectors import get_backend_runtime
 from simulator.views.api_utils import (
     error_response,
@@ -20,18 +27,10 @@ from simulator.views.api_utils import (
 )
 
 
-DOSE_UNITS = {"mg_per_kg", "mg"}
-DOSE_ROUTES = {"intravenous", "oral"}
-DOSE_FORMS = {"citrate", "base"}
+DOSE_UNITS = {DOSE_UNIT_MG_PER_KG, DOSE_UNIT_MG}
+DOSE_ROUTES = ROUTE_VALUES
+DOSE_FORMS = FORM_VALUES
 DOSE_SOURCES = {"manual", "suggested"}
-BREATHING_SUPPORT_VALUES = {
-    "room_air",
-    "low_flow_cannula",
-    "high_flow_cannula",
-    "cpap",
-    "nippv",
-    "invasive_ventilation",
-}
 
 
 def _backend_error(result: dict) -> JsonResponse:

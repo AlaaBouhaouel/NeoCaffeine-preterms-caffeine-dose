@@ -134,7 +134,7 @@
               <h3>Caffeine</h3>
               <form id="dose-form" class="dose-form-grid">
                 <label>Amount <input id="dose-amount" type="number" step="0.1" value="5" required> <span>mg/kg</span></label>
-                <label class="route-inline">Route <div class="segment-control" data-target="dose-route"><input id="dose-route" type="hidden" value="intravenous"><button type="button" class="segment-option active" data-value="intravenous">IV</button><button type="button" class="segment-option" data-value="oral">Ol</button></div></label>
+                <label class="route-inline">Route <div class="segment-control" data-target="dose-route"><input id="dose-route" type="hidden" value="iv"><button type="button" class="segment-option active" data-value="iv">IV</button></div></label>
                 <button type="submit">Give dose</button>
               </form>
               <p id="dose-error" class="error action-error"></p>
@@ -146,8 +146,8 @@
               <label>Support
                 <select id="context-support">
                   <option value="room_air">Room air</option>
-                  <option value="low_flow_cannula">Low-flow nasal cannula</option>
-                  <option value="high_flow_cannula">High-flow nasal cannula</option>
+                  <option value="low_flow">Low-flow nasal cannula</option>
+                  <option value="hfnc">HFNC (high-flow nasal cannula)</option>
                   <option value="cpap">CPAP (continuous positive airway pressure)</option>
                   <option value="nippv">NIPPV (nasal intermittent positive pressure ventilation)</option>
                   <option value="invasive_ventilation">Invasive mechanical ventilation</option>

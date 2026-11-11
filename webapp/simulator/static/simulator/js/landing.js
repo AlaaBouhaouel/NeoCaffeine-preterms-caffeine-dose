@@ -11,6 +11,7 @@
   const gaDays = document.getElementById('ga-days')
   const birthWeight = document.getElementById('birth-weight')
   const sexHidden = document.getElementById('sex')
+  const birthTime = document.getElementById('birth-time')
   const fio2Slider = document.getElementById('fio2-slider')
   const fio2Percent = document.getElementById('fio2-percent')
   const support = document.getElementById('breathing-support')
@@ -19,6 +20,7 @@
   const gaError = document.getElementById('ga-error')
   const birthWeightError = document.getElementById('birth-weight-error')
   const sexError = document.getElementById('sex-error')
+  const birthTimeError = document.getElementById('birth-time-error')
   const fio2Error = document.getElementById('fio2-error')
   const supportError = document.getElementById('support-error')
   const seedError = document.getElementById('seed-error')
@@ -73,7 +75,7 @@
   fio2Percent.addEventListener('blur', syncFio2FromPercent)
 
   function clearErrors() {
-    ;[gaError, birthWeightError, sexError, fio2Error, supportError, seedError, landingError, resumeError].forEach((node) => {
+    ;[gaError, birthWeightError, sexError, birthTimeError, fio2Error, supportError, seedError, landingError, resumeError].forEach((node) => {
       if (node) {
         node.textContent = ''
       }
@@ -82,6 +84,17 @@
 
   function isInt(value) {
     return /^-?\d+$/.test(String(value).trim())
+  }
+
+  function birthTimeAsUtcIso() {
+    if (!birthTime.value) {
+      return null
+    }
+    const localDate = new Date(birthTime.value)
+    if (Number.isNaN(localDate.getTime())) {
+      return null
+    }
+    return localDate.toISOString()
   }
 
   function validateForm() {
@@ -111,6 +124,11 @@
 
     if (!['male', 'female', 'unknown'].includes(sexHidden.value)) {
       sexError.textContent = 'Select one sex option.'
+      valid = false
+    }
+
+    if (birthTimeAsUtcIso() === null) {
+      birthTimeError.textContent = 'Enter the birth date and time.'
       valid = false
     }
 
@@ -159,7 +177,8 @@
         gestational_age_weeks: Number(gaWeeks.value),
         gestational_age_days_extra: Number(gaDays.value),
         birth_weight_g: Number(birthWeight.value),
-        sex: sexHidden.value
+        sex: sexHidden.value,
+        birth_time: birthTimeAsUtcIso()
       },
       initial_context: {
         fiO2_fraction: Number(fio2Percent.value) / 100,

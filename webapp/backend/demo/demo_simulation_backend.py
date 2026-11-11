@@ -1,16 +1,20 @@
-# Purpose: Demo backend implementing stateful simulation behavior without external package dependencies.
+# Purpose: Demo backend implementing stateful simulation behavior; the patient comes from neocaffeine.patient and is persisted per run.
 
 from __future__ import annotations
 
 import math
 import random
-from datetime import timedelta
 from typing import Any
 from uuid import UUID
 
 from django.core.exceptions import ObjectDoesNotExist
+from django.db import transaction
 from django.utils import timezone
 
+from backend.patient_bridge import build_patient, patient_document, patient_from_document, patient_state
+from neocaffeine.clock.clock_errors import ClockError
+from neocaffeine.patient.patient_errors import PatientError
+from patients.repositories import create_patient_record
 from runs.repositories import create_run_snapshot, get_run_snapshot, save_run_state
 
 
@@ -73,10 +77,12 @@ class DemoSimulationBackend:
         return self._envelope(saved.run_id, saved.state_version, saved.state_json)
 
     def create_run(self, patient: dict[str, Any], initial_context: dict[str, Any], random_seed: int | None = None) -> dict[str, Any]:
+        try:
+            new_patient = build_patient(patient, initial_context)
+        except (PatientError, ClockError) as error:
+            return self._error("out_of_definition", str(error))
         created_at = timezone.now()
-        delete_after = created_at + timedelta(days=30)
         chosen_seed = random_seed if random_seed is not None else random.randint(1, 10_000_000)
-        ga_days = int(patient["gestational_age_weeks"]) * 7 + int(patient["gestational_age_days_extra"])
         state = {
             "meta": {
                 "demo_data": True,
@@ -91,7 +97,6 @@ class DemoSimulationBackend:
                 "run_id": "",
                 "created_at": created_at.isoformat(),
                 "last_updated_at": created_at.isoformat(),
-                "retention_delete_after": delete_after.isoformat(),
                 "random_seed": chosen_seed,
             },
             "time": {
@@ -100,24 +105,7 @@ class DemoSimulationBackend:
                 "hour_progress_01": 0.0,
                 "last_advanced_hours": 0.0,
             },
-            "patient": {
-                "covariates": {
-                    "gestational_age_days": ga_days,
-                    "birth_weight_g": int(patient["birth_weight_g"]),
-                    "sex": patient["sex"],
-                    "birth_sim_time_hours": 0.0,
-                },
-                "covariates_locked": True,
-                "postnatal_age_hours": 0.0,
-                "postmenstrual_age_days": float(ga_days),
-                "weight_log": [
-                    {
-                        "t_sim_hours": 0.0,
-                        "weight_g": int(patient["birth_weight_g"]),
-                    }
-                ],
-                "flags": [],
-            },
+            "patient": patient_state(new_patient, 0.0),
             "context": {
                 "fiO2_fraction": float(initial_context["fiO2_fraction"]),
                 "breathing_support": initial_context["breathing_support"],
@@ -241,7 +229,7 @@ class DemoSimulationBackend:
                 "suggested_dose": {
                     "amount": 5.0,
                     "amount_unit": "mg_per_kg",
-                    "route": "intravenous",
+                    "route": "iv",
                     "form": "citrate",
                 },
                 "safety_share_vs_limit": 0.15,
@@ -261,16 +249,26 @@ class DemoSimulationBackend:
             },
         }
         state["patient_file_panel"]["context_log"].append(self._current_context_row(state))
-        snapshot = create_run_snapshot(state_json=state, delete_after=delete_after)
-        state["run"]["run_id"] = str(snapshot.run_id)
-        snapshot = save_run_state(snapshot.run_id, snapshot.state_version, state)
+        with transaction.atomic():
+            patient_record = create_patient_record(new_patient.covariates)
+            snapshot = create_run_snapshot(
+                state_json=state,
+                patient=patient_record,
+                patient_document=patient_document(new_patient),
+            )
+            state["run"]["run_id"] = str(snapshot.run_id)
+            snapshot = save_run_state(snapshot.run_id, snapshot.state_version, state)
         return self._envelope(snapshot.run_id, snapshot.state_version, snapshot.state_json)
 
     def get_state(self, run_id: UUID) -> dict[str, Any]:
         snapshot = self._get_snapshot(run_id)
         if snapshot is None:
             return self._error("run_not_found", "Run was not found.", run_id=run_id)
-        return self._envelope(snapshot.run_id, snapshot.state_version, snapshot.state_json)
+        state = snapshot.state_json
+        if snapshot.patient_document is not None:
+            stored_patient = patient_from_document(snapshot.patient_document)
+            state["patient"] = patient_state(stored_patient, float(state["time"]["sim_time_hours"]))
+        return self._envelope(snapshot.run_id, snapshot.state_version, state)
 
     def advance(self, run_id: UUID, delta_sim_hours: float, state_version: int) -> dict[str, Any]:
         snapshot = self._get_snapshot(run_id)

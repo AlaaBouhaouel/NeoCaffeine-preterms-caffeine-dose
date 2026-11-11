@@ -6,6 +6,8 @@ from django.http import HttpRequest, JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_POST
 
+from backend.contracts.schemas import BREATHING_SUPPORT_VALUES, SEX_VALUES
+from backend.patient_bridge import birth_time_from_text
 from backend.selectors import get_backend_runtime
 from simulator.views.api_utils import (
     error_response,
@@ -16,17 +18,6 @@ from simulator.views.api_utils import (
     is_string,
     parse_json_body,
 )
-
-
-SEX_VALUES = {"male", "female", "unknown"}
-BREATHING_SUPPORT_VALUES = {
-    "room_air",
-    "low_flow_cannula",
-    "high_flow_cannula",
-    "cpap",
-    "nippv",
-    "invasive_ventilation",
-}
 
 
 @csrf_exempt
@@ -50,7 +41,7 @@ def create_run(request: HttpRequest) -> JsonResponse:
         return error_response("invalid_type", "Field initial_context must be an object.")
     initial_context = payload["initial_context"]
 
-    required_patient = ["gestational_age_weeks", "gestational_age_days_extra", "birth_weight_g", "sex"]
+    required_patient = ["gestational_age_weeks", "gestational_age_days_extra", "birth_weight_g", "sex", "birth_time"]
     for field_name in required_patient:
         if not has_field(patient, field_name):
             return error_response("missing_field", f"Missing required field: patient.{field_name}.")
@@ -67,6 +58,10 @@ def create_run(request: HttpRequest) -> JsonResponse:
         return error_response("invalid_type", "Field patient.sex must be a string.")
     if patient["sex"] not in SEX_VALUES:
         return error_response("invalid_enum", "Field patient.sex has an invalid value.")
+    if not is_string(patient["birth_time"]):
+        return error_response("invalid_type", "Field patient.birth_time must be a string.")
+    if birth_time_from_text(patient["birth_time"]) is None:
+        return error_response("invalid_type", "Field patient.birth_time must be an ISO 8601 timestamp with a time zone.")
 
     required_context = ["fiO2_fraction", "breathing_support", "monitoring_on"]
     for field_name in required_context:

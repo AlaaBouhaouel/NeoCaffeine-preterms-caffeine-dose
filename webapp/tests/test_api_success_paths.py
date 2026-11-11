@@ -58,7 +58,7 @@ def test_intervention_success_paths(client, created_run) -> None:
             "state_version": version,
             "amount": 5.0,
             "amount_unit": "mg_per_kg",
-            "route": "intravenous",
+            "route": "iv",
             "form": "citrate",
             "source": "manual",
         },
