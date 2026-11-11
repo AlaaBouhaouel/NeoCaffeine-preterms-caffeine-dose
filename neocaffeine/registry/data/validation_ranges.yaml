@@ -1,11 +1,12 @@
 # Registry category: validation_ranges.
 # Every value is supplied by Ala; null means empty. Schema: see README.md in this folder.
+# Current minimum/maximum values are PLACEHOLDERS for the MVP display only (approved 2026-11-11); not from a cited source.
 
 gestational_age:
-  minimum: null
-  maximum: null
-  unit: null
-  meaning: null
+  minimum: 154
+  maximum: 258
+  unit: day
+  meaning: "PLACEHOLDER for MVP display; not from a cited source."
   evidence_tier: null
   population:
     gestational_age: {min: null, max: null, unit: null}
@@ -28,10 +29,10 @@ gestational_age:
   conflict_note: null
 
 weight:
-  minimum: null
-  maximum: null
-  unit: null
-  meaning: null
+  minimum: 400
+  maximum: 5000
+  unit: gram
+  meaning: "PLACEHOLDER for MVP display; not from a cited source."
   evidence_tier: null
   population:
     gestational_age: {min: null, max: null, unit: null}
@@ -54,10 +55,10 @@ weight:
   conflict_note: null
 
 dose_amount:
-  minimum: null
-  maximum: null
-  unit: null
-  meaning: null
+  minimum: 2.5
+  maximum: 40
+  unit: mg/kg
+  meaning: "PLACEHOLDER for MVP display; not from a cited source."
   evidence_tier: null
   population:
     gestational_age: {min: null, max: null, unit: null}
@@ -80,10 +81,10 @@ dose_amount:
   conflict_note: null
 
 blood_level:
-  minimum: null
-  maximum: null
-  unit: null
-  meaning: null
+  minimum: 0
+  maximum: 60
+  unit: mg/L
+  meaning: "PLACEHOLDER for MVP display; not from a cited source."
   evidence_tier: null
   population:
     gestational_age: {min: null, max: null, unit: null}
@@ -105,11 +106,63 @@ blood_level:
   conflicts_with: []
   conflict_note: null
 
-event_count:
-  minimum: null
-  maximum: null
-  unit: null
-  meaning: null
+apnea_count:
+  minimum: 0
+  maximum: 20
+  unit: dimensionless
+  meaning: "PLACEHOLDER for MVP display; not from a cited source."
+  evidence_tier: null
+  population:
+    gestational_age: {min: null, max: null, unit: null}
+    postnatal_age: {min: null, max: null, unit: null}
+    weight: {min: null, max: null, unit: null}
+  citations:
+    - authors: null
+      year: null
+      title: null
+      journal_or_source: null
+      location: null
+      doi: null
+      pmid: null
+      url: null
+      volume: null
+      issue: null
+      pages: null
+      notes: null
+  conflicts_with: []
+  conflict_note: null
+
+bradycardia_count:
+  minimum: 0
+  maximum: 20
+  unit: dimensionless
+  meaning: "PLACEHOLDER for MVP display; not from a cited source."
+  evidence_tier: null
+  population:
+    gestational_age: {min: null, max: null, unit: null}
+    postnatal_age: {min: null, max: null, unit: null}
+    weight: {min: null, max: null, unit: null}
+  citations:
+    - authors: null
+      year: null
+      title: null
+      journal_or_source: null
+      location: null
+      doi: null
+      pmid: null
+      url: null
+      volume: null
+      issue: null
+      pages: null
+      notes: null
+  conflicts_with: []
+  conflict_note: null
+
+desaturation_count:
+  minimum: 0
+  maximum: 30
+  unit: dimensionless
+  meaning: "PLACEHOLDER for MVP display; not from a cited source."
   evidence_tier: null
   population:
     gestational_age: {min: null, max: null, unit: null}
@@ -132,10 +185,10 @@ event_count:
   conflict_note: null
 
 fio2:
-  minimum: null
-  maximum: null
-  unit: null
-  meaning: null
+  minimum: 0.21
+  maximum: 1.0
+  unit: dimensionless
+  meaning: "PLACEHOLDER for MVP display; not from a cited source."
   evidence_tier: null
   population:
     gestational_age: {min: null, max: null, unit: null}

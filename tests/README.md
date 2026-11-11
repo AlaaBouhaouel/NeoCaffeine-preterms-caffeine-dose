@@ -6,6 +6,7 @@ pytest tests for the `neocaffeine` package. The folder layout mirrors the packag
 ## Contents
 - `clock/`: tests for `neocaffeine/clock/`.
 - `registry/`: tests for `neocaffeine/registry/`.
+- `patient/`: tests for `neocaffeine/patient/`.
 
 Conventions:
 - Test files are named `test_<module>.py`.

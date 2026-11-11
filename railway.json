@@ -1,0 +1,10 @@
+{
+  "$schema": "https://railway.com/railway.schema.json",
+  "build": {
+    "buildCommand": "python webapp/manage.py collectstatic --noinput --settings=neocaffeine_web.settings.prod"
+  },
+  "deploy": {
+    "preDeployCommand": ["python webapp/manage.py migrate --noinput --settings=neocaffeine_web.settings.prod"],
+    "startCommand": "gunicorn --chdir webapp neocaffeine_web.wsgi --bind 0.0.0.0:$PORT"
+  }
+}

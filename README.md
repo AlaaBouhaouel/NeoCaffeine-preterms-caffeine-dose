@@ -5,7 +5,10 @@
 > **Status:** proof of concept, under active development.
 > **Not a medical device.** NeoCaffeine is a research tool. Its outputs are suggestions for review by qualified clinicians and must never be used to dose a patient directly.
 
-Author: Ala Bouhaouel, King Fahd University of Petroleum and Minerals (KFUPM), Dhahran, Saudi Arabia.
+Author: Team NeoX, 
+Team reference MED-6XNRLM 
+Medathon SYHF 2026
+King Fahd University of Petroleum and Minerals (KFUPM), Dhahran, Saudi Arabia.
 Date: Nov 2026
 ---
 

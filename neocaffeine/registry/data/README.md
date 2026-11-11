@@ -15,7 +15,7 @@ The registry data: every population value, documented equation, prior, bound, th
 - `bounds.yaml`: concentration bounds; heart-rate flag threshold.
 - `events.yaml`: event-definition version; apnea, bradycardia and desaturation definitions; event overlap rule.
 - `observation.yaml`: assay error; default detection limit; valid-time exclusions.
-- `validation_ranges.yaml`: ranges for gestational age, weight, dose amount, blood level, event count, FiO2.
+- `validation_ranges.yaml`: ranges for gestational age, weight, dose amount, blood level, apnea count, bradycardia count, desaturation count, FiO2. The patient converts each range to its field's unit with pint before comparing. Current limits are PLACEHOLDERS for the MVP display (approved 2026-11-11), not from a cited source; tier and citations are empty.
 - `decision.yaml`: target effect fraction, safety exceedance probability, dosing interval, maximum dose, loading and maintenance dose rules, standard regimen.
 
 ### Entry kinds
