@@ -44,24 +44,26 @@
         <h2>New virtual infant</h2>
 
         <form id="create-run-form" novalidate>
-          <div class="field-group">
-            <label>Gestational age</label>
-            <div class="inline-fields ga-row">
-              <input id="ga-weeks" name="ga_weeks" type="number" value="28" required>
-              <span class="suffix">w</span>
-              <input id="ga-days" name="ga_days" type="number" value="0" required>
-              <span class="suffix">d</span>
+          <div class="field-row">
+            <div class="field-group">
+              <label>Gestational age</label>
+              <div class="inline-fields ga-row">
+                <input id="ga-weeks" name="ga_weeks" type="number" value="28" required>
+                <span class="suffix">w</span>
+                <input id="ga-days" name="ga_days" type="number" value="0" required>
+                <span class="suffix">d</span>
+              </div>
+              <p id="ga-error" class="field-error"></p>
             </div>
-            <p id="ga-error" class="field-error"></p>
-          </div>
 
-          <div class="field-group">
-            <label for="birth-weight">Birth weight</label>
-            <div class="inline-fields">
-              <input id="birth-weight" name="birth_weight" type="number" value="980" required>
-              <span class="suffix">g</span>
+            <div class="field-group">
+              <label for="birth-weight">Birth weight</label>
+              <div class="inline-fields">
+                <input id="birth-weight" name="birth_weight" type="number" value="980" required>
+                <span class="suffix">g</span>
+              </div>
+              <p id="birth-weight-error" class="field-error"></p>
             </div>
-            <p id="birth-weight-error" class="field-error"></p>
           </div>
 
           <div class="field-group">
