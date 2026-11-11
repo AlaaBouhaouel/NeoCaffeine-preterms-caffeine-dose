@@ -1055,3 +1055,35 @@ input[type="number"] {
 .estimator-table-wrap {
   margin-bottom: 12px !important;
 }
+
+/* Right column: caffeine dosing card, then N card, then the 3D view takes the remaining height */
+.right-column {
+  grid-template-rows: auto auto minmax(0, 1fr) !important;
+}
+
+.dose-inline {
+  margin: 0;
+  min-width: 0;
+}
+
+#suggested-dose.suggested-dose-value {
+  color: #e5534b;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.dose-entry {
+  margin-left: auto;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.dose-unit {
+  color: #8a94a3;
+}
+
+/* Clinician actions: Care settings and Measurements share the full width */
+.actions-grid {
+  grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+}

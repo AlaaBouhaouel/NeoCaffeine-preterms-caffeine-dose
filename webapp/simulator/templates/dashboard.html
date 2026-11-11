@@ -124,22 +124,12 @@
             </table>
           </div>
           <p class="meta-line">Pred/Obs N: <span id="last-hour-n">-</span> | Loss: <span id="loss-latest">-</span> | Newton: <span id="newton-iter">-</span> | Grad: <span id="grad-norm">-</span></p>
-          <p class="meta-line">Target: <span id="target-conc">-</span> <span class="unit-blue">mg/L</span> | Suggested: <span id="suggested-dose">-</span> | Safety: <span id="safety-share">-</span> | Gate: <span id="confidence-gate">-</span></p>
+          <p class="meta-line">Target: <span id="target-conc">-</span> <span class="unit-blue">mg/L</span> | Safety: <span id="safety-share">-</span> | Gate: <span id="confidence-gate">-</span></p>
         </section>
 
         <section id="intervention-strip" class="panel-surface intervention-strip">
           <h2>CLINICIAN ACTIONS</h2>
           <div class="actions-grid">
-            <section class="action-group">
-              <h3>Caffeine</h3>
-              <form id="dose-form" class="dose-form-grid">
-                <label>Amount <input id="dose-amount" type="number" step="0.1" value="5" required> <span>mg/kg</span></label>
-                <label class="route-inline">Route <div class="segment-control" data-target="dose-route"><input id="dose-route" type="hidden" value="iv"><button type="button" class="segment-option active" data-value="iv">IV</button></div></label>
-                <button type="submit">Give dose</button>
-              </form>
-              <p id="dose-error" class="error action-error"></p>
-            </section>
-
             <section class="action-group care-settings-group">
               <h3>Care settings</h3>
               <label class="fio2-row">FiO2 <input id="context-fio2-slider" type="range" min="21" max="100" step="1" value="30"> <input id="context-fio2-percent" type="number" min="21" max="100" step="1" value="30"> <span>%</span></label>
@@ -172,6 +162,19 @@
       </section>
 
       <section class="right-column">
+        <section id="dose-card-panel" class="panel-surface n-card-panel dose-card-panel">
+          <form id="dose-form" class="n-inline dose-inline">
+            <strong>Caffeine</strong>
+            <span id="suggested-dose" class="suggested-dose-value" title="Suggested dose">-</span>
+            <span class="dose-entry">
+              <input id="dose-amount" type="number" step="0.1" min="0" value="5" required aria-label="Caffeine citrate amount in mg/kg">
+              <span class="dose-unit">mg/kg</span>
+              <button type="submit">Submit</button>
+            </span>
+          </form>
+          <p id="dose-error" class="error action-error"></p>
+        </section>
+
         <section id="n-card-panel" class="panel-surface n-card-panel">
           <div class="n-inline">
             <strong>N</strong>

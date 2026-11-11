@@ -55,7 +55,8 @@
   const showTrueToggle = document.getElementById('show-true-toggle')
 
   const doseAmountInput = document.getElementById('dose-amount')
-  const doseRouteInput = document.getElementById('dose-route')
+  const DOSE_ROUTE = 'iv'
+  const DOSE_FORM = 'citrate'
 
   const fio2Slider = document.getElementById('context-fio2-slider')
   const fio2PercentInput = document.getElementById('context-fio2-percent')
@@ -160,11 +161,6 @@
       return null
     }
     return array[array.length - 1][key]
-  }
-
-  function formatRoute(value) {
-    if (value === 'iv') return 'IV'
-    return value
   }
 
   function formatForm(value) {
@@ -389,7 +385,7 @@
 
     const decision = state.decision_panel
     targetConc.textContent = formatNumber(decision.target_concentration_mg_per_l, 3)
-    suggestedDose.textContent = `${formatNumber(decision.suggested_dose.amount, 3)} mg/kg ${formatRoute(decision.suggested_dose.route)} citrate`
+    suggestedDose.textContent = `${formatNumber(decision.suggested_dose.amount, 1)} mg/kg ${formatForm(decision.suggested_dose.form)}`
     safetyShare.textContent = formatNumber(decision.safety_share_vs_limit, 4)
     confidenceGate.textContent = decision.confidence_gate.open ? `open (${decision.confidence_gate.reason})` : `closed (${decision.confidence_gate.reason})`
 
@@ -578,8 +574,8 @@
       state_version: envelope.state_version,
       amount: Number(doseAmountInput.value),
       amount_unit: 'mg_per_kg',
-      route: doseRouteInput.value,
-      form: 'citrate',
+      route: DOSE_ROUTE,
+      form: DOSE_FORM,
       source: 'manual',
     }
     const response = await window.simulatorApiClient.giveDose(runId, payload)
