@@ -1083,6 +1083,22 @@ input[type="number"] {
   color: var(--color-text-heading);
 }
 
+/* Live graphs (proposal 06): uPlot draws its own grid, plotly fills the 3D host */
+.trace-canvas {
+  background-image: none !important;
+  overflow: hidden;
+}
+
+.trace-canvas .uplot,
+.trace-canvas .u-wrap {
+  background: transparent;
+}
+
+.plot-host {
+  padding: 0 !important;
+  overflow: hidden;
+}
+
 /* Clinician actions: Care settings and Measurements share the full width */
 .actions-grid {
   grid-template-columns: repeat(2, minmax(0, 1fr)) !important;

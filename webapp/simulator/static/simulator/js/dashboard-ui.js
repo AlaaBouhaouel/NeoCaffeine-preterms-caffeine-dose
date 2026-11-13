@@ -67,9 +67,6 @@
 
   const bloodConcentrationInput = document.getElementById('blood-concentration')
 
-  const tileHr = document.getElementById('tile-heart-rate')
-  const tileSpo2 = document.getElementById('tile-spo2-value')
-  const tileResp = document.getElementById('tile-resp-value')
   const concEstLatest = document.getElementById('conc-est-latest')
 
   const thetaTableBody = document.getElementById('theta-table-body')
@@ -374,10 +371,9 @@
 
     updateNCardState(state)
 
-    tileHr.textContent = formatNumber(state.monitor_panel.tiles.heart_rate_bpm, 1)
-    tileSpo2.textContent = formatNumber(state.monitor_panel.tiles.spo2_pct, 1)
-    tileResp.textContent = formatNumber(state.monitor_panel.tiles.resp_rate_bpm, 1)
     concEstLatest.textContent = formatNumber(latest(state.pharmacology_panel.concentration_est_mg_per_l, 'v'), 3)
+    window.simulatorCharts.update(envelope)
+    window.simulatorConvergence3d.update(state)
 
     renderThetaTable(state.estimator_panel.theta)
 

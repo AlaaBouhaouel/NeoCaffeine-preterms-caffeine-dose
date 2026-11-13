@@ -11,16 +11,14 @@ from django.core.exceptions import ObjectDoesNotExist
 from django.db import transaction
 from django.utils import timezone
 
+from backend.demo import updater
+from backend.demo.thresholds import DEMO_CONVERGENCE_DAY_INDEX, HOURS_PER_DAY
 from backend.patient_bridge import build_patient, patient_document, patient_from_document, patient_state
 from backend.state_upgrade import upgrade_state
 from neocaffeine.clock.clock_errors import ClockError
 from neocaffeine.patient.patient_errors import PatientError
 from patients.repositories import create_patient_record
 from runs.repositories import create_run_snapshot, get_run_snapshot, save_run_state
-
-HOURS_PER_DAY = 24
-DEMO_DAILY_COUNT_MAXIMUM = 6 * HOURS_PER_DAY
-DEMO_CONVERGENCE_DAY_INDEX = 6
 
 
 class DemoSimulationBackend:
@@ -56,11 +54,8 @@ class DemoSimulationBackend:
         except ObjectDoesNotExist:
             return None
         upgrade_state(snapshot.state_json)
+        updater.ensure_initialized(snapshot.state_json)
         return snapshot
-
-    def _generate_day_count(self, random_seed: int, day_index: int) -> int:
-        seeded = random.Random(random_seed + day_index * 7919)
-        return seeded.randint(0, DEMO_DAILY_COUNT_MAXIMUM)
 
     def _update_derived_times(self, state: dict[str, Any]) -> None:
         sim_time_hours = float(state["time"]["sim_time_hours"])
@@ -142,6 +137,8 @@ class DemoSimulationBackend:
                     "resp_rate_bpm": 36.0,
                 },
                 "events": [],
+                "demo_apnea_rate_per_hour": 0.0,
+                "demo_true_concentration_mg_per_l": 0.0,
             },
             "pharmacology_panel": {
                 "demo_badge": True,
@@ -260,6 +257,7 @@ class DemoSimulationBackend:
             },
         }
         state["patient_file_panel"]["context_log"].append(self._current_context_row(state))
+        updater.initialize(state, float(new_patient.covariates.birth_weight_grams) / 1000.0)
         with transaction.atomic():
             patient_record = create_patient_record(new_patient.covariates)
             snapshot = create_run_snapshot(
@@ -297,7 +295,7 @@ class DemoSimulationBackend:
             awaiting_day = current_day
             state["n_gate"]["awaiting_n_for_day_index"] = awaiting_day
             state["n_gate"]["editable_day_index_for_n"] = awaiting_day
-            state["n_gate"]["n_prefill_value"] = self._generate_day_count(int(state["run"]["random_seed"]), awaiting_day)
+            state["n_gate"]["n_prefill_value"] = updater.daily_count_prefill(state, awaiting_day)
             state["n_gate"]["n_input_locked"] = False
         else:
             new_time = requested_target
@@ -307,6 +305,7 @@ class DemoSimulationBackend:
         state["time"]["sim_time_hours"] = new_time
         state["time"]["last_advanced_hours"] = advanced_hours
         self._update_derived_times(state)
+        updater.on_advance(state)
         return self._persist_and_wrap(snapshot, state)
 
     def submit_observed_n(self, run_id: UUID, day_index: int, observed_n: int, state_version: int) -> dict[str, Any]:
@@ -315,19 +314,7 @@ class DemoSimulationBackend:
             return self._error("run_not_found", "Run was not found.", run_id=run_id)
         state = snapshot.state_json
 
-        predicted = float(state["n_gate"]["n_prefill_value"])
-        state["estimator_panel"]["last_day"] = {
-            "day_index": day_index,
-            "predicted_n": predicted,
-            "observed_n": observed_n,
-        }
-        loss_value = abs(predicted - float(observed_n)) + 0.25
-        state["estimator_panel"]["diagnostics"]["loss_negative_log_likelihood"].append(
-            {"day_index": day_index, "value": loss_value}
-        )
-        state["estimator_panel"]["diagnostics"]["newton_iterations_last_update"] = 3
-        state["estimator_panel"]["diagnostics"]["gradient_norm_last_update"] = max(0.01, loss_value / 10.0)
-        state["estimator_panel"]["uncertainty_chart"].append({"day_index": day_index + 1, "value": max(0.1, 1.0 / (day_index + 2))})
+        updater.on_daily_n(state, day_index, observed_n)
 
         state["n_gate"]["awaiting_n_for_day_index"] = None
         state["n_gate"]["editable_day_index_for_n"] = None
@@ -362,6 +349,7 @@ class DemoSimulationBackend:
         }
         state["patient_file_panel"]["dose_log"].append(marker)
         state["pharmacology_panel"]["dose_markers"].append(marker)
+        updater.on_dose(state)
         return self._persist_and_wrap(snapshot, state)
 
     def accept_suggested_dose(self, run_id: UUID, state_version: int) -> dict[str, Any]:

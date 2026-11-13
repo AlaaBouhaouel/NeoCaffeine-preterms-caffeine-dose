@@ -1,2 +1,42 @@
-# Purpose: Placeholder module for demo-only event and safety thresholds.
+# Purpose: DEMO-only constants for the live demo (proposal 06). These are demo values approved by Ala, never registry values.
 
+HOURS_PER_DAY = 24
+DOSING_INTERVAL_HOURS = 24.0
+
+DEMO_TRUE_CL_L_PER_H_PER_KG = 0.0075
+DEMO_TRUE_V_L_PER_KG = 0.85
+DEMO_TRUE_EMAX = 0.63
+DEMO_TRUE_EC50_MG_PER_L = 8.17
+DEMO_TRUE_BETA_M_PER_WEEK = 0.26
+
+DEMO_START_FACTORS = {
+    "log_CL": 0.8,
+    "log_V": 1.15,
+    "logit_Emax": 1.03,
+    "log_EC50": 1.10,
+    "log_beta_M": 0.95,
+}
+DEMO_START_SD = {
+    "log_CL": 0.4,
+    "log_V": 0.3,
+    "logit_Emax": 0.5,
+    "log_EC50": 0.45,
+    "log_beta_M": 0.25,
+}
+
+DEMO_CITRATE_TO_BASE = 0.5
+DEMO_BASELINE_APNEA_RATE_PER_HOUR = 1.0
+DEMO_HILL_COEFFICIENT = 1.0
+DEMO_DAILY_GAP_FRACTION = 0.5
+DEMO_DAILY_SD_FACTOR = 0.6
+DEMO_GATE_THRESHOLD = 0.15
+DEMO_C_MAX_MG_PER_L = 40.0
+DEMO_STANDARD_REGIMEN_MG_PER_KG_CITRATE = 5.0
+DEMO_TARGET_CONCENTRATION_MG_PER_L = 10.0
+DEMO_CONCENTRATION_BOUNDS_MG_PER_L = {"min": 5.0, "max": 20.0}
+DEMO_DOSE_ROUNDING_MG_PER_KG = 0.5
+DEMO_SAFETY_SAMPLES = 200
+DEMO_NEWTON_ITERATIONS = 3
+DEMO_CONVERGENCE_DAY_INDEX = 6
+
+Z_90 = 1.645

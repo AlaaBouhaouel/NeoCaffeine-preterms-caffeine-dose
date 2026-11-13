@@ -1,4 +1,6 @@
-﻿/* Purpose: Browser-owned simulation clock that calls advance at user-selected speed. */
+﻿/* Purpose: Browser-owned simulation clock that calls advance at user-selected speed, once per real second (graphs interpolate in between). */
+
+const CLOCK_TICK_MS = 1000
 
 window.simulatorClockController = {
   timerHandle: null,
@@ -17,7 +19,7 @@ window.simulatorClockController = {
       lastTime = now
       const deltaSimHours = realSeconds / this.speedSecondsPerHour
       tickCallback(deltaSimHours)
-    }, 150)
+    }, CLOCK_TICK_MS)
   },
   stop() {
     if (this.timerHandle !== null) {

@@ -2,6 +2,7 @@
 {% load static %}
 
 {% block extra_head %}
+<link rel="stylesheet" href="{% static 'simulator/vendor/uplot/uPlot.min.css' %}">
 <link rel="stylesheet" href="{% static 'simulator/css/dashboard.css' %}">
 {% endblock %}
 
@@ -213,6 +214,11 @@
 <script src="{% static 'simulator/js/api-client.js' %}"></script>
 <script src="{% static 'simulator/js/state-store.js' %}"></script>
 <script src="{% static 'simulator/js/clock-controller.js' %}"></script>
+<script src="{% static 'simulator/vendor/uplot/uPlot.iife.min.js' %}"></script>
+<script src="{% static 'simulator/vendor/plotly/plotly-gl3d.min.js' %}"></script>
+<script src="{% static 'simulator/js/vitals-generator.js' %}"></script>
+<script src="{% static 'simulator/js/charts.js' %}"></script>
+<script src="{% static 'simulator/js/convergence-3d.js' %}"></script>
 <script src="{% static 'simulator/js/dashboard-ui.js' %}"></script>
 <script src="{% static 'simulator/js/tooltips.js' %}"></script>
 {% endblock %}

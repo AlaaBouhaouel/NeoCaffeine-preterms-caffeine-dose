@@ -14,6 +14,8 @@ Django web interface for NeoCaffeine, running as a public research demo and cons
 - `docs/`: webapp-scoped contract and copy drafts.
 
 ## Inputs/Outputs
+![Dashboard in dark mode](../docs/images/image.png)
+
 - Inputs: backend state payloads, user interventions, and run identifiers.
 - Outputs: landing page, simulator dashboard, and JSON API responses.
 

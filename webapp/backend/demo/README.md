@@ -1,13 +1,13 @@
-﻿# demo
+# demo
 
 ## Purpose
 Implements a reproducible fake simulation backend for end-to-end webapp behavior before real model integration.
 
 ## Contents
 - `demo_simulation_backend.py`: backend stub implementation.
-- `generators.py`: trace/event generation helpers.
-- `updater.py`: state update and estimator placeholders.
-- `thresholds.py`: demo-only thresholds.
+- `generators.py`: placeholder (vital signs are generated in the browser, see `js/vitals-generator.js`).
+- `updater.py`: the live demo model (proposal 06): caffeine concentration from the dose log (one compartment, IV bolus), hourly curve points, demo apnea rate, daily N prefill (seeded Poisson), daily estimator step (half the gap to the true value, SD x 0.6), suggested dose, confidence gate, safety share, 3D trajectory.
+- `thresholds.py`: every `DEMO_*` constant of the live demo (demo values approved by Ala, never registry values).
 
 ## Inputs/Outputs
 - Inputs: backend interface calls and persisted run snapshots.

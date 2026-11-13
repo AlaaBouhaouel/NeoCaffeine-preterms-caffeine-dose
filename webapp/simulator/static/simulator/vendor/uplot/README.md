@@ -1,17 +1,19 @@
 ﻿# uplot
 
 ## Purpose
-Contains uPlot distribution files required by simulator charts.
+uPlot 1.6.31, a small and fast time-series chart library (MIT licence, see `LICENSE`).
 
 ## Contents
-- uPlot JS/CSS files pinned for the webapp.
+- `uPlot.iife.min.js`: the library, exposing the global `uPlot`.
+- `uPlot.min.css`: its stylesheet.
+- `LICENSE`: MIT licence text.
 
 ## Inputs/Outputs
-- Inputs: selected uPlot release assets.
-- Outputs: chart runtime dependency available through static files.
+- Inputs: release files of the npm package `uplot@1.6.31` (`dist/`).
+- Outputs: the `uPlot` constructor used by the dashboard graphs.
 
 ## Depends on
-- Vendor asset management in `simulator/static/simulator/vendor/`.
+- Nothing else.
 
 ## Used by
-- Frontend chart rendering code.
+- `js/charts.js`.
