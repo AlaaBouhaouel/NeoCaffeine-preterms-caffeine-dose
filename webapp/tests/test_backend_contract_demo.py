@@ -19,22 +19,22 @@ def test_contract_create_run_and_get_state(patient_payload, initial_context_payl
     assert state["state"]["meta"]["demo_data"] is True
 
 
-def test_contract_advance_stops_at_hour_boundary(patient_payload, initial_context_payload) -> None:
+def test_contract_advance_stops_at_day_boundary(patient_payload, initial_context_payload) -> None:
     backend = DemoSimulationBackend()
     created = _create(backend, patient_payload, initial_context_payload)
-    advanced = backend.advance(run_id=created["run_id"], delta_sim_hours=2.75, state_version=created["state_version"])
+    advanced = backend.advance(run_id=created["run_id"], delta_sim_hours=30.0, state_version=created["state_version"])
     assert advanced["ok"] is True
-    assert advanced["state"]["time"]["sim_time_hours"] == 1.0
+    assert advanced["state"]["time"]["sim_time_hours"] == 24.0
     assert advanced["state"]["meta"]["phase"] == "awaiting_n"
 
 
 def test_contract_submit_n_returns_to_playing_or_converged(patient_payload, initial_context_payload) -> None:
     backend = DemoSimulationBackend()
     created = _create(backend, patient_payload, initial_context_payload)
-    advanced = backend.advance(run_id=created["run_id"], delta_sim_hours=1.0, state_version=created["state_version"])
+    advanced = backend.advance(run_id=created["run_id"], delta_sim_hours=24.0, state_version=created["state_version"])
     submitted = backend.submit_observed_n(
         run_id=created["run_id"],
-        hour_index=0,
+        day_index=0,
         observed_n=2,
         state_version=advanced["state_version"],
     )

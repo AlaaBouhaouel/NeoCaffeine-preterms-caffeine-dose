@@ -19,7 +19,7 @@ ERROR_HTTP_STATUS = {
     "stale_state_version": 409,
     "phase_awaiting_n_requires_submission": 409,
     "phase_not_awaiting_n": 409,
-    "hour_index_mismatch": 409,
+    "day_index_mismatch": 409,
     "phase_awaiting_n_locked": 409,
     "run_converged_locked": 423,
     "method_not_allowed": 405,

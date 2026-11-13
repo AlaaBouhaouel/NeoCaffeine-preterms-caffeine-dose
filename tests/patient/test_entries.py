@@ -7,7 +7,7 @@ from neocaffeine.patient.blood_level_entry import BloodLevelEntry
 from neocaffeine.patient.context_entry import ContextEntry
 from neocaffeine.patient.detected_event import DetectedEvent
 from neocaffeine.patient.dose_entry import DoseEntry
-from neocaffeine.patient.hourly_record import HourlyRecord
+from neocaffeine.patient.daily_record import DailyRecord
 from neocaffeine.patient.patient_errors import DefinitionalError
 from neocaffeine.patient.signal_reference import SignalReference
 from neocaffeine.patient.vocabularies import EventType, Route, SaltForm, SampleType, SignalType, SupportMode
@@ -28,14 +28,14 @@ def blood_level(**changes):
     return BloodLevelEntry(**fields)
 
 
-def hourly_record(**changes):
-    """Return an hourly record with some fields changed."""
+def daily_record(**changes):
+    """Return a daily record with some fields changed."""
     fields = dict(
-        hour_index=3, apnea_count=2, bradycardia_count=1, desaturation_count=0,
-        valid_hours=1.0, quality_score=0.5, event_definition_version=1,
+        day_index=3, apnea_count=2, bradycardia_count=1, desaturation_count=0,
+        valid_hours=24.0, quality_score=0.5, event_definition_version=1,
     )
     fields.update(changes)
-    return HourlyRecord(**fields)
+    return DailyRecord(**fields)
 
 
 @pytest.mark.parametrize("weight", [0, -100])
@@ -102,23 +102,28 @@ def test_impossible_blood_levels_are_rejected(changes):
 
 
 @pytest.mark.parametrize("changes", [
-    {"valid_hours": 1.5},
+    {"valid_hours": 24.5},
     {"valid_hours": -0.1},
     {"quality_score": 1.1},
     {"apnea_count": -1},
     {"apnea_count": 1.5},
-    {"hour_index": 2.5},
+    {"day_index": 2.5},
 ])
-def test_impossible_hourly_records_are_rejected(changes):
-    """Valid hours and quality outside [0, 1], negative or fractional counts and fractional hours are rejected."""
+def test_impossible_daily_records_are_rejected(changes):
+    """Valid hours outside [0, 24], quality outside [0, 1], negative or fractional counts and fractional days are rejected."""
     with pytest.raises(DefinitionalError):
-        hourly_record(**changes)
+        daily_record(**changes)
 
 
-def test_hour_without_valid_time_produces_no_update():
+def test_day_without_valid_time_produces_no_update():
     """A record with no valid time is stored but gives no update."""
-    assert not hourly_record(valid_hours=0.0).produces_update
-    assert hourly_record(valid_hours=0.5).produces_update
+    assert not daily_record(valid_hours=0.0).produces_update
+    assert daily_record(valid_hours=12.5).produces_update
+
+
+def test_full_day_of_valid_time_is_accepted():
+    """All 24 hours of a day may be valid observation time."""
+    assert daily_record(valid_hours=24.0).valid_hours == 24.0
 
 
 def test_signal_end_before_start_is_rejected():

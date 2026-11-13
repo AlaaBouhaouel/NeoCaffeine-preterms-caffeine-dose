@@ -22,7 +22,7 @@ def test_error_http_status_mapping_rows_present() -> None:
     assert ERROR_HTTP_STATUS["stale_state_version"] == 409
     assert ERROR_HTTP_STATUS["phase_awaiting_n_requires_submission"] == 409
     assert ERROR_HTTP_STATUS["phase_not_awaiting_n"] == 409
-    assert ERROR_HTTP_STATUS["hour_index_mismatch"] == 409
+    assert ERROR_HTTP_STATUS["day_index_mismatch"] == 409
     assert ERROR_HTTP_STATUS["phase_awaiting_n_locked"] == 409
     assert ERROR_HTTP_STATUS["run_converged_locked"] == 423
     assert ERROR_HTTP_STATUS["method_not_allowed"] == 405
@@ -132,7 +132,7 @@ def test_stale_state_version_returns_409(client, created_run) -> None:
 
 def test_phase_awaiting_n_requires_submission_returns_409(client, created_run) -> None:
     run_id = created_run["run_id"]
-    first = _post_json(client, f"/api/v1/runs/{run_id}/advance", {"delta_sim_hours": 2.0, "state_version": created_run["state_version"]})
+    first = _post_json(client, f"/api/v1/runs/{run_id}/advance", {"delta_sim_hours": 30.0, "state_version": created_run["state_version"]})
     assert first.status_code == 200
     body_first = first.json()
     second = _post_json(client, f"/api/v1/runs/{run_id}/advance", {"delta_sim_hours": 0.1, "state_version": body_first["state_version"]})
@@ -145,7 +145,7 @@ def test_phase_not_awaiting_n_returns_409(client, created_run) -> None:
     run_id = created_run["run_id"]
     response = _post_json(
         client,
-        f"/api/v1/runs/{run_id}/hours/0/n",
+        f"/api/v1/runs/{run_id}/days/0/n",
         {"observed_n": 1, "state_version": created_run["state_version"]},
     )
     body = response.json()
@@ -153,23 +153,23 @@ def test_phase_not_awaiting_n_returns_409(client, created_run) -> None:
     assert body["error"]["code"] == "phase_not_awaiting_n"
 
 
-def test_hour_index_mismatch_returns_409(client, created_run) -> None:
+def test_day_index_mismatch_returns_409(client, created_run) -> None:
     run_id = created_run["run_id"]
-    advanced = _post_json(client, f"/api/v1/runs/{run_id}/advance", {"delta_sim_hours": 1.5, "state_version": created_run["state_version"]})
+    advanced = _post_json(client, f"/api/v1/runs/{run_id}/advance", {"delta_sim_hours": 25.5, "state_version": created_run["state_version"]})
     body_advanced = advanced.json()
     response = _post_json(
         client,
-        f"/api/v1/runs/{run_id}/hours/3/n",
+        f"/api/v1/runs/{run_id}/days/3/n",
         {"observed_n": 1, "state_version": body_advanced["state_version"]},
     )
     body = response.json()
     assert response.status_code == 409
-    assert body["error"]["code"] == "hour_index_mismatch"
+    assert body["error"]["code"] == "day_index_mismatch"
 
 
 def test_phase_awaiting_n_locked_returns_409(client, created_run) -> None:
     run_id = created_run["run_id"]
-    advanced = _post_json(client, f"/api/v1/runs/{run_id}/advance", {"delta_sim_hours": 1.0, "state_version": created_run["state_version"]})
+    advanced = _post_json(client, f"/api/v1/runs/{run_id}/advance", {"delta_sim_hours": 24.0, "state_version": created_run["state_version"]})
     body_advanced = advanced.json()
     response = _post_json(
         client,
@@ -188,11 +188,11 @@ def test_phase_awaiting_n_locked_returns_409(client, created_run) -> None:
 def test_run_converged_locked_returns_423(client, created_run) -> None:
     run_id = created_run["run_id"]
     state_version = created_run["state_version"]
-    for _ in range(24):
-        advanced = _post_json(client, f"/api/v1/runs/{run_id}/advance", {"delta_sim_hours": 1.0, "state_version": state_version})
+    for day in range(7):
+        advanced = _post_json(client, f"/api/v1/runs/{run_id}/advance", {"delta_sim_hours": 24.0, "state_version": state_version})
         assert advanced.status_code == 200
         state_version = advanced.json()["state_version"]
-        submitted = _post_json(client, f"/api/v1/runs/{run_id}/hours/{_}/n", {"observed_n": 0, "state_version": state_version})
+        submitted = _post_json(client, f"/api/v1/runs/{run_id}/days/{day}/n", {"observed_n": 0, "state_version": state_version})
         assert submitted.status_code == 200
         state_version = submitted.json()["state_version"]
 

@@ -73,7 +73,7 @@ def advance_run(request: HttpRequest, run_id: UUID) -> JsonResponse:
 
 @csrf_exempt
 @require_POST
-def submit_hour_n(request: HttpRequest, run_id: UUID, hour_index: int) -> JsonResponse:
+def submit_day_n(request: HttpRequest, run_id: UUID, day_index: int) -> JsonResponse:
     payload, error = parse_json_body(request)
     if error is not None:
         return error
@@ -92,7 +92,7 @@ def submit_hour_n(request: HttpRequest, run_id: UUID, hour_index: int) -> JsonRe
     runtime = get_backend_runtime()
     result = runtime.submit_observed_n(
         run_id=run_id,
-        hour_index=hour_index,
+        day_index=day_index,
         observed_n=payload["observed_n"],
         state_version=payload["state_version"],
     )

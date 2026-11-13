@@ -8,6 +8,7 @@ Pytest suites for webapp validation matrix, API success paths, backend contract 
 - `test_api_validation_matrix.py`: endpoint validation and error/status coverage, including `birth_time` and the package vocabularies.
 - `test_api_success_paths.py`: end-to-end success flow checks.
 - `test_backend_contract_demo.py`: SimulationBackend contract checks on demo backend.
+- `test_daily_n.py`: one N gate per 24 h day, 7-day demo convergence, upgrade of hourly run states.
 - `test_patient_persistence.py`: patient record and per-run patient document stored on create; dashboard `state.patient` loaded from them; UTC birth time; range flags.
 
 ## Inputs/Outputs

@@ -23,7 +23,8 @@ def test_create_run_stores_patient_record_and_run_document(client, created_run) 
     assert record.birth_time.isoformat() == "2026-01-15T08:30:00+00:00"
 
     document = snapshot.patient_document
-    assert document["schema_version"] == 1
+    assert document["schema_version"] == 2
+    assert document["daily_records"] == []
     assert document["patient_id"] == str(record.patient_id)
     assert document["covariates"]["gestational_age_days"] == 28 * 7 + 3
     assert [entry["support_mode"] for entry in document["context_log"]] == ["cpap"]

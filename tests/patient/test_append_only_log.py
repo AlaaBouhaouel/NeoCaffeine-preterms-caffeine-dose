@@ -5,7 +5,7 @@ from datetime import datetime, timezone
 import pytest
 
 from neocaffeine.patient.dose_entry import DoseEntry
-from neocaffeine.patient.hourly_record import HourlyRecord
+from neocaffeine.patient.daily_record import DailyRecord
 from neocaffeine.patient.log_entry import Correction
 from neocaffeine.patient.patient_errors import (
     AlreadySupersededError,
@@ -32,11 +32,11 @@ def correction_of(entry):
     return Correction(supersedes=entry.entry_id, recorded_at=CORRECTION_TIME, reason="test correction")
 
 
-def hourly(hour, version, apneas=1):
-    """Return an hourly record."""
-    return HourlyRecord(
-        hour_index=hour, apnea_count=apneas, bradycardia_count=0, desaturation_count=0,
-        valid_hours=1.0, quality_score=1.0, event_definition_version=version,
+def daily(day, version, apneas=1):
+    """Return a daily record."""
+    return DailyRecord(
+        day_index=day, apnea_count=apneas, bradycardia_count=0, desaturation_count=0,
+        valid_hours=24.0, quality_score=1.0, event_definition_version=version,
     )
 
 
@@ -150,15 +150,15 @@ def test_recording_sequence_is_strictly_increasing_across_logs(patient):
 
 def test_new_definition_version_coexists_with_the_old(patient):
     """A reanalysis adds records under a new version, even for earlier hours."""
-    patient.add_hourly_record(hourly(0, version=1))
-    patient.add_hourly_record(hourly(1, version=1))
-    patient.add_hourly_record(hourly(0, version=2, apneas=3))
-    assert [record.hour_index for record in patient.hourly_records(1)] == [0, 1]
-    assert [record.apnea_count for record in patient.hourly_records(2)] == [3]
+    patient.add_daily_record(daily(0, version=1))
+    patient.add_daily_record(daily(1, version=1))
+    patient.add_daily_record(daily(0, version=2, apneas=3))
+    assert [record.day_index for record in patient.daily_records(1)] == [0, 1]
+    assert [record.apnea_count for record in patient.daily_records(2)] == [3]
 
 
 def test_same_hour_twice_in_one_version_is_rejected(patient):
     """One record per hour and version."""
-    patient.add_hourly_record(hourly(0, version=1))
+    patient.add_daily_record(daily(0, version=1))
     with pytest.raises(DuplicateTimeError):
-        patient.add_hourly_record(hourly(0, version=1))
+        patient.add_daily_record(daily(0, version=1))

@@ -5,7 +5,7 @@ import pytest
 from neocaffeine.patient.blood_level_entry import BloodLevelEntry
 from neocaffeine.patient.covariates import Covariates
 from neocaffeine.patient.dose_entry import DoseEntry
-from neocaffeine.patient.hourly_record import HourlyRecord
+from neocaffeine.patient.daily_record import DailyRecord
 from neocaffeine.patient.log_entry import Correction
 from neocaffeine.patient.patient import Patient
 from neocaffeine.patient.range_validation import ValidationRanges
@@ -31,7 +31,7 @@ def test_empty_ranges_flag_range_unchecked_without_blocking(covariates, empty_ra
     flags = patient.add_weight(WeightEntry(time_hours=1.0, weight_grams=1000))
     assert [flag.kind for flag in flags] == [FlagKind.RANGE_UNCHECKED]
     assert {flag.kind for flag in patient.validation_flags()} == {FlagKind.RANGE_UNCHECKED}
-    assert patient.excluded_hours() == frozenset()
+    assert patient.excluded_days() == frozenset()
 
 
 def test_registry_ranges_are_usable_for_every_patient_field(registry_ranges):
@@ -46,28 +46,28 @@ def test_value_inside_range_raises_no_flag(patient):
     assert patient.add_blood_level(blood_level(10.0, 5.0)) == []
 
 
-def test_out_of_range_observation_flags_and_excludes_its_hour(patient):
-    """An out-of-range blood level flags the hour containing it and excludes that hour."""
-    flags = patient.add_blood_level(blood_level(10.5, 500.0))
-    assert [(flag.kind, flag.hour_index) for flag in flags] == [(FlagKind.OUT_OF_VALIDATION_RANGE, 10)]
-    assert patient.excluded_hours() == frozenset({10})
+def test_out_of_range_observation_flags_and_excludes_its_day(patient):
+    """An out-of-range blood level at 30.5 h flags observation day 1 and excludes that day."""
+    flags = patient.add_blood_level(blood_level(30.5, 500.0))
+    assert [(flag.kind, flag.day_index) for flag in flags] == [(FlagKind.OUT_OF_VALIDATION_RANGE, 1)]
+    assert patient.excluded_days() == frozenset({1})
 
 
 def test_corrected_observation_is_no_longer_excluded(patient):
-    """Once an out-of-range level is corrected, its hour is no longer excluded."""
-    wrong = blood_level(10.5, 500.0)
+    """Once an out-of-range level is corrected, its day is no longer excluded."""
+    wrong = blood_level(30.5, 500.0)
     patient.add_blood_level(wrong)
     correction = Correction(supersedes=wrong.entry_id, recorded_at=patient.covariates.birth_time, reason="test")
-    patient.add_blood_level(blood_level(10.5, 5.0, correction=correction))
-    assert patient.excluded_hours() == frozenset()
+    patient.add_blood_level(blood_level(30.5, 5.0, correction=correction))
+    assert patient.excluded_days() == frozenset()
     assert len(patient.entry_flags(wrong.entry_id)) == 1
 
 
 def test_out_of_range_dose_is_flagged_not_excluded(patient):
-    """A dose outside its range is flagged but does not exclude an hour."""
+    """A dose outside its range is flagged but does not exclude a day."""
     flags = patient.add_dose(DoseEntry(time_hours=2.0, amount_mg_per_kg=500, route=Route.IV, salt_form=SaltForm.BASE))
     assert [flag.range_name for flag in flags] == ["dose_amount"]
-    assert patient.excluded_hours() == frozenset()
+    assert patient.excluded_days() == frozenset()
 
 
 def test_each_event_count_has_its_own_range(covariates, filled_ranges):
@@ -77,13 +77,13 @@ def test_each_event_count_has_its_own_range(covariates, filled_ranges):
         "validation_ranges.bradycardia_count", {"minimum": 0, "maximum": 2, "unit": "dimensionless"}
     )
     patient = Patient(covariates, ValidationRanges(ranges=ranges))
-    record = HourlyRecord(
-        hour_index=4, apnea_count=5, bradycardia_count=5, desaturation_count=5,
-        valid_hours=1.0, quality_score=1.0, event_definition_version=1,
+    record = DailyRecord(
+        day_index=4, apnea_count=5, bradycardia_count=5, desaturation_count=5,
+        valid_hours=24.0, quality_score=1.0, event_definition_version=1,
     )
-    flags = patient.add_hourly_record(record)
+    flags = patient.add_daily_record(record)
     assert [flag.range_name for flag in flags] == ["bradycardia_count"]
-    assert patient.excluded_hours() == frozenset({4})
+    assert patient.excluded_days() == frozenset({4})
 
 
 def test_range_is_converted_to_the_field_unit(patient):

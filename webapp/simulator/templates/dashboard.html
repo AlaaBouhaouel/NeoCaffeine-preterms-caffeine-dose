@@ -61,6 +61,7 @@
             <span>Phase</span><span id="side-phase-badge" class="phase-chip">-</span>
             <span>Sim time</span><span><span id="sim-time-text">-</span> h</span>
             <span>Hour</span><span id="hour-index-text">-</span>
+            <span>Day</span><span id="day-index-text">-</span>
             <span>Version</span><span id="state-version-text">-</span>
             <span>Status</span><span id="convergence-status-text">-</span>
           </div>
@@ -124,7 +125,7 @@
               <tbody id="theta-table-body"></tbody>
             </table>
           </div>
-          <p class="meta-line">Pred/Obs N: <span id="last-hour-n">-</span> | Loss: <span id="loss-latest">-</span> | Newton: <span id="newton-iter">-</span> | Grad: <span id="grad-norm">-</span></p>
+          <p class="meta-line">Pred/Obs N: <span id="last-day-n">-</span> | Loss: <span id="loss-latest">-</span> | Newton: <span id="newton-iter">-</span> | Grad: <span id="grad-norm">-</span></p>
           <p class="meta-line">Target: <span id="target-conc">-</span> <span class="unit-blue">mg/L</span> | Safety: <span id="safety-share">-</span> | Gate: <span id="confidence-gate">-</span></p>
         </section>
 
@@ -181,11 +182,11 @@
             <strong>N</strong>
             <input id="observed-n-input" type="number" min="0" step="1">
             <button id="submit-n-button" type="button">Submit</button>
-            <button id="n-info" class="info-icon" type="button" data-tooltip="Observed event count for the pending hour.">i</button>
+            <button id="n-info" class="info-icon" type="button" data-tooltip="Observed event count for the pending 24 h day.">i</button>
             <span id="n-status-text" class="n-status-text">locked</span>
           </div>
-          <input id="awaiting-hour-text" type="hidden" value="-">
-          <input id="n-hour-ended-text" type="hidden" value="-">
+          <input id="next-day-text" type="hidden" value="-">
+          <input id="n-day-ended-text" type="hidden" value="-">
           <input id="n-time-remaining-text" type="hidden" value="-">
           <input id="prefill-n-text" type="hidden" value="-">
           <p id="n-error" class="error action-error"></p>

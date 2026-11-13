@@ -1,7 +1,7 @@
 # runner
 
 ## Purpose
-The hourly loop, for both virtual-infant and real-data modes: for each new hour, runs features, maturity and the estimator, and at dosing times the decision. Checks the registry is complete before starting and records the registry version with every run.
+The daily loop, for both virtual-infant and real-data modes: for each completed 24 h observation day, runs features, maturity and the estimator, and at dosing times the decision. Checks the registry is complete before starting and records the registry version with every run.
 
 ## Contents
 No files yet.

@@ -11,7 +11,9 @@ from neocaffeine.patient.patient_errors import PatientFileError, UnsupportedSche
 from neocaffeine.patient.range_validation import ValidationRanges
 from neocaffeine.patient.vocabularies import EventType, Route, SaltForm, SampleType, Sex, SignalType, SupportMode
 
-SCHEMA_VERSION = 1
+SCHEMA_VERSION = 2
+HOURLY_SCHEMA_VERSION = 1
+HOURLY_RECORDS_KEY = "hourly_records"
 ENUM_FIELDS = {
     "sex": Sex,
     "route": Route,
@@ -123,11 +125,25 @@ def entry_from_json(path: str, entry_type: type, raw: object) -> tuple[Any, int]
     return entry, recording_sequence
 
 
+def upgrade_hourly_schema(patient_content: dict[str, Any]) -> dict[str, Any]:
+    """Return a schema-1 (hourly) patient as schema 2; only files without hourly records can be upgraded."""
+    hourly_records = patient_content.get(HOURLY_RECORDS_KEY, [])
+    if hourly_records:
+        raise UnsupportedSchemaVersionError(
+            "Patient schema version 1 holds hourly records; they cannot be converted to daily records."
+        )
+    upgraded = {key: value for key, value in patient_content.items() if key != HOURLY_RECORDS_KEY}
+    upgraded["schema_version"] = SCHEMA_VERSION
+    return upgraded
+
+
 def patient_from_json(content: object, validation_ranges: ValidationRanges) -> Patient:
     """Rebuild a patient from its JSON form, re-validating every entry against the current ranges."""
     patient_content = require_map("patient", content)
     schema_version = patient_content.get("schema_version")
-    if schema_version != SCHEMA_VERSION:
+    if schema_version == HOURLY_SCHEMA_VERSION:
+        patient_content = upgrade_hourly_schema(patient_content)
+    elif schema_version != SCHEMA_VERSION:
         raise UnsupportedSchemaVersionError(f"Patient schema version {schema_version!r} is not {SCHEMA_VERSION}.")
     raw_covariates = require_map("covariates", patient_content.get("covariates"))
     covariates = Covariates(

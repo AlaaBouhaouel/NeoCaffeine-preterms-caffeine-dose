@@ -1,6 +1,7 @@
 # Registry category: validation_ranges.
 # Every value is supplied by Ala; null means empty. Schema: see README.md in this folder.
 # Current minimum/maximum values are PLACEHOLDERS for the MVP display only (approved 2026-11-11); not from a cited source.
+# Event-count ranges are per 24 h observation day (scaled x24 from the hourly placeholders, 2026-11-13).
 
 gestational_age:
   minimum: 154
@@ -108,7 +109,7 @@ blood_level:
 
 apnea_count:
   minimum: 0
-  maximum: 20
+  maximum: 480
   unit: dimensionless
   meaning: "PLACEHOLDER for MVP display; not from a cited source."
   evidence_tier: null
@@ -134,7 +135,7 @@ apnea_count:
 
 bradycardia_count:
   minimum: 0
-  maximum: 20
+  maximum: 480
   unit: dimensionless
   meaning: "PLACEHOLDER for MVP display; not from a cited source."
   evidence_tier: null
@@ -160,7 +161,7 @@ bradycardia_count:
 
 desaturation_count:
   minimum: 0
-  maximum: 30
+  maximum: 720
   unit: dimensionless
   meaning: "PLACEHOLDER for MVP display; not from a cited source."
   evidence_tier: null

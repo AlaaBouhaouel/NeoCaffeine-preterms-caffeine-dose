@@ -9,7 +9,7 @@ from neocaffeine.patient.blood_level_entry import BloodLevelEntry
 from neocaffeine.patient.context_entry import ContextEntry
 from neocaffeine.patient.detected_event import DetectedEvent
 from neocaffeine.patient.dose_entry import DoseEntry
-from neocaffeine.patient.hourly_record import HourlyRecord
+from neocaffeine.patient.daily_record import DailyRecord
 from neocaffeine.patient.log_entry import Correction
 from neocaffeine.patient.patient_errors import PatientFileError, UnsupportedSchemaVersionError
 from neocaffeine.patient.patient_file import read_patient_file, write_patient_file
@@ -43,9 +43,9 @@ def full_patient(patient):
     patient.add_detected_event(DetectedEvent(
         onset_hours=2.5, duration_seconds=20, event_type=EventType.APNEA, event_definition_version=1,
     ))
-    patient.add_hourly_record(HourlyRecord(
-        hour_index=2, apnea_count=1, bradycardia_count=0, desaturation_count=0,
-        valid_hours=0.9, quality_score=0.8, event_definition_version=1,
+    patient.add_daily_record(DailyRecord(
+        day_index=2, apnea_count=1, bradycardia_count=0, desaturation_count=0,
+        valid_hours=21.6, quality_score=0.8, event_definition_version=1,
     ))
     return patient
 
@@ -68,7 +68,8 @@ def test_file_is_named_after_the_patient(full_patient, tmp_path):
 def test_real_world_times_are_iso_and_event_times_are_hours(full_patient, tmp_path):
     """Birth time and correction times are ISO 8601 UTC; event times stay in hours since birth."""
     content = json.loads(write_patient_file(full_patient, tmp_path).read_text(encoding="utf-8"))
-    assert content["schema_version"] == 1
+    assert content["schema_version"] == 2
+    assert content["daily_records"][0]["day_index"] == 2
     assert content["covariates"]["birth_time"] == "2026-01-15T08:30:00+00:00"
     assert content["dose_log"][1]["correction"]["recorded_at"] == "2026-02-01T12:00:00+00:00"
     assert content["dose_log"][0]["time_hours"] == 1.0
@@ -80,6 +81,31 @@ def test_loading_re_validates_against_current_ranges(full_patient, empty_ranges,
     restored = read_patient_file(write_patient_file(full_patient, tmp_path), empty_ranges)
     assert restored.validation_flags()
     assert all(flag.kind == "range_unchecked" for flag in restored.validation_flags())
+
+
+def test_hourly_schema_without_hourly_records_is_upgraded(full_patient, filled_ranges, tmp_path):
+    """A schema-1 file whose hourly_records list is empty loads as schema 2."""
+    path = write_patient_file(full_patient, tmp_path)
+    content = json.loads(path.read_text(encoding="utf-8"))
+    content["schema_version"] = 1
+    content.pop("daily_records")
+    content["hourly_records"] = []
+    path.write_text(json.dumps(content), encoding="utf-8")
+    restored = read_patient_file(path, filled_ranges)
+    assert restored.covariates == full_patient.covariates
+    assert restored.daily_records(1) == ()
+
+
+def test_hourly_schema_with_hourly_records_is_rejected(full_patient, filled_ranges, tmp_path):
+    """A schema-1 file holding hourly records cannot be read as daily records."""
+    path = write_patient_file(full_patient, tmp_path)
+    content = json.loads(path.read_text(encoding="utf-8"))
+    content["schema_version"] = 1
+    content.pop("daily_records")
+    content["hourly_records"] = [{"hour_index": 2}]
+    path.write_text(json.dumps(content), encoding="utf-8")
+    with pytest.raises(UnsupportedSchemaVersionError):
+        read_patient_file(path, filled_ranges)
 
 
 def test_unknown_schema_version_is_rejected(full_patient, filled_ranges, tmp_path):

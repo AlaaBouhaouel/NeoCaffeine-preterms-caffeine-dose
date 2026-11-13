@@ -15,7 +15,7 @@ ContextPayload = dict[str, Any]
 MonitoringPayload = dict[str, Any]
 BloodLevelPayload = dict[str, Any]
 
-ADVANCE_HOUR_BOUNDARY_REQUIREMENT = "advance must stop exactly at hour boundary and return awaiting_n when boundary is reached"
+ADVANCE_DAY_BOUNDARY_REQUIREMENT = "advance must stop exactly at the 24 h day boundary and return awaiting_n when the boundary is reached"
 
 
 class SimulationBackend(Protocol):
@@ -33,7 +33,7 @@ class SimulationBackend(Protocol):
     def submit_observed_n(
         self,
         run_id: UUID,
-        hour_index: int,
+        day_index: int,
         observed_n: int,
         state_version: int,
     ) -> StateEnvelope: ...

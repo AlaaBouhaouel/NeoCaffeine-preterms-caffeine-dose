@@ -21,30 +21,32 @@ def test_create_and_get_state_success(client, create_run_payload) -> None:
     assert state_body["state"]["meta"]["phase"] == "playing"
 
 
-def test_advance_stops_at_hour_boundary_success(client, created_run) -> None:
+def test_advance_stops_at_day_boundary_success(client, created_run) -> None:
     run_id = created_run["run_id"]
-    response = _post_json(client, f"/api/v1/runs/{run_id}/advance", {"delta_sim_hours": 5.0, "state_version": created_run["state_version"]})
+    response = _post_json(client, f"/api/v1/runs/{run_id}/advance", {"delta_sim_hours": 30.0, "state_version": created_run["state_version"]})
     assert response.status_code == 200
     body = response.json()
     assert body["state"]["meta"]["phase"] == "awaiting_n"
-    assert body["state"]["time"]["sim_time_hours"] == 1.0
-    assert body["state"]["time"]["last_advanced_hours"] == 1.0
+    assert body["state"]["time"]["sim_time_hours"] == 24.0
+    assert body["state"]["time"]["last_advanced_hours"] == 24.0
+    assert body["state"]["n_gate"]["awaiting_n_for_day_index"] == 0
 
 
 def test_submit_n_and_resume_playing_success(client, created_run) -> None:
     run_id = created_run["run_id"]
-    advanced = _post_json(client, f"/api/v1/runs/{run_id}/advance", {"delta_sim_hours": 1.0, "state_version": created_run["state_version"]})
+    advanced = _post_json(client, f"/api/v1/runs/{run_id}/advance", {"delta_sim_hours": 24.0, "state_version": created_run["state_version"]})
     advanced_body = advanced.json()
 
     submitted = _post_json(
         client,
-        f"/api/v1/runs/{run_id}/hours/0/n",
+        f"/api/v1/runs/{run_id}/days/0/n",
         {"observed_n": 2, "state_version": advanced_body["state_version"]},
     )
     assert submitted.status_code == 200
     submitted_body = submitted.json()
     assert submitted_body["state"]["meta"]["phase"] == "playing"
-    assert submitted_body["state"]["estimator_panel"]["last_hour"]["observed_n"] == 2
+    assert submitted_body["state"]["estimator_panel"]["last_day"]["observed_n"] == 2
+    assert submitted_body["state"]["estimator_panel"]["last_day"]["day_index"] == 0
 
 
 def test_intervention_success_paths(client, created_run) -> None:

@@ -6,7 +6,10 @@ from typing import Any
 from uuid import UUID
 
 from backend.interfaces.simulation_backend import SimulationBackend
+from backend.state_upgrade import upgrade_state
 from runs.repositories import get_run_snapshot
+
+
 class BackendRuntime:
     def __init__(self, backend: SimulationBackend) -> None:
         self._backend = backend
@@ -32,7 +35,7 @@ class BackendRuntime:
             snapshot = get_run_snapshot(run_id)
         except Exception:
             return None, self._run_not_found(run_id)
-        return snapshot, snapshot.state_json
+        return snapshot, upgrade_state(snapshot.state_json)
 
     def _check_state_version(self, snapshot, state_version: int, run_id: UUID):
         if snapshot.state_version != state_version:
@@ -68,7 +71,7 @@ class BackendRuntime:
             return self._error("phase_awaiting_n_requires_submission", "Cannot advance while awaiting N submission.", run_id=run_id)
         return self._backend.advance(run_id=run_id, delta_sim_hours=delta_sim_hours, state_version=state_version)
 
-    def submit_observed_n(self, run_id: UUID, hour_index: int, observed_n: int, state_version: int) -> dict[str, Any]:
+    def submit_observed_n(self, run_id: UUID, day_index: int, observed_n: int, state_version: int) -> dict[str, Any]:
         snapshot, loaded = self._load_state(run_id)
         if snapshot is None:
             return loaded
@@ -81,12 +84,12 @@ class BackendRuntime:
             return converged
         if str(state["meta"]["phase"]) != "awaiting_n":
             return self._error("phase_not_awaiting_n", "N submission is only allowed while awaiting N.", run_id=run_id)
-        expected_hour = state["hour_gate"]["awaiting_n_for_hour_index"]
-        if expected_hour != hour_index:
-            return self._error("hour_index_mismatch", "hour_index does not match the awaiting hour.", {"expected": expected_hour}, run_id=run_id)
+        expected_day = state["n_gate"]["awaiting_n_for_day_index"]
+        if expected_day != day_index:
+            return self._error("day_index_mismatch", "day_index does not match the awaiting day.", {"expected": expected_day}, run_id=run_id)
         return self._backend.submit_observed_n(
             run_id=run_id,
-            hour_index=hour_index,
+            day_index=day_index,
             observed_n=observed_n,
             state_version=state_version,
         )

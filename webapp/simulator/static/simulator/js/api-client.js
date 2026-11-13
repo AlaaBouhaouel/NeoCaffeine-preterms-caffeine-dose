@@ -17,8 +17,8 @@ window.simulatorApiClient = {
     })
     return response.json()
   },
-  async submitN(runId, hourIndex, stateVersion, observedN) {
-    const response = await fetch(`/api/v1/runs/${runId}/hours/${hourIndex}/n`, {
+  async submitN(runId, dayIndex, stateVersion, observedN) {
+    const response = await fetch(`/api/v1/runs/${runId}/days/${dayIndex}/n`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ state_version: stateVersion, observed_n: observedN })

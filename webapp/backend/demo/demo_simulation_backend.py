@@ -12,10 +12,15 @@ from django.db import transaction
 from django.utils import timezone
 
 from backend.patient_bridge import build_patient, patient_document, patient_from_document, patient_state
+from backend.state_upgrade import upgrade_state
 from neocaffeine.clock.clock_errors import ClockError
 from neocaffeine.patient.patient_errors import PatientError
 from patients.repositories import create_patient_record
 from runs.repositories import create_run_snapshot, get_run_snapshot, save_run_state
+
+HOURS_PER_DAY = 24
+DEMO_DAILY_COUNT_MAXIMUM = 6 * HOURS_PER_DAY
+DEMO_CONVERGENCE_DAY_INDEX = 6
 
 
 class DemoSimulationBackend:
@@ -47,13 +52,15 @@ class DemoSimulationBackend:
 
     def _get_snapshot(self, run_id: UUID):
         try:
-            return get_run_snapshot(run_id)
+            snapshot = get_run_snapshot(run_id)
         except ObjectDoesNotExist:
             return None
+        upgrade_state(snapshot.state_json)
+        return snapshot
 
-    def _generate_hour_count(self, random_seed: int, hour_index: int) -> int:
-        seeded = random.Random(random_seed + hour_index * 7919)
-        return seeded.randint(0, 6)
+    def _generate_day_count(self, random_seed: int, day_index: int) -> int:
+        seeded = random.Random(random_seed + day_index * 7919)
+        return seeded.randint(0, DEMO_DAILY_COUNT_MAXIMUM)
 
     def _update_derived_times(self, state: dict[str, Any]) -> None:
         sim_time_hours = float(state["time"]["sim_time_hours"])
@@ -62,6 +69,8 @@ class DemoSimulationBackend:
         state["patient"]["postmenstrual_age_days"] = ga_days + (sim_time_hours / 24.0)
         state["time"]["sim_hour_index"] = int(math.floor(sim_time_hours))
         state["time"]["hour_progress_01"] = sim_time_hours - math.floor(sim_time_hours)
+        state["time"]["sim_day_index"] = int(math.floor(sim_time_hours / HOURS_PER_DAY))
+        state["time"]["day_progress_01"] = (sim_time_hours % HOURS_PER_DAY) / HOURS_PER_DAY
 
     def _current_context_row(self, state: dict[str, Any]) -> dict[str, Any]:
         return {
@@ -103,6 +112,8 @@ class DemoSimulationBackend:
                 "sim_time_hours": 0.0,
                 "sim_hour_index": 0,
                 "hour_progress_01": 0.0,
+                "sim_day_index": 0,
+                "day_progress_01": 0.0,
                 "last_advanced_hours": 0.0,
             },
             "patient": patient_state(new_patient, 0.0),
@@ -111,11 +122,11 @@ class DemoSimulationBackend:
                 "breathing_support": initial_context["breathing_support"],
                 "monitoring_on": bool(initial_context["monitoring_on"]),
             },
-            "hour_gate": {
-                "editable_hour_index_for_n": None,
+            "n_gate": {
+                "editable_day_index_for_n": None,
                 "n_prefill_value": None,
                 "n_input_locked": True,
-                "awaiting_n_for_hour_index": None,
+                "awaiting_n_for_day_index": None,
             },
             "monitor_panel": {
                 "demo_badge": True,
@@ -204,8 +215,8 @@ class DemoSimulationBackend:
                         "true_natural": 0.26,
                     },
                 ],
-                "last_hour": {
-                    "hour_index": 0,
+                "last_day": {
+                    "day_index": 0,
                     "predicted_n": 0.0,
                     "observed_n": None,
                 },
@@ -214,7 +225,7 @@ class DemoSimulationBackend:
                     "newton_iterations_last_update": 0,
                     "gradient_norm_last_update": 0.0,
                 },
-                "uncertainty_chart": [{"hour_index": 0, "value": 1.0}],
+                "uncertainty_chart": [{"day_index": 0, "value": 1.0}],
             },
             "patient_file_panel": {
                 "demo_badge": True,
@@ -276,18 +287,18 @@ class DemoSimulationBackend:
             return self._error("run_not_found", "Run was not found.", run_id=run_id)
         state = snapshot.state_json
         current_time = float(state["time"]["sim_time_hours"])
-        current_hour = int(math.floor(current_time))
-        boundary = float(current_hour + 1)
+        current_day = int(math.floor(current_time / HOURS_PER_DAY))
+        boundary = float((current_day + 1) * HOURS_PER_DAY)
         requested_target = current_time + delta_sim_hours
         if requested_target >= boundary:
             new_time = boundary
             state["meta"]["phase"] = "awaiting_n"
             state["meta"]["status_text"] = "Awaiting N"
-            awaiting_hour = current_hour
-            state["hour_gate"]["awaiting_n_for_hour_index"] = awaiting_hour
-            state["hour_gate"]["editable_hour_index_for_n"] = awaiting_hour
-            state["hour_gate"]["n_prefill_value"] = self._generate_hour_count(int(state["run"]["random_seed"]), awaiting_hour)
-            state["hour_gate"]["n_input_locked"] = False
+            awaiting_day = current_day
+            state["n_gate"]["awaiting_n_for_day_index"] = awaiting_day
+            state["n_gate"]["editable_day_index_for_n"] = awaiting_day
+            state["n_gate"]["n_prefill_value"] = self._generate_day_count(int(state["run"]["random_seed"]), awaiting_day)
+            state["n_gate"]["n_input_locked"] = False
         else:
             new_time = requested_target
             state["meta"]["phase"] = "playing"
@@ -298,32 +309,32 @@ class DemoSimulationBackend:
         self._update_derived_times(state)
         return self._persist_and_wrap(snapshot, state)
 
-    def submit_observed_n(self, run_id: UUID, hour_index: int, observed_n: int, state_version: int) -> dict[str, Any]:
+    def submit_observed_n(self, run_id: UUID, day_index: int, observed_n: int, state_version: int) -> dict[str, Any]:
         snapshot = self._get_snapshot(run_id)
         if snapshot is None:
             return self._error("run_not_found", "Run was not found.", run_id=run_id)
         state = snapshot.state_json
 
-        predicted = float(state["hour_gate"]["n_prefill_value"])
-        state["estimator_panel"]["last_hour"] = {
-            "hour_index": hour_index,
+        predicted = float(state["n_gate"]["n_prefill_value"])
+        state["estimator_panel"]["last_day"] = {
+            "day_index": day_index,
             "predicted_n": predicted,
             "observed_n": observed_n,
         }
         loss_value = abs(predicted - float(observed_n)) + 0.25
         state["estimator_panel"]["diagnostics"]["loss_negative_log_likelihood"].append(
-            {"hour_index": hour_index, "value": loss_value}
+            {"day_index": day_index, "value": loss_value}
         )
         state["estimator_panel"]["diagnostics"]["newton_iterations_last_update"] = 3
         state["estimator_panel"]["diagnostics"]["gradient_norm_last_update"] = max(0.01, loss_value / 10.0)
-        state["estimator_panel"]["uncertainty_chart"].append({"hour_index": hour_index + 1, "value": max(0.1, 1.0 / (hour_index + 2))})
+        state["estimator_panel"]["uncertainty_chart"].append({"day_index": day_index + 1, "value": max(0.1, 1.0 / (day_index + 2))})
 
-        state["hour_gate"]["awaiting_n_for_hour_index"] = None
-        state["hour_gate"]["editable_hour_index_for_n"] = None
-        state["hour_gate"]["n_prefill_value"] = None
-        state["hour_gate"]["n_input_locked"] = True
+        state["n_gate"]["awaiting_n_for_day_index"] = None
+        state["n_gate"]["editable_day_index_for_n"] = None
+        state["n_gate"]["n_prefill_value"] = None
+        state["n_gate"]["n_input_locked"] = True
 
-        if state["time"]["sim_hour_index"] >= 24:
+        if day_index >= DEMO_CONVERGENCE_DAY_INDEX:
             state["meta"]["phase"] = "converged"
             state["meta"]["status_text"] = "Converged"
             state["convergence"]["is_converged"] = True

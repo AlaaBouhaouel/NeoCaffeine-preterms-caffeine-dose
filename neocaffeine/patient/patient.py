@@ -3,7 +3,7 @@
 from typing import Any
 
 from neocaffeine.clock import ages
-from neocaffeine.clock.time_axis import hour_index
+from neocaffeine.clock.time_axis import day_index
 from neocaffeine.patient.append_only_log import AppendOnlyLog
 from neocaffeine.patient.baseline_record import BaselineRecord
 from neocaffeine.patient.blood_level_entry import BloodLevelEntry
@@ -11,7 +11,7 @@ from neocaffeine.patient.context_entry import ContextEntry
 from neocaffeine.patient.covariates import Covariates
 from neocaffeine.patient.detected_event import DetectedEvent
 from neocaffeine.patient.dose_entry import DoseEntry
-from neocaffeine.patient.hourly_record import HourlyRecord
+from neocaffeine.patient.daily_record import DailyRecord
 from neocaffeine.patient.patient_errors import DefinitionalError, RecordingSequenceError
 from neocaffeine.patient.range_validation import ValidationRanges
 from neocaffeine.patient.signal_reference import SignalReference
@@ -24,7 +24,7 @@ BLOOD_LEVEL_LOG = "blood_level_log"
 CONTEXT_LOG = "context_log"
 SIGNAL_REFERENCES = "signal_references"
 DETECTED_EVENTS = "detected_events"
-HOURLY_RECORDS = "hourly_records"
+DAILY_RECORDS = "daily_records"
 BASELINE_RECORDS = "baseline_records"
 LOG_ENTRY_TYPES = {
     WEIGHT_LOG: WeightEntry,
@@ -33,11 +33,11 @@ LOG_ENTRY_TYPES = {
     CONTEXT_LOG: ContextEntry,
     SIGNAL_REFERENCES: SignalReference,
     DETECTED_EVENTS: DetectedEvent,
-    HOURLY_RECORDS: HourlyRecord,
+    DAILY_RECORDS: DailyRecord,
     BASELINE_RECORDS: BaselineRecord,
 }
-OBSERVATION_LOGS = (BLOOD_LEVEL_LOG, HOURLY_RECORDS)
-HOURLY_COUNT_RANGES = (
+OBSERVATION_LOGS = (BLOOD_LEVEL_LOG, DAILY_RECORDS)
+DAILY_COUNT_RANGES = (
     ("apnea_count", "apnea_count"),
     ("bradycardia_count", "bradycardia_count"),
     ("desaturation_count", "desaturation_count"),
@@ -61,9 +61,9 @@ def build_logs() -> dict[str, AppendOnlyLog]:
             lambda entry: (entry.event_definition_version, entry.event_type, entry.onset_hours),
             lambda entry: (entry.event_definition_version, entry.event_type),
         ),
-        HOURLY_RECORDS: AppendOnlyLog(
-            lambda entry: entry.hour_index,
-            lambda entry: (entry.event_definition_version, entry.hour_index),
+        DAILY_RECORDS: AppendOnlyLog(
+            lambda entry: entry.day_index,
+            lambda entry: (entry.event_definition_version, entry.day_index),
             lambda entry: entry.event_definition_version,
         ),
         BASELINE_RECORDS: AppendOnlyLog(
@@ -102,7 +102,7 @@ class Patient:
         """Return the recording sequence number of the latest entry, or 0 if there is none."""
         return self._last_recording_sequence
 
-    def _check_range(self, entry_id: str, range_name: str, value: float, hour: int | None) -> None:
+    def _check_range(self, entry_id: str, range_name: str, value: float, day: int | None) -> None:
         """Store a flag if a value is outside its validation range, or if the range is empty."""
         check = self._validation_ranges.check(range_name, value)
         if not check.checked:
@@ -110,7 +110,7 @@ class Patient:
                 entry_id=entry_id,
                 kind=FlagKind.RANGE_UNCHECKED,
                 range_name=range_name,
-                hour_index=hour,
+                day_index=day,
                 message=f"{range_name} not checked: the registry validation range is empty.",
             ))
         elif not check.inside:
@@ -118,22 +118,22 @@ class Patient:
                 entry_id=entry_id,
                 kind=FlagKind.OUT_OF_VALIDATION_RANGE,
                 range_name=range_name,
-                hour_index=hour,
+                day_index=day,
                 message=f"{range_name} value {value} is outside the registry validation range.",
             ))
 
     def _range_checks(self, log_name: str, entry: Any) -> list[tuple[str, float, int | None]]:
-        """Return the (range name, value, hour) checks that apply to an entry of a log."""
+        """Return the (range name, value, observation day) checks that apply to an entry of a log."""
         if log_name == WEIGHT_LOG:
-            return [("weight", entry.weight_grams, hour_index(entry.time_hours))]
+            return [("weight", entry.weight_grams, day_index(entry.time_hours))]
         if log_name == DOSE_LOG:
-            return [("dose_amount", entry.amount_mg_per_kg, hour_index(entry.time_hours))]
+            return [("dose_amount", entry.amount_mg_per_kg, day_index(entry.time_hours))]
         if log_name == BLOOD_LEVEL_LOG and entry.concentration_mg_per_l is not None:
-            return [("blood_level", entry.concentration_mg_per_l, hour_index(entry.sampling_time_hours))]
+            return [("blood_level", entry.concentration_mg_per_l, day_index(entry.sampling_time_hours))]
         if log_name == CONTEXT_LOG:
-            return [("fio2", entry.fio2_fraction, hour_index(entry.time_hours))]
-        if log_name == HOURLY_RECORDS:
-            return [(range_name, getattr(entry, field), entry.hour_index) for field, range_name in HOURLY_COUNT_RANGES]
+            return [("fio2", entry.fio2_fraction, day_index(entry.time_hours))]
+        if log_name == DAILY_RECORDS:
+            return [(range_name, getattr(entry, field), entry.day_index) for field, range_name in DAILY_COUNT_RANGES]
         return []
 
     def _record(self, log_name: str, entry: Any, recording_sequence: int) -> list[ValidationFlag]:
@@ -148,8 +148,8 @@ class Patient:
         self._logs[log_name].append(entry, recording_sequence)
         self._last_recording_sequence = recording_sequence
         flag_count = len(self._flags)
-        for range_name, value, hour in self._range_checks(log_name, entry):
-            self._check_range(entry.entry_id, range_name, value, hour)
+        for range_name, value, day in self._range_checks(log_name, entry):
+            self._check_range(entry.entry_id, range_name, value, day)
         return self._flags[flag_count:]
 
     def _add(self, log_name: str, entry: Any) -> list[ValidationFlag]:
@@ -184,9 +184,9 @@ class Patient:
         """Add an event detected by the features layer."""
         return self._add(DETECTED_EVENTS, entry)
 
-    def add_hourly_record(self, entry: HourlyRecord) -> list[ValidationFlag]:
-        """Add an hourly record and return its flags."""
-        return self._add(HOURLY_RECORDS, entry)
+    def add_daily_record(self, entry: DailyRecord) -> list[ValidationFlag]:
+        """Add a daily record and return its flags."""
+        return self._add(DAILY_RECORDS, entry)
 
     def add_baseline_record(self, entry: BaselineRecord) -> list[ValidationFlag]:
         """Add the pre-dose baseline record of one event-definition version."""
@@ -223,10 +223,10 @@ class Patient:
             if event.event_definition_version == event_definition_version
         )
 
-    def hourly_records(self, event_definition_version: float) -> tuple[HourlyRecord, ...]:
-        """Return the current hourly records of one event-definition version, in hour order."""
+    def daily_records(self, event_definition_version: float) -> tuple[DailyRecord, ...]:
+        """Return the current daily records of one event-definition version, in day order."""
         return tuple(
-            record for record in self._logs[HOURLY_RECORDS].current_entries()
+            record for record in self._logs[DAILY_RECORDS].current_entries()
             if record.event_definition_version == event_definition_version
         )
 
@@ -270,11 +270,11 @@ class Patient:
         """Return the identifiers of the current entries of a log."""
         return frozenset(entry.entry_id for entry in self._logs[log_name].current_entries())
 
-    def excluded_hours(self) -> frozenset[int]:
-        """Return the hours excluded from estimation because a current observation is out of range."""
+    def excluded_days(self) -> frozenset[int]:
+        """Return the observation days excluded from estimation because a current observation is out of range."""
         current_observation_ids = frozenset().union(*(self.current_entry_ids(name) for name in OBSERVATION_LOGS))
         return frozenset(
-            flag.hour_index
+            flag.day_index
             for flag in self._flags
             if flag.kind == FlagKind.OUT_OF_VALIDATION_RANGE and flag.entry_id in current_observation_ids
         )

@@ -12,6 +12,7 @@
   const phaseSide = document.getElementById('side-phase-badge')
   const simTimeText = document.getElementById('sim-time-text')
   const hourIndexText = document.getElementById('hour-index-text')
+  const dayIndexText = document.getElementById('day-index-text')
   const versionText = document.getElementById('state-version-text')
   const convergenceStatusText = document.getElementById('convergence-status-text')
 
@@ -33,8 +34,9 @@
   const nCardPanel = document.getElementById('n-card-panel')
   const nInfo = document.getElementById('n-info')
   const nStatusText = document.getElementById('n-status-text')
-  const awaitingHourText = document.getElementById('awaiting-hour-text')
-  const nHourEndedText = document.getElementById('n-hour-ended-text')
+  const nextDayText = document.getElementById('next-day-text')
+  const nDayEndedText = document.getElementById('n-day-ended-text')
+  const HOURS_PER_DAY = 24
   const nTimeRemainingText = document.getElementById('n-time-remaining-text')
   const prefillNText = document.getElementById('prefill-n-text')
   const observedNInput = document.getElementById('observed-n-input')
@@ -71,7 +73,7 @@
   const concEstLatest = document.getElementById('conc-est-latest')
 
   const thetaTableBody = document.getElementById('theta-table-body')
-  const lastHourN = document.getElementById('last-hour-n')
+  const lastDayN = document.getElementById('last-day-n')
   const lossLatest = document.getElementById('loss-latest')
   const newtonIter = document.getElementById('newton-iter')
   const gradNorm = document.getElementById('grad-norm')
@@ -219,7 +221,7 @@
     if (code === 'stale_state_version') return 'State changed. Please retry.'
     if (code === 'phase_awaiting_n_requires_submission') return 'Submit N before advancing time.'
     if (code === 'phase_not_awaiting_n') return 'N can be submitted only when waiting for N.'
-    if (code === 'hour_index_mismatch') return 'The submitted hour does not match the pending hour.'
+    if (code === 'day_index_mismatch') return 'The submitted day does not match the pending day.'
     if (code === 'phase_awaiting_n_locked') return 'Interventions are locked while awaiting N.'
     if (code === 'run_converged_locked') return 'Run is converged and controls are locked.'
     if (code === 'run_not_found') return 'This run no longer exists.'
@@ -273,18 +275,18 @@
   }
 
   function updateNCardState(state) {
-    const simHourIndex = Number(state.time.sim_hour_index)
-    const currentProgress = Number(state.time.hour_progress_01)
-    const awaitingHour = state.hour_gate.awaiting_n_for_hour_index
-    const prefill = state.hour_gate.n_prefill_value
+    const simDayIndex = Number(state.time.sim_day_index)
+    const dayProgress = Number(state.time.day_progress_01)
+    const awaitingDay = state.n_gate.awaiting_n_for_day_index
+    const prefill = state.n_gate.n_prefill_value
     const awaiting = state.meta.phase === 'awaiting_n'
 
-    const nextHour = awaiting ? awaitingHour + 1 : simHourIndex + 1
-    const timeRemaining = awaiting ? 0 : Math.max(0, 1 - currentProgress)
+    const pendingDay = awaiting ? awaitingDay : simDayIndex
+    const hoursRemaining = awaiting ? 0 : Math.max(0, HOURS_PER_DAY * (1 - dayProgress))
 
-    awaitingHourText.value = String(nextHour)
-    nHourEndedText.value = awaitingHour === null ? '-' : String(awaitingHour)
-    nTimeRemainingText.value = formatNumber(timeRemaining, 2)
+    nextDayText.value = String(pendingDay)
+    nDayEndedText.value = awaitingDay === null ? '-' : String(awaitingDay)
+    nTimeRemainingText.value = formatNumber(hoursRemaining, 1)
     prefillNText.value = prefill === null ? '-' : String(prefill)
 
     observedNInput.disabled = !awaiting || nSubmitInFlight
@@ -294,14 +296,14 @@
     if (nSubmitInFlight) {
       nStatusText.textContent = 'updating...'
     } else if (awaiting) {
-      nStatusText.textContent = `hour ${awaitingHour}`
+      nStatusText.textContent = `day ${awaitingDay}`
     } else {
-      nStatusText.textContent = `next h${nextHour} in ${formatNumber(timeRemaining, 2)}h`
+      nStatusText.textContent = `day ${pendingDay} N in ${formatNumber(hoursRemaining, 1)}h`
     }
 
     nInfo.setAttribute('data-tooltip', awaiting
-      ? `Observed event count for hour ${awaitingHour}.`
-      : `N is used at hour boundaries. Next submission is for hour ${nextHour}.`)
+      ? `Observed event count for day ${awaitingDay} (24 h).`
+      : `N is the event count of one 24 h day, submitted at each day boundary. Next submission is for day ${pendingDay}.`)
 
     if (awaiting) {
       observedNInput.value = prefill ?? ''
@@ -340,6 +342,7 @@
     setPhaseBadge(phaseSide, uiPhase)
     simTimeText.textContent = formatNumber(state.time.sim_time_hours, 3)
     hourIndexText.textContent = String(state.time.sim_hour_index)
+    dayIndexText.textContent = String(state.time.sim_day_index)
     versionText.textContent = String(envelope.state_version)
     convergenceStatusText.textContent = state.convergence.is_converged ? 'converged' : 'running'
 
@@ -378,7 +381,7 @@
 
     renderThetaTable(state.estimator_panel.theta)
 
-    lastHourN.textContent = `${formatNumber(state.estimator_panel.last_hour.predicted_n, 2)} / ${state.estimator_panel.last_hour.observed_n ?? '-'}`
+    lastDayN.textContent = `${formatNumber(state.estimator_panel.last_day.predicted_n, 2)} / ${state.estimator_panel.last_day.observed_n ?? '-'}`
     lossLatest.textContent = formatNumber(latest(state.estimator_panel.diagnostics.loss_negative_log_likelihood, 'value'), 4)
     newtonIter.textContent = String(state.estimator_panel.diagnostics.newton_iterations_last_update)
     gradNorm.textContent = formatNumber(state.estimator_panel.diagnostics.gradient_norm_last_update, 4)
@@ -409,8 +412,8 @@
       return
     }
     const state = envelope.state
-    const hourIndex = state.hour_gate.awaiting_n_for_hour_index
-    if (hourIndex === null) {
+    const dayIndex = state.n_gate.awaiting_n_for_day_index
+    if (dayIndex === null) {
       return
     }
 
@@ -418,7 +421,7 @@
     updateNCardState(state)
 
     const observedN = Number(observedNInput.value)
-    const response = await window.simulatorApiClient.submitN(runId, hourIndex, envelope.state_version, observedN)
+    const response = await window.simulatorApiClient.submitN(runId, dayIndex, envelope.state_version, observedN)
     nSubmitInFlight = false
     if (handleApiError(response, nError, 'Could not submit N.')) {
       updateNCardState(state)
@@ -426,6 +429,11 @@
     }
     clearError(nError)
     renderState(response)
+    if (response.state.meta.phase === 'playing' && !window.simulatorClockController.isRunning()) {
+      hasPlayed = true
+      window.simulatorClockController.start(clockTick)
+      setClockVisualState(true)
+    }
   }
 
   async function clockTick(deltaSimHours) {
@@ -459,9 +467,7 @@
       setClockVisualState(false)
       if (window.simulatorStateStore.nMode === 'auto') {
         await submitObservedN()
-        if (window.simulatorStateStore.stateEnvelope?.state?.meta?.phase === 'playing') {
-          playPauseButton.click()
-        }
+
       }
     }
   }

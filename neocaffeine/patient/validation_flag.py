@@ -13,10 +13,10 @@ class FlagKind(StrEnum):
 
 @dataclass(frozen=True)
 class ValidationFlag:
-    """One flag on one entry: its kind, the range checked, the hour it concerns, and a message."""
+    """One flag on one entry: its kind, the range checked, the observation day it concerns, and a message."""
 
     entry_id: str
     kind: FlagKind
     range_name: str
-    hour_index: int | None
+    day_index: int | None
     message: str

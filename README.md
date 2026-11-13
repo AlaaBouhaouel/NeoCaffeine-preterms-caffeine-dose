@@ -12,8 +12,26 @@ King Fahd University of Petroleum and Minerals (KFUPM), Dhahran, Saudi Arabia.
 Date: Nov 2026
 ---
 
+## Proof of concept paper
+
+**An In Silico Self-Calibrating Simulator for Caffeine Dosing in Apnea of Prematurity: Learning Hidden Patterns from Clinical Data**
+Ala Bouhaouel, Department of Information and Computer Science, King Fahd University of Petroleum and Minerals. Proof of concept, November 13, 2026.
+Full text: [NeoCaffeine.pdf](NeoCaffeine.pdf)
+
+This repository implements the system proposed in the paper. In short:
+
+- **Problem.** Caffeine citrate is the first-line treatment for apnea of prematurity, but it is dosed by a one-size-fits-all regimen based on weight and postnatal age. Infants differ in sensitivity, maturity and tolerance, and the same infant changes over time as caffeine clearance rises about fourfold in the first month. Therapeutic drug monitoring needs repeated blood sampling, there are no validated biomarkers to guide dosing, and more than 80% of monitor-detected apneas are missed in clinical notes.
+- **Proposal.** An in silico, self-calibrating simulator for individualized caffeine dosing using only non-invasive data, focused on infants who do not respond to standard regimens. Each infant's hidden parameters start from population priors (published pharmacokinetic models and the infant's covariates) and are **updated once a day** from the observed daily apnea count and the doses actually given. Candidate biomarkers are treated as distributions refined with clinical data.
+- **Three phases.** (1) Patient initialization: initial state (clearance, volume of distribution, elimination rate, half-life, steepness) from population models and covariates. (2) Calibration: a daily Bayesian update comparing predicted and observed apnea counts through a count likelihood, with the population priors as a reference. (3) Dose recommendation: the updated estimates become a suggested dose for clinician review.
+- **Design principles.** Every variable is sourced (no model, parameter or biomarker enters without at least one published source), and outputs stay interpretable and open to clinician review.
+- **Limitations.** Validation is still required; learning hidden states introduces parameter uncertainty; from apnea data alone, clearance, volume and caffeine sensitivity cannot be separated without an exposure measurement; clinical datasets are small and incomplete; candidate biomarkers are not yet validated for caffeine response.
+- **Strictly advisory.** The system suggests a dose for clinician review and never administers one. It is intended for research and preclinical testing of dosing strategies.
+
+---
+
 ## Table of contents
 
+0. [Proof of concept paper](#proof-of-concept-paper)
 1. [Overview](#1-overview)
 2. [Glossary](#2-glossary)
 3. [How the system works, in one page](#3-how-the-system-works-in-one-page)
@@ -83,7 +101,7 @@ A one-size-fits-all regimen therefore over-treats some infants and under-treats 
 
 ### What NeoCaffeine does
 
-NeoCaffeine treats each infant as a system with **hidden properties** (how fast they remove caffeine, how sensitive they are to it, how their breathing matures) and estimates those properties **hour by hour from the infant's own data**: apnea events, blood caffeine levels when available, and a maturity signal derived from brain and respiratory recordings. With the estimated properties, it computes which concentration this infant needs and which dose reaches it, then hands that suggestion to a clinician.
+NeoCaffeine treats each infant as a system with **hidden properties** (how fast they remove caffeine, how sensitive they are to it, how their breathing matures) and estimates those properties **day by day (one update per 24 h observation day) from the infant's own data**: apnea events, blood caffeine levels when available, and a maturity signal derived from brain and respiratory recordings. With the estimated properties, it computes which concentration this infant needs and which dose reaches it, then hands that suggestion to a clinician.
 
 ### Where the ideas come from
 
@@ -154,12 +172,12 @@ NeoCaffeine treats each infant as a system with **hidden properties** (how fast 
             +-----------------------+-------------------------+
                                     |
                                     v
- Features   | hourly apnea counts, valid observation time,    |
+ Features   | daily apnea counts, valid observation time,     |
             | maturity M(t), pre-dose baseline apnea rate     |
                                     |
                                     v
- Estimator  | each hour: predict apneas -> compare with the   |
- (hourly)   | observed count -> correct the hidden values     |
+ Estimator  | each day: predict apneas -> compare with the    |
+ (daily)    | observed count -> correct the hidden values     |
             | (clearance, volume, Emax, EC50, maturity fade)  |
                                     |
                                     v
@@ -170,7 +188,7 @@ NeoCaffeine treats each infant as a system with **hidden properties** (how fast 
             | for clinician review                            |
 ```
 
-The loop is: **predict, compare, correct**, every hour. At each dosing time, the current estimate is converted into a dose suggestion.
+The loop is: **predict, compare, correct**, once per 24 h observation day. At each dosing time, the current estimate is converted into a dose suggestion.
 
 ---
 
@@ -184,6 +202,7 @@ The loop is: **predict, compare, correct**, every hour. At each dosing time, the
 - A **clock abstraction**, in its own `clock/` folder, has two implementations:
   - a **data clock**, which follows real timestamps;
   - a **simulation clock**, which advances instantly from event to event, so days of a virtual infant run in seconds.
+- **Observation days:** day d is the half-open interval [24d, 24d + 24) hours since birth (day 0 is the first 24 hours). The apnea count N is observed and the estimator updates once per day.
 - Playback speed for demonstrations is a display setting of the web app only and never affects the model.
 
 ### 4.2 Variable roles
@@ -197,16 +216,16 @@ Every variable has exactly one role.
 | **Exogenous context** | Known conditions not controlled by the model | FiO2, breathing support mode |
 | **Measured before caffeine** | Computed from the pre-dose window | Baseline apnea rate at the time of the window |
 | **Module output** | Produced by an independent module, treated as given | Maturity M(t) |
-| **Observations** | Noisy measurements used to correct the model | Hourly apnea counts N, blood caffeine levels when available |
+| **Observations** | Noisy measurements used to correct the model | Daily apnea counts N, blood caffeine levels when available |
 | **Computed state** | Fully determined by inputs and parameters | Caffeine amount in the body A(t) |
-| **Estimated parameters (theta)** | Unknown, estimated hourly | Clearance CL (allowed to drift), volume V, Emax, EC50, maturity fade rate beta_M |
+| **Estimated parameters (theta)** | Unknown, estimated daily | Clearance CL (allowed to drift), volume V, Emax, EC50, maturity fade rate beta_M |
 | **Fixed from registry** | Sourced values, not estimated | Hill coefficient h, concentration bounds, all priors and variabilities |
 
 The conversion factor between caffeine citrate and caffeine base is a registry entry. Every dose and every formula states which one it uses.
 
 ### 4.3 The model chain
 
-For each hour, the model computes the expected number of apneas from the doses and the current parameter values.
+For each 24 h observation day, the model computes the expected number of apneas from the doses and the current parameter values.
 
 **Step 1: caffeine in the body (pharmacokinetics).** A one-compartment model treats the body as a single well-mixed tank:
 
@@ -252,29 +271,29 @@ lambda(t) = lambda0(t) x (1 - E(C(t))) (apnea rate under caffeine)
 
 Check: at `C = EC50`, `S = 1/2`, so the effect is half of Emax.
 
-**Step 5: expected apneas in hour k.**
+**Step 5: expected apneas in day d.**
 
 ```
-mu_k = integral of lambda(t) over the valid time of hour k
+mu_d = integral of lambda(t) over the valid time of day d
 ```
 
-Because C changes within the hour, the integral is computed numerically over sub-steps. Only **valid time** counts (time not excluded for artifacts or disconnection, see 4.4).
+Because C changes within the day, the integral is computed numerically over sub-steps. Only **valid time** counts (time not excluded for artifacts or disconnection, see 4.4).
 
 ### 4.4 Observations
 
-**Apnea count N_k.** The number of qualifying apnea events whose **onset** falls inside hour k, during valid observation time.
+**Apnea count N_d.** The number of qualifying apnea events whose **onset** falls inside day d, during valid observation time.
 
-- Event detection lives in the features layer, which reads raw signals and outputs, per hour: `N_k`, `dt_valid_k` (valid time in hours), and a data quality score. The estimator never sees raw signals.
-- An event that starts in hour k and ends in hour k+1 belongs to hour k only.
-- If `dt_valid_k = 0`, the hour produces no update.
+- Event detection lives in the features layer, which reads raw signals and outputs, per day: `N_d`, `dt_valid_d` (valid time in hours, from 0 to 24), and a data quality score. The estimator never sees raw signals.
+- An event that starts in day d and ends in day d+1 belongs to day d only.
+- If `dt_valid_d = 0`, the day produces no update.
 - Event criteria (pause duration, heart rate and SpO2 thresholds, overlap rules) are registry entries. Bradycardia and desaturation counts are also detected and logged; whether they enter N is a registry decision.
-- Each hourly record stores the version of the event definition used, so counts can be recomputed if a definition changes.
+- Each daily record stores the version of the event definition used, so counts can be recomputed if a definition changes.
 
 **Blood caffeine level.** A laboratory measurement of concentration from a small blood sample, at a recorded time. It is the closest thing to ground truth, with a known assay error. It is the only observation that sees concentration directly, which makes it the strongest anchor for CL and V.
 
 ### 4.5 The estimator
 
-The estimator solves an **inverse problem**: find the parameter values most consistent with the observations. It runs **recursively**: every hour, it uses only the new hour's data plus a memory of everything before.
+The estimator solves an **inverse problem**: find the parameter values most consistent with the observations. It runs **recursively**: every day, it uses only the new day's data plus a memory of everything before.
 
 **Estimated parameters (theta).** Each is transformed so the optimizer can move freely without breaking physical limits:
 
@@ -287,11 +306,11 @@ theta = ( log CL , log V , logit Emax , log EC50 , log beta_M )
 
 **Baseline apnea rate.** Computed in the features layer from the pre-dose window: total qualifying events divided by total valid hours, with the maturity during the window, M_window. Both are fixed inputs, not part of theta; the model chain uses them directly. Its Poisson standard error (square root of the count, divided by valid hours) is stored for reporting. If no pre-dose window exists, a population fallback from the registry supplies both a rate and the maturity at which it was reported, which replaces M_window, and every output carries the flag `no_baseline_window`.
 
-**The loss at hour k.**
+**The loss at day d.**
 
 ```
-Loss_k(theta) =
-    [ mu_k - N_k x log(mu_k) ]                                         apnea term
+Loss_d(theta) =
+    [ mu_d - N_d x log(mu_d) ]                                         apnea term
   + [ (log C_measured - log C_predicted)^2 / (2 x sigma_assay^2) ]     blood term (when available)
   + 1/2 x (theta - theta_prev)^T x Sigma_prior^-1 x (theta - theta_prev)  memory term
   + barrier(C)                                                         bounds term
@@ -299,25 +318,25 @@ Loss_k(theta) =
 
 - **Apnea term:** the negative log of the Poisson likelihood (constant terms dropped). It is small when the predicted count matches the observed one.
 - **Blood term:** the error between measured and predicted concentration in log space, since laboratory error scales with the value. A level below the assay's detection limit is stored without a value and flagged; it enters as a censored observation (the probability that the true level is below the limit). The exact term will be confirmed at the estimator step.
-- **Memory term:** summarizes all earlier hours as a penalty around last hour's estimate. Yesterday's posterior becomes today's prior. This is equivalent to regularization (weight decay) in neural network training.
+- **Memory term:** summarizes all earlier days as a penalty around the previous day's estimate. Yesterday's posterior becomes today's prior. This is equivalent to regularization (weight decay) in neural network training.
 - **Bounds term:** a barrier that grows steeply as the predicted concentration approaches the sourced bounds.
 
-**Clearance drift.** Clearance rises as the infant matures. Before each hour, the memory is loosened in the clearance direction only:
+**Clearance drift.** Clearance rises as the infant matures. Before each day, the memory is loosened in the clearance direction only:
 
 ```
 Sigma_prior = Sigma_prev + Q
 Q = diag( sigma_drift^2 , 0 , 0 , 0 , 0 )
 ```
 
-**Minimization.** Newton's method, starting from last hour's estimate. Gradients and Hessians are computed by automatic differentiation. The chain rule links every parameter to the loss through mu_k; for example, `d(apnea term)/d(mu_k) = 1 - N_k / mu_k`, so if more apneas were observed than predicted, the update moves toward parameters that predict more apneas.
+**Minimization.** Newton's method, starting from the previous day's estimate. Gradients and Hessians are computed by automatic differentiation. The chain rule links every parameter to the loss through mu_d; for example, `d(apnea term)/d(mu_d) = 1 - N_d / mu_d`, so if more apneas were observed than predicted, the update moves toward parameters that predict more apneas.
 
-**Uncertainty.** At the minimum, the Hessian H_k gives the new uncertainty (Laplace approximation):
+**Uncertainty.** At the minimum, the Hessian H_d gives the new uncertainty (Laplace approximation):
 
 ```
-Sigma_k = H_k^-1
+Sigma_d = H_d^-1
 ```
 
-**Initialization (hour 0).**
+**Initialization (day 0).**
 
 ```
 theta_0 = ( log CL_typical , log V_typical , logit Emax_pop , log EC50_pop , log beta_M_pop )
@@ -326,10 +345,10 @@ Sigma_0 = diag( omega_CL^2 , omega_V^2 , omega_Emax^2 , omega_EC50^2 , omega_bet
 
 `CL_typical` and `V_typical` come from the population pharmacokinetic model selected in the run configuration, evaluated at the infant's covariates. The `omega` values (inter-individual variability) come from the registry.
 
-**The hourly loop.**
+**The daily loop.**
 
 1. Loosen the memory for clearance drift.
-2. Build Loss_k from the new apnea count, any blood level, the memory, and the bounds.
+2. Build Loss_d from the new daily apnea count, any blood level, the memory, and the bounds.
 3. Minimize from the previous estimate with Newton's method.
 4. Compute the Hessian and the new uncertainty.
 5. Store the estimate and its uncertainty; at dosing time, run the decision.
@@ -372,7 +391,7 @@ Clearance sets the maintenance dose; volume sets the loading dose. The caffeine 
 
 **Confidence gate.** While uncertainty is wide, the suggestion stays at the standard regimen. It may deviate only as the uncertainty narrows. The standard regimen and the uncertainty threshold are registry entries.
 
-**Output.** The suggested dose, the predicted concentration range, the current parameter estimates with their uncertainty, and flags (high heart rate, wide uncertainty, excluded hours, no baseline window). Always for clinician review.
+**Output.** The suggested dose, the predicted concentration range, the current parameter estimates with their uncertainty, and flags (high heart rate, wide uncertainty, excluded days, no baseline window). Always for clinician review.
 
 **Toxicity in this version** is handled entirely by the sourced concentration bounds. Heart rate is used as a safety flag only: the heart-rate signal is stored by reference, like SpO2, and the flag threshold is a registry entry.
 
@@ -441,7 +460,7 @@ NeoCaffeine-preterms-caffeine-dose/
     estimator/            loss terms, Newton steps, recursive update
     decision/             target concentration, dose, safety check
     simulator/            virtual infants
-    runner/               the hourly loop for both modes
+    runner/               the daily loop for both modes
     evaluation/           convergence, coverage, dose quality
   tests/                  mirrors the package
   webapp/                 user interface (to be developed)

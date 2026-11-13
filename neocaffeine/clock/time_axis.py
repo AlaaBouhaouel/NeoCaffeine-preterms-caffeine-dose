@@ -1,4 +1,4 @@
-# The model time axis: conversion between UTC timestamps and hours since birth, and hour bins.
+# The model time axis: conversion between UTC timestamps and hours since birth, hour bins, and the 24 h observation days.
 
 import math
 from datetime import datetime, timedelta, timezone
@@ -7,6 +7,7 @@ from neocaffeine.clock.clock_errors import BeforeBirthError
 from neocaffeine.clock.utc_check import require_utc
 
 SECONDS_PER_HOUR = 3600
+HOURS_PER_DAY = 24
 
 
 def require_not_before_birth(hours: float) -> float:
@@ -41,3 +42,14 @@ def hour_bounds(hour: int) -> tuple[float, float]:
     """Return the start (included) and end (excluded) of hour k, in hours since birth."""
     require_not_before_birth(hour)
     return float(hour), float(hour + 1)
+
+
+def day_index(hours: float) -> int:
+    """Return d such that the time lies in observation day d, the half-open interval [24d, 24d + 24)."""
+    return math.floor(require_not_before_birth(hours) / HOURS_PER_DAY)
+
+
+def day_bounds(day: int) -> tuple[float, float]:
+    """Return the start (included) and end (excluded) of observation day d, in hours since birth."""
+    require_not_before_birth(day)
+    return float(day * HOURS_PER_DAY), float((day + 1) * HOURS_PER_DAY)

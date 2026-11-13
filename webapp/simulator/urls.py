@@ -9,21 +9,24 @@ from simulator.views.api_actions import (
     change_context,
     give_dose,
     set_monitoring,
-    submit_hour_n,
+    submit_day_n,
 )
 from simulator.views.api_runs import create_run
 from simulator.views.api_state import get_run_state, get_run_summary
 from simulator.views.dashboard import dashboard_view
 from simulator.views.landing import landing_view
+from simulator.views.paper import paper_view
 
 
 urlpatterns = [
     path("", landing_view),
+    path("paper", paper_view),
+    path("paper/", paper_view),
     path("runs/<uuid:run_id>/", dashboard_view),
     path("api/v1/runs", create_run),
     path("api/v1/runs/<uuid:run_id>/state", get_run_state),
     path("api/v1/runs/<uuid:run_id>/advance", advance_run),
-    path("api/v1/runs/<uuid:run_id>/hours/<int:hour_index>/n", submit_hour_n),
+    path("api/v1/runs/<uuid:run_id>/days/<int:day_index>/n", submit_day_n),
     path("api/v1/runs/<uuid:run_id>/interventions/dose", give_dose),
     path("api/v1/runs/<uuid:run_id>/interventions/dose/accept", accept_suggested_dose),
     path("api/v1/runs/<uuid:run_id>/interventions/context", change_context),
