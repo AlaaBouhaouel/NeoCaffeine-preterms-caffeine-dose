@@ -4,7 +4,7 @@ from pathlib import Path
 
 
 BASE_DIR = Path(__file__).resolve().parents[2]
-PAPER_PDF_PATH = BASE_DIR.parent / "NeoCaffeine.pdf"
+PAPER_PDF_PATH = BASE_DIR.parent / "docs" / "poc" / "NeoCaffeine.pdf"
 
 SECRET_KEY = "set-in-environment"
 DEBUG = False

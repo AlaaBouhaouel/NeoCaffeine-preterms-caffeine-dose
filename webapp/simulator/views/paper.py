@@ -1,4 +1,4 @@
-# Purpose: Serves the proof of concept paper (NeoCaffeine.pdf at the repository root) at a short, stable URL for QR codes.
+# Purpose: Serves the proof of concept paper (docs/poc/NeoCaffeine.pdf) at a short, stable URL for QR codes.
 
 from django.conf import settings
 from django.http import FileResponse, Http404, HttpRequest

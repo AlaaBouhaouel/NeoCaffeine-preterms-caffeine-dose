@@ -16,7 +16,7 @@ Date: Nov 2026
 
 **An In Silico Self-Calibrating Simulator for Caffeine Dosing in Apnea of Prematurity: Learning Hidden Patterns from Clinical Data**
 Ala Bouhaouel, Department of Information and Computer Science, King Fahd University of Petroleum and Minerals. Proof of concept, November 13, 2026.
-Full text: [NeoCaffeine.pdf](NeoCaffeine.pdf)
+Full text: [NeoCaffeine.pdf](docs/poc/NeoCaffeine.pdf)
 
 This repository implements the system proposed in the paper. In short:
 

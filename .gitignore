@@ -9,7 +9,8 @@ dist/
 .vscode/
 .idea/
 
-/docs/
+/docs/*
+!/docs/poc/
 .claude/
 CLAUDE.md
 CLAUDE.local.md

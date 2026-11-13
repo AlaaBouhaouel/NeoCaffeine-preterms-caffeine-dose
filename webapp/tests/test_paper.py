@@ -27,6 +27,8 @@ def test_paper_rejects_post(client, settings, tmp_path) -> None:
     assert client.post("/paper").status_code == 405
 
 
-def test_default_paper_path_points_to_repository_root(settings) -> None:
+def test_default_paper_path_points_to_docs_poc(settings) -> None:
     assert settings.PAPER_PDF_PATH.name == "NeoCaffeine.pdf"
-    assert (settings.PAPER_PDF_PATH.parent / "pyproject.toml").is_file()
+    assert settings.PAPER_PDF_PATH.parent.name == "poc"
+    assert (settings.PAPER_PDF_PATH.parents[2] / "pyproject.toml").is_file()
+    assert settings.PAPER_PDF_PATH.is_file()
