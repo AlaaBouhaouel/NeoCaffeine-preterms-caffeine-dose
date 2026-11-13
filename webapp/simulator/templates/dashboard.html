@@ -5,6 +5,7 @@
 <link rel="stylesheet" href="{% static 'simulator/vendor/uplot/uPlot.min.css' %}">
 <link rel="stylesheet" href="{% static 'simulator/css/dashboard.css' %}">
 <link rel="stylesheet" href="{% static 'simulator/css/user-guide.css' %}">
+<link rel="stylesheet" href="{% static 'simulator/css/mobile.css' %}">
 {% endblock %}
 
 {% block content %}
@@ -43,7 +44,8 @@
     </header>
 
     <section id="dashboard-main-grid" class="main-grid">
-      <aside class="sidebar panel-surface">
+      <button id="sidebar-toggle" class="sidebar-toggle" type="button" aria-expanded="false" aria-controls="dashboard-sidebar" hidden>Patient and run details</button>
+      <aside id="dashboard-sidebar" class="sidebar panel-surface">
         <section class="meta-section">
           <h2>PATIENT</h2>
           <div class="kv-grid">

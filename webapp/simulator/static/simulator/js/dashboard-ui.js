@@ -631,6 +631,13 @@
 
   window.simulatorClockController.setSpeed(Number(speedSelect.value))
   window.simulatorStateStore.nMode = nModeSelect.value
+  const sidebarToggle = document.getElementById('sidebar-toggle')
+  const mainGrid = document.getElementById('dashboard-main-grid')
+  sidebarToggle?.addEventListener('click', () => {
+    const open = mainGrid.classList.toggle('sidebar-open')
+    sidebarToggle.setAttribute('aria-expanded', open ? 'true' : 'false')
+  })
+
   setClockVisualState(false)
   refreshInitialState()
 })()

@@ -1,0 +1,302 @@
+/* Purpose: Phone layout (proposal 08) for the landing page and the dashboard. Every rule sits inside one max-width 760px block, so wider screens ignore this file; loaded last on both pages. */
+
+@media (max-width: 760px) {
+  html,
+  body {
+    height: auto;
+    min-height: 100%;
+    overflow-x: hidden;
+    overflow-y: auto;
+  }
+
+  .landing-stage,
+  .dashboard-stage {
+    position: static;
+    overflow: visible;
+    min-height: 100vh;
+  }
+
+  .landing-canvas {
+    position: static;
+    width: auto;
+    height: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    padding: 12px 16px 20px;
+  }
+
+  .landing-canvas,
+  .landing-canvas p,
+  .landing-canvas span,
+  .landing-canvas label,
+  .landing-canvas button,
+  .landing-canvas summary,
+  .landing-canvas .suffix,
+  .landing-canvas .field-error,
+  .landing-canvas .error,
+  .landing-canvas .notice,
+  .landing-canvas .monitoring-note,
+  .landing-canvas .step-card p,
+  .landing-canvas .step-card h3,
+  .landing-canvas .how-panel h2,
+  .landing-canvas .initial-care h3,
+  .landing-canvas .form-card h2 {
+    font-size: 14px !important;
+  }
+
+  .landing-canvas input,
+  .landing-canvas select {
+    font-size: 16px !important;
+    height: 40px;
+  }
+
+  .landing-canvas button {
+    min-height: 40px;
+  }
+
+  .landing-canvas .resume-link {
+    min-height: 0;
+  }
+
+  .landing-canvas .form-card-head .theme-toggle,
+  .landing-canvas .form-card-head .guide-open-button {
+    height: 36px;
+    min-width: 40px;
+  }
+
+  .project-header h1 {
+    font-size: 32px !important;
+  }
+
+  .project-column {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .motif-panel {
+    height: 200px;
+    flex: 0 0 auto;
+  }
+
+  .steps-row {
+    grid-template-columns: 1fr;
+  }
+
+  .form-column {
+    padding: 10px;
+  }
+
+  .form-card {
+    height: auto;
+    gap: 8px;
+  }
+
+  .field-row {
+    gap: 10px 20px;
+  }
+
+  .ga-row input {
+    width: 72px;
+  }
+
+  .landing-canvas input[type='range'] {
+    flex: 1 1 auto;
+    width: auto;
+    min-width: 0;
+    height: auto;
+  }
+
+  .inline-fields {
+    max-width: 100%;
+  }
+
+  .fio2-row {
+    display: flex;
+    width: 100%;
+  }
+
+  #birth-time {
+    max-width: calc(100vw - 140px);
+  }
+
+  #breathing-support {
+    width: 100%;
+  }
+
+  .resume-controls input {
+    min-width: 0;
+  }
+
+  .dashboard-canvas {
+    height: auto;
+    font-size: 13px;
+    gap: 8px;
+    padding: 8px 8px 12px;
+  }
+
+  .top-bar {
+    height: auto !important;
+    flex-wrap: wrap;
+    row-gap: 8px !important;
+    padding: 8px 12px !important;
+  }
+
+  .top-controls {
+    margin-left: 0;
+    width: 100%;
+    flex-wrap: wrap;
+    gap: 8px !important;
+  }
+
+  .top-controls select,
+  .top-controls button,
+  .new-run-link {
+    height: 36px;
+    font-size: 16px;
+  }
+
+  .top-controls .theme-toggle,
+  .top-controls .guide-open-button {
+    min-width: 40px;
+  }
+
+  .main-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    overflow: visible;
+  }
+
+  .center-column,
+  .right-column {
+    display: contents;
+  }
+
+  #dose-card-panel { order: 1; }
+  #n-card-panel { order: 2; }
+  .monitor-panel { order: 3; }
+  .estimator-panel { order: 4; }
+  .convergence-panel { order: 5; }
+  .intervention-strip { order: 6; }
+  .sidebar-toggle { order: 7; }
+  .sidebar { order: 8; }
+
+  .monitor-panel,
+  .estimator-panel,
+  .intervention-strip,
+  .n-card-panel,
+  .convergence-panel {
+    height: auto;
+    padding: 10px 12px;
+  }
+
+  .dose-inline,
+  .n-inline {
+    flex-wrap: wrap;
+    row-gap: 8px;
+  }
+
+  .dashboard-canvas main input,
+  .dashboard-canvas input[type='number'],
+  .dashboard-canvas select {
+    font-size: 16px;
+  }
+
+  #dose-amount,
+  #context-fio2-percent,
+  #blood-concentration,
+  #observed-n-input {
+    width: 84px !important;
+    height: 36px;
+  }
+
+  .dose-inline button,
+  .n-inline button,
+  .blood-form-grid button {
+    min-height: 36px;
+  }
+
+  .monitor-grid {
+    height: auto;
+    grid-template-rows: 150px 150px;
+  }
+
+  .estimator-table-wrap {
+    max-height: none;
+    overflow-x: auto;
+  }
+
+  .estimator-table {
+    min-width: 600px;
+  }
+
+  .estimator-panel .meta-line {
+    white-space: normal;
+  }
+
+  .convergence-panel {
+    height: 380px;
+  }
+
+  .conv-controls {
+    flex-wrap: wrap;
+  }
+
+  .panel-head {
+    flex-wrap: wrap;
+  }
+
+  .actions-grid {
+    grid-template-columns: 1fr !important;
+    row-gap: 8px;
+  }
+
+  .actions-grid > .action-group {
+    height: auto !important;
+    min-height: 0 !important;
+    max-height: none !important;
+  }
+
+  .sidebar-toggle {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    min-height: 44px;
+    padding: 0 14px;
+    font: inherit;
+    font-size: 14px;
+    color: var(--color-text-bright);
+    background: var(--color-panel);
+    border: 1px solid var(--color-border-subtle);
+    border-radius: 6px;
+    cursor: pointer;
+  }
+
+  .sidebar-toggle::after {
+    content: '+';
+    font-size: 18px;
+    color: var(--color-text-heading);
+  }
+
+  .sidebar-toggle[aria-expanded='true']::after {
+    content: '\2212';
+  }
+
+  .sidebar {
+    display: none;
+  }
+
+  .main-grid.sidebar-open .sidebar {
+    display: flex;
+  }
+
+  .footer-notice {
+    position: static;
+    height: auto;
+    white-space: normal;
+    padding: 4px 6px;
+  }
+}
