@@ -1,4 +1,4 @@
-﻿# css
+# css
 
 ## Purpose
 Stylesheet files for landing and dashboard layouts.
@@ -8,6 +8,7 @@ Stylesheet files for landing and dashboard layouts.
 - `base.css`: shared primitives.
 - `landing.css`: landing-specific design.
 - `dashboard.css`: dense monitor-style dashboard.
+- `user-guide.css`: guided tour overlay, highlight rings, step cards (docked at the bottom below 640 px), ? button.
 
 ## Inputs/Outputs
 - Inputs: approved color/font/layout decisions.

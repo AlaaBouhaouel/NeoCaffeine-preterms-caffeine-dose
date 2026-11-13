@@ -3,6 +3,7 @@
 
 {% block extra_head %}
 <link rel="stylesheet" href="{% static 'simulator/css/landing.css' %}">
+<link rel="stylesheet" href="{% static 'simulator/css/user-guide.css' %}">
 {% endblock %}
 
 {% block content %}
@@ -43,7 +44,10 @@
       <div class="form-card panel-surface">
         <div class="form-card-head">
           <h2>New virtual infant</h2>
-          <button class="theme-toggle" type="button" aria-label="Switch theme"></button>
+          <span class="form-card-tools">
+            <button class="guide-open-button" type="button" aria-label="Open the user guide" title="Open the user guide">?</button>
+            <button class="theme-toggle" type="button" aria-label="Switch theme"></button>
+          </span>
         </div>
 
         <form id="create-run-form" novalidate>
@@ -148,4 +152,5 @@
 <script src="{% static 'simulator/js/api-client.js' %}"></script>
 <script src="{% static 'simulator/js/tooltips.js' %}"></script>
 <script src="{% static 'simulator/js/landing.js' %}"></script>
+<script src="{% static 'simulator/js/user-guide.js' %}"></script>
 {% endblock %}

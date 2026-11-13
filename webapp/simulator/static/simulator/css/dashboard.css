@@ -1103,3 +1103,15 @@ input[type="number"] {
 .actions-grid {
   grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
 }
+
+#play-pause-button {
+  background: var(--color-positive);
+  border-color: var(--color-positive);
+  color: var(--color-on-positive);
+  font-weight: 600;
+  cursor: pointer;
+}
+
+#play-pause-button:hover {
+  filter: brightness(1.08);
+}

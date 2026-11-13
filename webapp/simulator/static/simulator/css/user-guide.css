@@ -1,0 +1,144 @@
+/* Purpose: Beginner guided tour (proposal 07): dimmed page, highlight rings, large step cards, the ? button. Theme tokens only. */
+
+.guide-root {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+}
+
+.guide-shade {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.guide-shade-fill {
+  fill: var(--color-overlay);
+}
+
+.guide-ring {
+  fill: none;
+  stroke: var(--color-amber);
+  stroke-width: 2;
+}
+
+.guide-card {
+  position: absolute;
+  box-sizing: border-box;
+  width: min(300px, calc(100vw - 32px));
+  padding: 14px 16px 12px;
+  background: var(--color-panel);
+  color: var(--color-text-strong);
+  border: 1px solid var(--color-amber-border);
+  border-radius: 10px;
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.35);
+  font-family: inherit;
+}
+
+.guide-card-docked {
+  left: 16px;
+  right: 16px;
+  bottom: 16px;
+  width: auto;
+}
+
+.guide-progress {
+  margin: 0 0 4px;
+  font-size: 12px;
+  color: var(--color-text-muted);
+  letter-spacing: 0.04em;
+}
+
+.guide-title {
+  margin: 0 0 6px;
+  font-size: 17px;
+  line-height: 1.25;
+  font-weight: 600;
+  color: var(--color-text-strong);
+  letter-spacing: normal;
+  text-transform: none;
+}
+
+.guide-text {
+  margin: 0 0 12px;
+  font-size: 14px;
+  line-height: 1.45;
+  color: var(--color-text);
+}
+
+.guide-buttons {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.guide-nav {
+  display: inline-flex;
+  gap: 8px;
+  margin-left: auto;
+}
+
+.guide-card button {
+  min-height: 34px;
+  min-width: 68px;
+  padding: 0 12px;
+  font-size: 14px;
+  font-family: inherit;
+  border-radius: 6px;
+  cursor: pointer;
+  border: 1px solid var(--color-border-control);
+  background: var(--color-control);
+  color: var(--color-text-strong);
+}
+
+.guide-card button:hover:not(:disabled) {
+  border-color: var(--color-border-hover);
+}
+
+.guide-card button:disabled {
+  color: var(--color-text-disabled);
+  cursor: default;
+}
+
+.guide-card .guide-skip {
+  background: transparent;
+  border-color: transparent;
+  color: var(--color-text-muted);
+  min-width: 0;
+  padding: 0 8px;
+  text-decoration: underline;
+}
+
+.guide-card .guide-next {
+  background: var(--color-amber);
+  border-color: var(--color-amber-border);
+  color: var(--color-on-amber);
+  font-weight: 600;
+}
+
+.guide-card .guide-next:hover {
+  background: var(--color-amber-hover);
+}
+
+.guide-card button:focus-visible {
+  outline: 2px solid var(--color-blue);
+  outline-offset: 2px;
+}
+
+.guide-open-button {
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 28px;
+  font-weight: 700;
+  line-height: 1;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .guide-card {
+    transition: left 160ms ease, top 160ms ease;
+  }
+}

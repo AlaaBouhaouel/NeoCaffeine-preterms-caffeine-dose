@@ -58,6 +58,7 @@
   --color-estimate: #73c991;
   --color-positive: #5fd38d;
   --color-green-border: #234a33;
+  --color-on-positive: #06120a;
   --color-cyan: #4fc3d9;
   --color-cyan-border: #2a5964;
   --color-amber: #e0a24a;
@@ -136,6 +137,7 @@
   --color-estimate: #1f7a3a;
   --color-positive: #1a7f43;
   --color-green-border: #8fcaa3;
+  --color-on-positive: #ffffff;
   --color-cyan: #0e7490;
   --color-cyan-border: #7fbccb;
   --color-amber: #b45309;

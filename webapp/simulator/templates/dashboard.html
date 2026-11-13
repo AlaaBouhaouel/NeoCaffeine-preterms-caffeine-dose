@@ -4,6 +4,7 @@
 {% block extra_head %}
 <link rel="stylesheet" href="{% static 'simulator/vendor/uplot/uPlot.min.css' %}">
 <link rel="stylesheet" href="{% static 'simulator/css/dashboard.css' %}">
+<link rel="stylesheet" href="{% static 'simulator/css/user-guide.css' %}">
 {% endblock %}
 
 {% block content %}
@@ -35,6 +36,7 @@
           </select>
         </label>
         <label><input id="show-true-toggle" type="checkbox"> True values</label>
+        <button id="guide-open-button" class="guide-open-button" type="button" aria-label="Open the user guide" title="Open the user guide">?</button>
         <button id="theme-toggle" class="theme-toggle" type="button" aria-label="Switch theme"></button>
         <a href="/" class="new-run-link">New run</a>
       </div>
@@ -221,6 +223,7 @@
 <script src="{% static 'simulator/js/convergence-3d.js' %}"></script>
 <script src="{% static 'simulator/js/dashboard-ui.js' %}"></script>
 <script src="{% static 'simulator/js/tooltips.js' %}"></script>
+<script src="{% static 'simulator/js/user-guide.js' %}"></script>
 {% endblock %}
 
 

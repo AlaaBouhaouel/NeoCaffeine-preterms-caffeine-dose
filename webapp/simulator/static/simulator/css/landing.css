@@ -215,7 +215,13 @@ input[type='datetime-local'] {
   gap: 8px;
 }
 
-.form-card-head .theme-toggle {
+.form-card-tools {
+  display: inline-flex;
+  gap: 6px;
+}
+
+.form-card-head .theme-toggle,
+.form-card-head .guide-open-button {
   height: 24px;
   padding: 0 10px;
 }
