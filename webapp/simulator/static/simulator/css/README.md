@@ -4,6 +4,7 @@
 Stylesheet files for landing and dashboard layouts.
 
 ## Contents
+- `theme.css`: colour tokens (`--color-*`) for the dark theme (original palette) and the light theme (`<html data-theme="light">`). The other stylesheets use only these tokens, never colour literals.
 - `base.css`: shared primitives.
 - `landing.css`: landing-specific design.
 - `dashboard.css`: dense monitor-style dashboard.

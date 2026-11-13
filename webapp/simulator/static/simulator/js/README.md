@@ -10,6 +10,8 @@ Client-side logic for clock control, API calls, state handling, tooltips, and ch
 - `dashboard-ui.js`: panel rendering and interaction wiring.
 - `charts-uplot.js`: uPlot chart integration.
 - `tooltips.js`: hover/tap info behavior.
+- `theme-toggle.js`: light/dark switch for every `.theme-toggle` button; first visit follows the OS setting, a press is remembered in localStorage (`neocaffeine-theme`); fires `neocaffeine:themechange`.
+- `landing.js`: landing form, run creation, resume, and the animated motif (colours read from theme tokens).
 
 ## Inputs/Outputs
 - Inputs: user actions and server state responses.

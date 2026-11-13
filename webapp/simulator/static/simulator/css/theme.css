@@ -1,0 +1,171 @@
+/* Purpose: Theme colour tokens. Dark values are the original NeoCaffeine palette; light values apply when <html data-theme="light">. */
+
+:root,
+:root[data-theme="dark"] {
+  color-scheme: dark;
+
+  --color-page: #000000;
+  --color-canvas: #050505;
+  --color-panel-base: #0b0b0b;
+  --color-panel: #0a0c0f;
+  --color-inset: #07090b;
+  --color-inset-landing: #07090c;
+  --color-inset-deep: #05070a;
+  --color-control: #0f1216;
+  --color-control-alt: #11151b;
+  --color-control-base: #111;
+  --color-segment: #10141a;
+  --color-segment-active: #181d24;
+  --color-segment-active-alt: #1a222e;
+  --color-overlay: rgba(0, 0, 0, 0.75);
+  --color-grid-line: rgba(140, 155, 175, 0.16);
+
+  --color-border-subtle: #1f242b;
+  --color-border: #262c34;
+  --color-border-control: #2a3038;
+  --color-border-base: #2b2b2b;
+  --color-border-chip: #2a2f38;
+  --color-border-icon: #2e3642;
+  --color-border-hover: #3a434f;
+  --color-border-ready: #3a4658;
+
+  --color-text-strong: #f2f5fb;
+  --color-text-strong-alt: #f2f5f8;
+  --color-text-bright: #e7edf7;
+  --color-text-base: #e8e8e8;
+  --color-text: #d6dde6;
+  --color-text-link: #cfd7e3;
+  --color-text-soft: #b8c2d0;
+  --color-text-soft-alt: #a9b4c4;
+  --color-text-ready: #a8b4c5;
+  --color-text-soft-blue: #9fb0c8;
+  --color-text-muted: #9ea8b8;
+  --color-text-label: #9aa6b8;
+  --color-text-muted-alt: #9aa4b2;
+  --color-text-muted-landing: #98a3b5;
+  --color-text-muted-base: #9e9e9e;
+  --color-text-muted-soft: #8a95a6;
+  --color-text-heading: #8a94a3;
+  --color-text-suffix: #8793a8;
+  --color-text-faint: #7f8a99;
+  --color-text-faint-alt: #6b7685;
+  --color-text-faint-soft: #566172;
+  --color-text-disabled: #4b5563;
+
+  --color-trace-heart-rate: #6fae7a;
+  --color-trace-spo2: #67b9cc;
+  --color-trace-respiration: #e6e6e6;
+  --color-estimate: #73c991;
+  --color-positive: #5fd38d;
+  --color-green-border: #234a33;
+  --color-cyan: #4fc3d9;
+  --color-cyan-border: #2a5964;
+  --color-amber: #e0a24a;
+  --color-amber-hover: #e7ae5a;
+  --color-amber-border: #b17a33;
+  --color-amber-border-subtle: #5a4220;
+  --color-amber-border-strong: #8a6a35;
+  --color-on-amber: #120e07;
+  --color-blue: #7fb2ff;
+  --color-blue-control: #7fa6d8;
+  --color-link: #9eb3d3;
+  --color-interval: #d77a7a;
+  --color-suggested-dose: #e5534b;
+  --color-error-text: #efb2b2;
+  --color-field-error: #e59f9f;
+  --color-error-base: #f06262;
+
+  --color-motif-grid: rgba(120, 135, 155, 0.16);
+  --color-motif-bowl: rgba(117, 137, 162, 0.22);
+}
+
+:root[data-theme="light"] {
+  color-scheme: light;
+
+  --color-page: #e9edf2;
+  --color-canvas: #eef1f5;
+  --color-panel-base: #ffffff;
+  --color-panel: #ffffff;
+  --color-inset: #f5f7fa;
+  --color-inset-landing: #f5f7fa;
+  --color-inset-deep: #f0f3f7;
+  --color-control: #ffffff;
+  --color-control-alt: #ffffff;
+  --color-control-base: #ffffff;
+  --color-segment: #f3f5f8;
+  --color-segment-active: #dbe4ef;
+  --color-segment-active-alt: #dbe4ef;
+  --color-overlay: rgba(238, 241, 245, 0.85);
+  --color-grid-line: rgba(70, 85, 105, 0.16);
+
+  --color-border-subtle: #dde3ea;
+  --color-border: #cdd4dd;
+  --color-border-control: #c3cbd6;
+  --color-border-base: #cdd4dd;
+  --color-border-chip: #c3cbd6;
+  --color-border-icon: #c3cbd6;
+  --color-border-hover: #94a1b2;
+  --color-border-ready: #94a1b2;
+
+  --color-text-strong: #0f172a;
+  --color-text-strong-alt: #0f172a;
+  --color-text-bright: #1e293b;
+  --color-text-base: #1e293b;
+  --color-text: #1f2937;
+  --color-text-link: #334155;
+  --color-text-soft: #3b4758;
+  --color-text-soft-alt: #435064;
+  --color-text-ready: #435064;
+  --color-text-soft-blue: #3c5274;
+  --color-text-muted: #4b5768;
+  --color-text-label: #4b5768;
+  --color-text-muted-alt: #4b5768;
+  --color-text-muted-landing: #4b5768;
+  --color-text-muted-base: #556070;
+  --color-text-muted-soft: #556070;
+  --color-text-heading: #556070;
+  --color-text-suffix: #5b6778;
+  --color-text-faint: #66717f;
+  --color-text-faint-alt: #6b7685;
+  --color-text-faint-soft: #7a8594;
+  --color-text-disabled: #9aa3af;
+
+  --color-trace-heart-rate: #2e7d3f;
+  --color-trace-spo2: #0e7490;
+  --color-trace-respiration: #374151;
+  --color-estimate: #1f7a3a;
+  --color-positive: #1a7f43;
+  --color-green-border: #8fcaa3;
+  --color-cyan: #0e7490;
+  --color-cyan-border: #7fbccb;
+  --color-amber: #b45309;
+  --color-amber-hover: #c2610c;
+  --color-amber-border: #92400e;
+  --color-amber-border-subtle: #e2b56c;
+  --color-amber-border-strong: #c48a2c;
+  --color-on-amber: #ffffff;
+  --color-blue: #1d5fbf;
+  --color-blue-control: #2f62a8;
+  --color-link: #2f5a96;
+  --color-interval: #b42318;
+  --color-suggested-dose: #c4271d;
+  --color-error-text: #b42318;
+  --color-field-error: #b42318;
+  --color-error-base: #c62828;
+
+  --color-motif-grid: rgba(70, 85, 105, 0.12);
+  --color-motif-bowl: rgba(60, 80, 105, 0.18);
+}
+
+.theme-toggle {
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 28px;
+  line-height: 1;
+}
+
+.theme-toggle svg {
+  display: block;
+}

@@ -8,14 +8,14 @@ body {
   height: 100%;
   margin: 0;
   overflow: hidden;
-  background: #050505;
+  background: var(--color-canvas);
 }
 
 .landing-stage {
   position: fixed;
   inset: 0;
   overflow: hidden;
-  background: #050505;
+  background: var(--color-canvas);
 }
 
 .landing-canvas {
@@ -25,8 +25,8 @@ body {
   left: 0;
   top: 0;
   transform-origin: top left;
-  background: #050505;
-  color: #d6dde6;
+  background: var(--color-canvas);
+  color: var(--color-text);
   font-family: 'JetBrains Mono', ui-monospace, monospace;
   font-size: 12px;
   display: grid;
@@ -36,9 +36,9 @@ body {
 }
 
 .panel-surface {
-  border: 1px solid #1f242b;
+  border: 1px solid var(--color-border-subtle);
   border-radius: 6px;
-  background: #0a0c0f;
+  background: var(--color-panel);
 }
 
 .project-column {
@@ -53,12 +53,12 @@ body {
   margin: 0;
   font-size: 40px;
   line-height: 1;
-  color: #f2f5fb;
+  color: var(--color-text-strong);
 }
 
 .tagline {
   margin: 8px 0 0;
-  color: #b8c2d0;
+  color: var(--color-text-soft);
   font-size: 14px;
   line-height: 1.25;
 }
@@ -73,9 +73,9 @@ body {
   width: 100%;
   height: 100%;
   display: block;
-  border: 1px solid #1f242b;
+  border: 1px solid var(--color-border-subtle);
   border-radius: 4px;
-  background: #07090c;
+  background: var(--color-inset-landing);
 }
 
 .how-panel {
@@ -85,7 +85,7 @@ body {
 .how-panel h2 {
   margin: 0 0 8px;
   font-size: 12px;
-  color: #98a3b5;
+  color: var(--color-text-muted-landing);
   letter-spacing: 1.1px;
 }
 
@@ -96,7 +96,7 @@ body {
 }
 
 .step-card {
-  border: 1px solid #1f242b;
+  border: 1px solid var(--color-border-subtle);
   border-radius: 4px;
   padding: 6px;
   min-height: 0;
@@ -105,18 +105,18 @@ body {
 .step-card h3 {
   margin: 0 0 4px;
   font-size: 12px;
-  color: #e0a24a;
+  color: var(--color-amber);
 }
 
 .step-card p {
   margin: 0;
-  color: #a9b4c4;
+  color: var(--color-text-soft-alt);
   line-height: 1.25;
 }
 
 .notice {
   margin: 0;
-  color: #566172;
+  color: var(--color-text-faint-soft);
   font-size: 11px;
 }
 
@@ -137,7 +137,7 @@ body {
 .form-card h2 {
   margin: 0;
   font-size: 18px;
-  color: #f2f5fb;
+  color: var(--color-text-strong);
 }
 
 #create-run-form {
@@ -152,7 +152,7 @@ body {
 }
 
 .field-group > label {
-  color: #9aa6b8;
+  color: var(--color-text-label);
 }
 
 .field-row {
@@ -174,16 +174,16 @@ body {
 }
 
 .suffix {
-  color: #8793a8;
+  color: var(--color-text-suffix);
 }
 
 input,
 select,
 button {
   font: inherit;
-  color: #e7edf7;
-  background: #11151b;
-  border: 1px solid #2a3038;
+  color: var(--color-text-bright);
+  background: var(--color-control-alt);
+  border: 1px solid var(--color-border-control);
   border-radius: 4px;
   height: 30px;
   padding: 0 8px;
@@ -197,7 +197,7 @@ input[type='range'] {
   width: 156px;
   padding: 0;
   height: auto;
-  accent-color: #7fa6d8;
+  accent-color: var(--color-blue-control);
 }
 
 #fio2-percent {
@@ -205,12 +205,24 @@ input[type='range'] {
 }
 
 input[type='datetime-local'] {
-  color-scheme: dark;
+  color-scheme: inherit;
+}
+
+.form-card-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.form-card-head .theme-toggle {
+  height: 24px;
+  padding: 0 10px;
 }
 
 .segment-control {
   display: inline-flex;
-  border: 1px solid #2a3038;
+  border: 1px solid var(--color-border-control);
   border-radius: 4px;
   overflow: hidden;
 }
@@ -218,9 +230,9 @@ input[type='datetime-local'] {
 .segment-option {
   min-width: 88px;
   border: 0;
-  border-right: 1px solid #2a3038;
-  background: #10141a;
-  color: #9fb0c8;
+  border-right: 1px solid var(--color-border-control);
+  background: var(--color-segment);
+  color: var(--color-text-soft-blue);
 }
 
 .segment-option:last-child {
@@ -228,12 +240,12 @@ input[type='datetime-local'] {
 }
 
 .segment-option.active {
-  background: #1a222e;
-  color: #f2f5fb;
+  background: var(--color-segment-active-alt);
+  color: var(--color-text-strong);
 }
 
 .initial-care {
-  border: 1px solid #1f242b;
+  border: 1px solid var(--color-border-subtle);
   border-radius: 4px;
   padding: 8px;
   display: grid;
@@ -244,7 +256,7 @@ input[type='datetime-local'] {
   margin: 0;
   font-size: 12px;
   letter-spacing: 1px;
-  color: #98a3b5;
+  color: var(--color-text-muted-landing);
 }
 
 .fio2-row {
@@ -255,15 +267,15 @@ input[type='datetime-local'] {
 
 .monitoring-note {
   margin: 0;
-  color: #98a3b5;
+  color: var(--color-text-muted-landing);
 }
 
 .monitoring-note strong {
-  color: #5fd38d;
+  color: var(--color-positive);
 }
 
 .advanced-box {
-  border: 1px solid #1f242b;
+  border: 1px solid var(--color-border-subtle);
   border-radius: 4px;
   padding: 6px 8px;
   margin-bottom: 2px;
@@ -271,7 +283,7 @@ input[type='datetime-local'] {
 
 .advanced-box summary {
   cursor: pointer;
-  color: #9aa6b8;
+  color: var(--color-text-label);
 }
 
 .advanced-inner {
@@ -283,8 +295,8 @@ input[type='datetime-local'] {
   height: 16px;
   min-width: 16px;
   border-radius: 50%;
-  border: 1px solid #2e3642;
-  color: #8a95a6;
+  border: 1px solid var(--color-border-icon);
+  color: var(--color-text-muted-soft);
   background: transparent;
   padding: 0;
   line-height: 14px;
@@ -294,14 +306,14 @@ input[type='datetime-local'] {
 
 .start-button {
   width: 100%;
-  background: #e0a24a;
-  border-color: #b17a33;
-  color: #120e07;
+  background: var(--color-amber);
+  border-color: var(--color-amber-border);
+  color: var(--color-on-amber);
   font-weight: 700;
 }
 
 .start-button:hover {
-  background: #e7ae5a;
+  background: var(--color-amber-hover);
 }
 
 .resume-box {
@@ -315,7 +327,7 @@ input[type='datetime-local'] {
   justify-self: start;
   border: 0;
   background: transparent;
-  color: #9eb3d3;
+  color: var(--color-link);
   text-decoration: underline;
   padding: 0;
   height: auto;
@@ -347,11 +359,11 @@ input[type='datetime-local'] {
 }
 
 .field-error {
-  color: #e59f9f;
+  color: var(--color-field-error);
 }
 
 .error {
-  color: #efb2b2;
+  color: var(--color-error-text);
 }
 
 .tooltip-layer {
@@ -359,9 +371,9 @@ input[type='datetime-local'] {
   z-index: 3000;
   pointer-events: none;
   max-width: 280px;
-  border: 1px solid #262c34;
-  background: #05070a;
-  color: #d6dde6;
+  border: 1px solid var(--color-border);
+  background: var(--color-inset-deep);
+  color: var(--color-text);
   padding: 6px 8px;
   font-family: 'JetBrains Mono', ui-monospace, monospace;
   font-size: 11px;

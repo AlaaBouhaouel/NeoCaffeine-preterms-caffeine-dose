@@ -11,7 +11,7 @@ body {
 .dashboard-stage {
   position: fixed;
   inset: 0;
-  background: #050505;
+  background: var(--color-canvas);
   overflow: hidden;
 }
 
@@ -20,8 +20,8 @@ body {
   height: 100%;
   position: relative;
   box-sizing: border-box;
-  background: #050505;
-  color: #d6dde6;
+  background: var(--color-canvas);
+  color: var(--color-text);
   font-family: "JetBrains Mono", ui-monospace, monospace;
   font-size: 12px;
   display: flex;
@@ -31,9 +31,9 @@ body {
 }
 
 .panel-surface {
-  border: 1px solid #1f242b;
+  border: 1px solid var(--color-border-subtle);
   border-radius: 6px;
-  background: #0a0c0f;
+  background: var(--color-panel);
 }
 
 .top-bar {
@@ -55,7 +55,7 @@ body {
 .top-left h1 {
   margin: 0;
   font-size: 16px;
-  color: #f2f5f8;
+  color: var(--color-text-strong-alt);
   letter-spacing: 0.5px;
 }
 
@@ -67,42 +67,42 @@ body {
   display: inline-flex;
   align-items: center;
   gap: 4px;
-  color: #8a94a3;
+  color: var(--color-text-heading);
 }
 
 .demo-chip {
   font-size: 11px;
-  color: #e0a24a;
-  border: 1px solid #5a4220;
+  color: var(--color-amber);
+  border: 1px solid var(--color-amber-border-subtle);
   padding: 2px 8px;
   border-radius: 3px;
 }
 
 .phase-chip {
   font-size: 11px;
-  border: 1px solid #234a33;
+  border: 1px solid var(--color-green-border);
   padding: 2px 8px;
   border-radius: 3px;
 }
 
 .phase-playing {
-  color: #5fd38d;
+  color: var(--color-positive);
 }
 
 .phase-awaiting_n {
-  color: #e0a24a;
-  border-color: #5a4220;
+  color: var(--color-amber);
+  border-color: var(--color-amber-border-subtle);
 }
 
 .phase-converged {
-  color: #4fc3d9;
-  border-color: #2a5964;
+  color: var(--color-cyan);
+  border-color: var(--color-cyan-border);
 }
 
 .phase-paused,
 .phase-ready {
-  color: #8a94a3;
-  border-color: #2a2f38;
+  color: var(--color-text-heading);
+  border-color: var(--color-border-chip);
 }
 
 .top-controls select,
@@ -136,7 +136,7 @@ body {
   display: flex;
   flex-direction: column;
   gap: 4px;
-  border-bottom: 1px solid #1f242b;
+  border-bottom: 1px solid var(--color-border-subtle);
   padding-bottom: 8px;
 }
 
@@ -149,7 +149,7 @@ body {
   margin: 0;
   font-size: 10px;
   letter-spacing: 1.5px;
-  color: #6b7685;
+  color: var(--color-text-faint-alt);
 }
 
 .kv-grid {
@@ -160,7 +160,7 @@ body {
 }
 
 .kv-grid > span:nth-child(odd) {
-  color: #6b7685;
+  color: var(--color-text-faint-alt);
 }
 
 .center-column {
@@ -194,14 +194,14 @@ body {
   margin: 0;
   font-size: 11px;
   letter-spacing: 1.5px;
-  color: #8a94a3;
+  color: var(--color-text-heading);
 }
 
 .monitoring-toggle {
   display: inline-flex;
   align-items: center;
   gap: 4px;
-  color: #8a94a3;
+  color: var(--color-text-heading);
 }
 
 .monitor-grid {
@@ -215,13 +215,13 @@ body {
 
 .tile {
   min-height: 0;
-  border: 1px solid #1f242b;
+  border: 1px solid var(--color-border-subtle);
   border-radius: 4px;
   display: grid;
   grid-template-rows: auto minmax(0, 1fr);
   gap: 4px;
   padding: 5px;
-  background: #07090b;
+  background: var(--color-inset);
 }
 
 .tile-head {
@@ -239,17 +239,17 @@ body {
   font-weight: 700;
 }
 
-.vital-hr { color: #5fd38d; }
-.vital-spo2 { color: #4fc3d9; }
-.vital-resp { color: #f2f5f8; }
+.vital-hr { color: var(--color-positive); }
+.vital-spo2 { color: var(--color-cyan); }
+.vital-resp { color: var(--color-text-strong-alt); }
 
 .trace-canvas {
-  border: 1px solid #1f242b;
+  border: 1px solid var(--color-border-subtle);
   border-radius: 3px;
   min-height: 0;
   background-image:
-    linear-gradient(to right, rgba(140, 155, 175, 0.16) 1px, transparent 1px),
-    linear-gradient(to top, rgba(140, 155, 175, 0.16) 1px, transparent 1px);
+    linear-gradient(to right, var(--color-grid-line) 1px, transparent 1px),
+    linear-gradient(to top, var(--color-grid-line) 1px, transparent 1px);
   background-size: 28px 28px;
 }
 
@@ -261,7 +261,7 @@ body {
 
 .estimator-table-wrap {
   min-height: 0;
-  border: 1px solid #1f242b;
+  border: 1px solid var(--color-border-subtle);
   border-radius: 3px;
   overflow: hidden;
 }
@@ -274,7 +274,7 @@ body {
 
 .estimator-table th,
 .estimator-table td {
-  border-bottom: 1px solid #1f242b;
+  border-bottom: 1px solid var(--color-border-subtle);
   padding: 3px 4px;
   white-space: nowrap;
   overflow: hidden;
@@ -282,7 +282,7 @@ body {
 }
 
 .estimator-table th {
-  color: #8a94a3;
+  color: var(--color-text-heading);
   font-size: 11px;
   font-weight: 600;
 }
@@ -292,7 +292,7 @@ body {
 }
 
 .sparkline-cell {
-  color: #7f8a99;
+  color: var(--color-text-faint);
 }
 
 .meta-line {
@@ -316,7 +316,7 @@ body {
 }
 
 .action-group {
-  border: 1px solid #1f242b;
+  border: 1px solid var(--color-border-subtle);
   border-radius: 4px;
   padding: 5px;
   display: grid;
@@ -327,7 +327,7 @@ body {
 
 .action-group h3 {
   margin: 0;
-  color: #9ea8b8;
+  color: var(--color-text-muted);
   font-size: 11px;
 }
 
@@ -388,11 +388,11 @@ body {
 
 .n-status-text {
   margin-left: auto;
-  color: #7f8a99;
+  color: var(--color-text-faint);
 }
 
 .n-awaiting-active {
-  border-color: #8a6a35;
+  border-color: var(--color-amber-border-strong);
 }
 
 .conv-controls {
@@ -409,24 +409,24 @@ body {
 
 .plot-host {
   min-height: 0;
-  border: 1px solid #1f242b;
+  border: 1px solid var(--color-border-subtle);
   border-radius: 4px;
-  background: #07090b;
+  background: var(--color-inset);
   padding: 5px;
 }
 
 .segment-control {
   display: inline-flex;
-  border: 1px solid #262c34;
+  border: 1px solid var(--color-border);
   border-radius: 3px;
   overflow: hidden;
 }
 
 .segment-option {
   border: 0;
-  border-right: 1px solid #262c34;
-  background: #0f1216;
-  color: #8a94a3;
+  border-right: 1px solid var(--color-border);
+  background: var(--color-control);
+  color: var(--color-text-heading);
   font: inherit;
   padding: 4px 8px;
 }
@@ -436,42 +436,42 @@ body {
 }
 
 .segment-option.active {
-  color: #f2f5f8;
-  background: #181d24;
+  color: var(--color-text-strong-alt);
+  background: var(--color-segment-active);
 }
 
 select,
 button,
 input[type="number"] {
-  background: #0f1216;
-  color: #d6dde6;
-  border: 1px solid #262c34;
+  background: var(--color-control);
+  color: var(--color-text);
+  border: 1px solid var(--color-border);
   border-radius: 3px;
   font: inherit;
   padding: 4px 6px;
 }
 
 input[type="checkbox"] {
-  accent-color: #e0a24a;
+  accent-color: var(--color-amber);
 }
 
 .info-icon {
   width: 16px;
   height: 16px;
   min-width: 16px;
-  border: 1px solid #262c34;
+  border: 1px solid var(--color-border);
   border-radius: 50%;
   display: inline-flex;
   align-items: center;
   justify-content: center;
   padding: 0;
   line-height: 1;
-  background: #0f1216;
-  color: #7f8a99;
+  background: var(--color-control);
+  color: var(--color-text-faint);
 }
 
 .error {
-  color: #efb2b2;
+  color: var(--color-error-text);
 }
 
 .action-feedback,
@@ -485,16 +485,16 @@ input[type="checkbox"] {
   z-index: 3000;
   pointer-events: none;
   max-width: 280px;
-  border: 1px solid #262c34;
-  background: #05070a;
-  color: #d6dde6;
+  border: 1px solid var(--color-border);
+  background: var(--color-inset-deep);
+  color: var(--color-text);
   padding: 6px 8px;
 }
 
 .footer-notice {
   height: 18px;
   flex-shrink: 0;
-  color: #4b5563;
+  color: var(--color-text-disabled);
   font-size: 11px;
   padding: 0 6px;
   display: flex;
@@ -504,7 +504,7 @@ input[type="checkbox"] {
 .run-missing-panel {
   position: absolute;
   inset: 44px 0 0 0;
-  background: rgba(0, 0, 0, 0.75);
+  background: var(--color-overlay);
   display: grid;
   place-items: center;
   padding: 8px;
@@ -524,7 +524,7 @@ input[type="checkbox"] {
 }
 
 .new-run-link {
-  color: #9aa4b2;
+  color: var(--color-text-muted-alt);
 }
 
 @media (max-height: 760px) {
@@ -815,7 +815,7 @@ input[type="number"] {
   align-items: center;
   padding-left: 6px;
   padding-right: 6px;
-  background: #050505;
+  background: var(--color-canvas);
   z-index: 10;
   white-space: nowrap;
   overflow: hidden;
@@ -892,16 +892,16 @@ input[type="number"] {
 
 /* Estimator table contrast: names white, values grey */
 .estimator-table tbody td {
-  color: #9ea8b8;
+  color: var(--color-text-muted);
 }
 
 .estimator-table tbody td:first-child {
-  color: #f2f5fb;
+  color: var(--color-text-strong);
 }
 
 /* Estimator colors: estimate column green, meta values grey */
 .estimator-table tbody td:nth-child(2) {
-  color: #73c991;
+  color: var(--color-estimate);
 }
 
 #last-hour-n,
@@ -912,12 +912,12 @@ input[type="number"] {
 #suggested-dose,
 #safety-share,
 #confidence-gate {
-  color: #9ea8b8;
+  color: var(--color-text-muted);
 }
 
 /* Estimator interval column red */
 .estimator-table tbody td:nth-child(3) {
-  color: #d77a7a;
+  color: var(--color-interval);
 }
 
 /* Top bar polish pass */
@@ -950,23 +950,23 @@ input[type="number"] {
 
 .top-controls select,
 .top-controls button {
-  border: 1px solid #2a3038;
-  background: #11151b;
-  color: #e7edf7;
+  border: 1px solid var(--color-border-control);
+  background: var(--color-control-alt);
+  color: var(--color-text-bright);
 }
 
 .top-controls button:hover,
 .new-run-link:hover {
-  border-color: #3a434f;
+  border-color: var(--color-border-hover);
 }
 
 .new-run-link {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  border: 1px solid #2a3038;
-  background: #11151b;
-  color: #cfd7e3;
+  border: 1px solid var(--color-border-control);
+  background: var(--color-control-alt);
+  color: var(--color-text-link);
   text-decoration: none;
 }
 
@@ -974,24 +974,24 @@ input[type="number"] {
   width: 14px;
   height: 14px;
   margin: 0 3px 0 0;
-  accent-color: #7fa6d8;
+  accent-color: var(--color-blue-control);
 }
 
 .phase-ready,
 .phase-paused {
-  color: #a8b4c5;
-  border-color: #3a4658;
+  color: var(--color-text-ready);
+  border-color: var(--color-border-ready);
 }
 
 /* Decision line emphasis */
 #target-conc,
 #suggested-dose {
-  color: #7fb2ff;
+  color: var(--color-blue);
 }
 
 /* Unit color styling */
 .unit-blue {
-  color: #7fb2ff;
+  color: var(--color-blue);
 }
 
 /* Extra spacing between clinician action groups */
@@ -1067,7 +1067,7 @@ input[type="number"] {
 }
 
 #suggested-dose.suggested-dose-value {
-  color: #e5534b;
+  color: var(--color-suggested-dose);
   font-weight: 700;
   white-space: nowrap;
 }
@@ -1080,7 +1080,7 @@ input[type="number"] {
 }
 
 .dose-unit {
-  color: #8a94a3;
+  color: var(--color-text-heading);
 }
 
 /* Clinician actions: Care settings and Measurements share the full width */

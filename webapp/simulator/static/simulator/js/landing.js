@@ -264,14 +264,35 @@
     canvas.height = Math.floor(cssHeight * dpr)
     ctx.scale(dpr, dpr)
 
+    function readMotifPalette() {
+      const styles = getComputedStyle(document.documentElement)
+      const token = (name) => styles.getPropertyValue(name).trim()
+      return {
+        background: token('--color-inset-landing'),
+        grid: token('--color-motif-grid'),
+        bowl: token('--color-motif-bowl'),
+        traces: [
+          token('--color-trace-heart-rate'),
+          token('--color-trace-spo2'),
+          token('--color-trace-respiration'),
+          token('--color-amber'),
+        ],
+      }
+    }
+
+    let palette = readMotifPalette()
+    window.addEventListener('neocaffeine:themechange', () => {
+      palette = readMotifPalette()
+    })
+
     function draw(timeMs) {
       const t = timeMs * 0.00035
       ctx.clearRect(0, 0, cssWidth, cssHeight)
 
-      ctx.fillStyle = '#07090c'
+      ctx.fillStyle = palette.background
       ctx.fillRect(0, 0, cssWidth, cssHeight)
 
-      ctx.strokeStyle = 'rgba(120, 135, 155, 0.16)'
+      ctx.strokeStyle = palette.grid
       ctx.lineWidth = 1
       for (let x = 0; x <= cssWidth; x += 28) {
         ctx.beginPath()
@@ -290,7 +311,7 @@
       const cy = cssHeight * 0.7
       const bowlW = cssWidth * 0.48
       const bowlH = cssHeight * 0.35
-      ctx.strokeStyle = 'rgba(117, 137, 162, 0.22)'
+      ctx.strokeStyle = palette.bowl
       for (let i = 0; i < 8; i += 1) {
         const p = i / 7
         ctx.beginPath()
@@ -304,10 +325,10 @@
       }
 
       const traces = [
-        { color: '#6fae7a', base: cssHeight * 0.22, amp: 10, freq: 1.8 },
-        { color: '#67b9cc', base: cssHeight * 0.35, amp: 8, freq: 1.35 },
-        { color: '#e6e6e6', base: cssHeight * 0.48, amp: 7, freq: 1.05 },
-        { color: '#e0a24a', base: cssHeight * 0.62, amp: 6, freq: 0.78 }
+        { color: palette.traces[0], base: cssHeight * 0.22, amp: 10, freq: 1.8 },
+        { color: palette.traces[1], base: cssHeight * 0.35, amp: 8, freq: 1.35 },
+        { color: palette.traces[2], base: cssHeight * 0.48, amp: 7, freq: 1.05 },
+        { color: palette.traces[3], base: cssHeight * 0.62, amp: 6, freq: 0.78 }
       ]
 
       traces.forEach((trace, index) => {

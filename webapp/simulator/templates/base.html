@@ -1,14 +1,26 @@
 <!doctype html>
-<html lang="en">
+<html lang="en" data-theme="dark">
 <head>
   {% load static %}
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>NeoCaffeine</title>
+  <script>
+    (function () {
+      var theme = null
+      try { theme = window.localStorage.getItem('neocaffeine-theme') } catch (error) { theme = null }
+      if (theme !== 'light' && theme !== 'dark') {
+        theme = window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark'
+      }
+      document.documentElement.setAttribute('data-theme', theme)
+    })()
+  </script>
+  <link rel="stylesheet" href="{% static 'simulator/css/theme.css' %}">
   <link rel="stylesheet" href="{% static 'simulator/css/base.css' %}">
   {% block extra_head %}{% endblock %}
 </head>
 <body>
   {% block content %}{% endblock %}
+  <script src="{% static 'simulator/js/theme-toggle.js' %}"></script>
 </body>
 </html>
