@@ -1,0 +1,163 @@
+{# Purpose: Three-card NeoCaffeine introduction shown as an overlay over the landing page (from neocaffeine-intro.html); styles in css/intro.css, behaviour in js/intro.js. #}
+<div id="intro-overlay" class="nc-intro-overlay" hidden>
+<div class="nc-intro-panel" role="dialog" aria-modal="true" aria-label="Introduction to NeoCaffeine" tabindex="-1">
+<section class="nc-intro" aria-label="Introduction to NeoCaffeine">
+  <div class="nc-brand">NeoCaffeine <span class="nc-tag">INTRO</span><button type="button" class="nc-close" aria-label="Close the introduction" title="Close">&times;</button></div>
+
+  <input type="radio" name="nc-step" id="nc-1" checked aria-label="Card 1 of 3">
+  <input type="radio" name="nc-step" id="nc-2" aria-label="Card 2 of 3">
+  <input type="radio" name="nc-step" id="nc-3" aria-label="Card 3 of 3">
+
+  <div class="nc-stage">
+
+    <label class="nc-card nc-card--1" for="nc-2">
+      <p class="nc-step">1 / 3  The problem</p>
+      <h2>Premature babies have unstable breathing</h2>
+      <div class="nc-scene" aria-hidden="true">
+        <svg viewBox="0 0 600 220" role="img">
+          <rect x="0" y="196" width="600" height="3" rx="1.5" fill="var(--line)"/>
+          
+    <g transform="translate(40 30) scale(1.15)">
+      <rect x="20" y="150" width="200" height="10" rx="5" fill="var(--line)"/>
+      <rect x="108" y="118" width="24" height="34" fill="var(--muted)" opacity=".55"/>
+      <rect x="10" y="104" width="220" height="18" rx="6" fill="var(--muted)" opacity=".75"/>
+      <path d="M18 104 V52 Q18 14 60 14 H180 Q222 14 222 52 V104 Z" fill="var(--trace)" fill-opacity=".10" stroke="var(--trace)" stroke-width="3"/>
+      <path d="M40 30 Q60 22 92 22" fill="none" stroke="#fff" stroke-opacity=".7" stroke-width="5" stroke-linecap="round"/>
+      <circle cx="54" cy="72" r="14" fill="none" stroke="var(--trace)" stroke-width="3"/>
+      <circle cx="186" cy="72" r="14" fill="none" stroke="var(--trace)" stroke-width="3"/>
+      <rect x="44" y="96" width="152" height="9" rx="4" fill="#e9eef0"/>
+      <ellipse cx="128" cy="88" rx="44" ry="13" fill="#bfe3ea"/>
+      <path d="M100 82 q14 6 28 0 t28 0" fill="none" stroke="#fff" stroke-opacity=".8" stroke-width="2"/>
+      <circle cx="80" cy="84" r="13" fill="#f1c7a6"/>
+      <path d="M67 82 a13 13 0 0 1 26 -2 z" fill="#bfe3ea" opacity=".9"/>
+      <path d="M76 88 q3 2 6 0" fill="none" stroke="#7a4b35" stroke-width="1.6" stroke-linecap="round"/>
+      <circle cx="70" cy="89" r="1.6" fill="#e59a8a"/>
+    </g>
+          <rect x="452" y="96" width="6" height="100" fill="var(--muted)" opacity=".6"/>
+          <rect x="430" y="192" width="50" height="6" rx="3" fill="var(--muted)" opacity=".6"/>
+          <rect x="360" y="14" width="200" height="96" rx="10" fill="#0f1a20" stroke="var(--muted)" stroke-width="2"/>
+          <text x="374" y="34" font-family="ui-monospace, monospace" font-size="11" fill="#7ee0a1">HR 152</text>
+          <text x="440" y="34" font-family="ui-monospace, monospace" font-size="11" fill="#7fd6e6">SpO2 89</text>
+          <circle cx="540" cy="30" r="6" fill="#ff5a3c"><animate attributeName="opacity" values="1;.25;1" dur="1.2s" repeatCount="indefinite"/></circle>
+          <path d="M372 60 l8 0 l4 -10 l5 20 l4 -10 l14 0 l4 -10 l5 20 l4 -10 l14 0 l4 -10 l5 20 l4 -10 l26 0 l4 -10 l5 20 l4 -10 l14 0" fill="none" stroke="#7ee0a1" stroke-width="2"/>
+          <path d="M372 90 q9 -12 18 0 t18 0 t18 0" fill="none" stroke="#7fd6e6" stroke-width="2"/>
+          <path d="M426 90 H500" fill="none" stroke="#ff5a3c" stroke-width="2.5" stroke-dasharray="5 4"/>
+          <path d="M500 90 q9 -12 18 0 t18 0" fill="none" stroke="#7fd6e6" stroke-width="2"/>
+          <text x="463" y="104" text-anchor="middle" font-family="ui-monospace, monospace" font-size="10" fill="#ff5a3c">APNEA</text>
+          <path d="M150 128 C 230 150, 300 150, 362 96" fill="none" stroke="var(--muted)" stroke-width="2" stroke-dasharray="2 4"/>
+        </svg>
+        <div class="nc-caption">NICU monitor alarm: breathing stopped.</div>
+      </div>
+      <p>Their breathing control is immature. Breathing can suddenly stop: <strong>apnea of prematurity</strong>.</p>
+      <div class="nc-hint"><span>Click anywhere to continue</span><b>Next &rarr;</b></div>
+    </label>
+
+    <label class="nc-card nc-card--2" for="nc-3">
+      <p class="nc-step">2 / 3  Today's treatment</p>
+      <h2>One dose for every baby</h2>
+      <p>Treatment: <strong>caffeine citrate</strong>, same dose for every baby. But each body responds differently: some get too little, others too much.</p>
+      <div class="nc-scene" aria-hidden="true">
+        <svg viewBox="0 0 600 330" role="img">
+          <rect x="190" y="6" width="220" height="34" rx="17" fill="var(--accent-soft)" stroke="var(--accent)" stroke-width="2"/>
+          <text x="300" y="28" text-anchor="middle" font-family="ui-monospace, monospace" font-size="14" fill="var(--accent)">same dose: 5 mg/kg/day</text>
+          <path d="M230 40 L110 66 M300 40 L300 66 M370 40 L490 66" stroke="var(--accent)" stroke-width="2" stroke-dasharray="4 4"/>
+          <rect x="80" y="228" width="440" height="34" fill="var(--ok)" opacity=".10"/>
+          <text x="74" y="242" text-anchor="end" font-family="ui-monospace, monospace" font-size="11" fill="var(--ok)">target</text><text x="74" y="256" text-anchor="end" font-family="ui-monospace, monospace" font-size="11" fill="var(--ok)">range</text>
+          
+    <g transform="translate(22 62) scale(0.72)">
+      <rect x="20" y="150" width="200" height="10" rx="5" fill="var(--line)"/>
+      <rect x="108" y="118" width="24" height="34" fill="var(--muted)" opacity=".55"/>
+      <rect x="10" y="104" width="220" height="18" rx="6" fill="var(--muted)" opacity=".75"/>
+      <path d="M18 104 V52 Q18 14 60 14 H180 Q222 14 222 52 V104 Z" fill="var(--trace)" fill-opacity=".10" stroke="var(--trace)" stroke-width="3"/>
+      <path d="M40 30 Q60 22 92 22" fill="none" stroke="#fff" stroke-opacity=".7" stroke-width="5" stroke-linecap="round"/>
+      <circle cx="54" cy="72" r="14" fill="none" stroke="var(--trace)" stroke-width="3"/>
+      <circle cx="186" cy="72" r="14" fill="none" stroke="var(--trace)" stroke-width="3"/>
+      <rect x="44" y="96" width="152" height="9" rx="4" fill="#e9eef0"/>
+      <ellipse cx="128" cy="88" rx="44" ry="13" fill="#f6d6c6"/>
+      <path d="M100 82 q14 6 28 0 t28 0" fill="none" stroke="#fff" stroke-opacity=".8" stroke-width="2"/>
+      <circle cx="80" cy="84" r="13" fill="#f1c7a6"/>
+      <path d="M67 82 a13 13 0 0 1 26 -2 z" fill="#f6d6c6" opacity=".9"/>
+      <path d="M76 88 q3 2 6 0" fill="none" stroke="#7a4b35" stroke-width="1.6" stroke-linecap="round"/>
+      <circle cx="70" cy="89" r="1.6" fill="#e59a8a"/>
+    </g>
+          <rect x="92" y="200" width="34" height="100" rx="5" fill="var(--line)"/>
+          <rect x="92" y="270" width="34" height="30" rx="5" fill="var(--accent)"/>
+          <text x="138" y="282" font-family="ui-monospace, monospace" font-size="12" fill="var(--accent)">too little</text>
+          <text x="108" y="322" text-anchor="middle" font-family="ui-monospace, monospace" font-size="13" fill="var(--muted)">Baby A</text>
+    <g transform="translate(218 62) scale(0.72)">
+      <rect x="20" y="150" width="200" height="10" rx="5" fill="var(--line)"/>
+      <rect x="108" y="118" width="24" height="34" fill="var(--muted)" opacity=".55"/>
+      <rect x="10" y="104" width="220" height="18" rx="6" fill="var(--muted)" opacity=".75"/>
+      <path d="M18 104 V52 Q18 14 60 14 H180 Q222 14 222 52 V104 Z" fill="var(--trace)" fill-opacity=".10" stroke="var(--trace)" stroke-width="3"/>
+      <path d="M40 30 Q60 22 92 22" fill="none" stroke="#fff" stroke-opacity=".7" stroke-width="5" stroke-linecap="round"/>
+      <circle cx="54" cy="72" r="14" fill="none" stroke="var(--trace)" stroke-width="3"/>
+      <circle cx="186" cy="72" r="14" fill="none" stroke="var(--trace)" stroke-width="3"/>
+      <rect x="44" y="96" width="152" height="9" rx="4" fill="#e9eef0"/>
+      <ellipse cx="128" cy="88" rx="44" ry="13" fill="#bfe3ea"/>
+      <path d="M100 82 q14 6 28 0 t28 0" fill="none" stroke="#fff" stroke-opacity=".8" stroke-width="2"/>
+      <circle cx="80" cy="84" r="13" fill="#f1c7a6"/>
+      <path d="M67 82 a13 13 0 0 1 26 -2 z" fill="#bfe3ea" opacity=".9"/>
+      <path d="M76 88 q3 2 6 0" fill="none" stroke="#7a4b35" stroke-width="1.6" stroke-linecap="round"/>
+      <circle cx="70" cy="89" r="1.6" fill="#e59a8a"/>
+    </g>
+          <rect x="288" y="200" width="34" height="100" rx="5" fill="var(--line)"/>
+          <rect x="288" y="240" width="34" height="60" rx="5" fill="var(--ok)"/>
+          <text x="334" y="252" font-family="ui-monospace, monospace" font-size="12" fill="var(--ok)">just right</text>
+          <text x="304" y="322" text-anchor="middle" font-family="ui-monospace, monospace" font-size="13" fill="var(--muted)">Baby B</text>
+    <g transform="translate(414 62) scale(0.72)">
+      <rect x="20" y="150" width="200" height="10" rx="5" fill="var(--line)"/>
+      <rect x="108" y="118" width="24" height="34" fill="var(--muted)" opacity=".55"/>
+      <rect x="10" y="104" width="220" height="18" rx="6" fill="var(--muted)" opacity=".75"/>
+      <path d="M18 104 V52 Q18 14 60 14 H180 Q222 14 222 52 V104 Z" fill="var(--trace)" fill-opacity=".10" stroke="var(--trace)" stroke-width="3"/>
+      <path d="M40 30 Q60 22 92 22" fill="none" stroke="#fff" stroke-opacity=".7" stroke-width="5" stroke-linecap="round"/>
+      <circle cx="54" cy="72" r="14" fill="none" stroke="var(--trace)" stroke-width="3"/>
+      <circle cx="186" cy="72" r="14" fill="none" stroke="var(--trace)" stroke-width="3"/>
+      <rect x="44" y="96" width="152" height="9" rx="4" fill="#e9eef0"/>
+      <ellipse cx="128" cy="88" rx="44" ry="13" fill="#e6d8f2"/>
+      <path d="M100 82 q14 6 28 0 t28 0" fill="none" stroke="#fff" stroke-opacity=".8" stroke-width="2"/>
+      <circle cx="80" cy="84" r="13" fill="#f1c7a6"/>
+      <path d="M67 82 a13 13 0 0 1 26 -2 z" fill="#e6d8f2" opacity=".9"/>
+      <path d="M76 88 q3 2 6 0" fill="none" stroke="#7a4b35" stroke-width="1.6" stroke-linecap="round"/>
+      <circle cx="70" cy="89" r="1.6" fill="#e59a8a"/>
+    </g>
+          <rect x="484" y="200" width="34" height="100" rx="5" fill="var(--line)"/>
+          <rect x="484" y="208" width="34" height="92" rx="5" fill="var(--accent)"/>
+          <text x="530" y="220" font-family="ui-monospace, monospace" font-size="12" fill="var(--accent)">too much</text>
+          <text x="500" y="322" text-anchor="middle" font-family="ui-monospace, monospace" font-size="13" fill="var(--muted)">Baby C</text>
+        </svg>
+        <div class="nc-caption">Same dose, for every baby.</div>
+      </div>
+      <div class="nc-hint"><span>Click anywhere to continue</span><b>Next &rarr;</b></div>
+    </label>
+
+    <div class="nc-card nc-card--3" style="cursor:default">
+      <p class="nc-step">3 / 3  Our solution</p>
+      <h2>What if we could see inside each baby?</h2>
+      <p>The right dose depends on each baby's <strong>hidden state</strong>.</p>
+      <div class="nc-chips" aria-label="Hidden state values">
+        <span class="nc-chip">Clearance</span>
+        <span class="nc-chip">Volume</span>
+        <span class="nc-chip">Max effect</span>
+        <span class="nc-chip">Sensitivity</span>
+        <span class="nc-chip">Maturity</span>
+      </div>
+      <p class="nc-gap"><strong>NeoCaffeine</strong> estimates it from daily apneas and suggests that baby's dose.</p>
+      <div class="nc-promise">
+        <div><b>No blood tests</b>Non-invasive method </div>
+      </div>
+      <div class="nc-actions">
+        <a class="nc-btn nc-btn--primary" href="#landing-stage" data-intro-start>Open the simulator &rarr;</a>
+        <label class="nc-btn nc-btn--ghost" for="nc-1" tabindex="0">Start over</label>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="nc-dots" aria-hidden="true">
+    <label class="nc-dot nc-dot--1" for="nc-1"></label>
+    <label class="nc-dot nc-dot--2" for="nc-2"></label>
+    <label class="nc-dot nc-dot--3" for="nc-3"></label>
+  </div>
+</section>
+</div>
+</div>

@@ -8,6 +8,7 @@ Stylesheet files for landing and dashboard layouts.
 - `base.css`: shared primitives.
 - `landing.css`: landing-specific design.
 - `dashboard.css`: dense monitor-style dashboard.
+- `intro.css`: the three-card introduction overlay over the landing page (about 30% of the screen wide, clamped 340-680 px; nearly full width below 760 px), on the theme tokens and mono font (light/dark). The box is 80vh tall and never scrolls: pictures shrink to the space left, and text and spacing scale with the screen height.
 - `mobile.css`: phone layout (proposal 08) for both pages; every rule is inside one `@media (max-width: 760px)` block, so wider screens ignore it. Loaded last. Pages scroll in one column; dashboard order: dose card, N card, monitor, estimator, 3D, clinician actions, then Patient/Run/Counts behind the "Patient and run details" button.
 - `user-guide.css`: guided tour overlay, highlight rings, step cards (docked at the bottom below 640 px), ? button.
 

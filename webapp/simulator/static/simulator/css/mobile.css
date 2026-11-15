@@ -60,7 +60,8 @@
   }
 
   .landing-canvas .form-card-head .theme-toggle,
-  .landing-canvas .form-card-head .guide-open-button {
+  .landing-canvas .form-card-head .guide-open-button,
+  .landing-canvas .form-card-head .intro-open-button {
     height: 36px;
     min-width: 40px;
   }

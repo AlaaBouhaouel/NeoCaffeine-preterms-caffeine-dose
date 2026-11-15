@@ -221,7 +221,8 @@ input[type='datetime-local'] {
 }
 
 .form-card-head .theme-toggle,
-.form-card-head .guide-open-button {
+.form-card-head .guide-open-button,
+.form-card-head .intro-open-button {
   height: 24px;
   padding: 0 10px;
 }

@@ -3,6 +3,7 @@
 
 {% block extra_head %}
 <link rel="stylesheet" href="{% static 'simulator/css/landing.css' %}">
+<link rel="stylesheet" href="{% static 'simulator/css/intro.css' %}">
 <link rel="stylesheet" href="{% static 'simulator/css/user-guide.css' %}">
 <link rel="stylesheet" href="{% static 'simulator/css/mobile.css' %}">
 {% endblock %}
@@ -46,6 +47,7 @@
         <div class="form-card-head">
           <h2>New virtual infant</h2>
           <span class="form-card-tools">
+            <button class="intro-open-button" type="button" aria-label="Open the introduction" title="Open the introduction">Intro</button>
             <button class="guide-open-button" type="button" aria-label="Open the user guide" title="Open the user guide">?</button>
             <button class="theme-toggle" type="button" aria-label="Switch theme"></button>
           </span>
@@ -150,8 +152,10 @@
     </section>
   </main>
 </div>
+{% include "partials/intro.html" %}
 <script src="{% static 'simulator/js/api-client.js' %}"></script>
 <script src="{% static 'simulator/js/tooltips.js' %}"></script>
 <script src="{% static 'simulator/js/landing.js' %}"></script>
+<script src="{% static 'simulator/js/intro.js' %}"></script>
 <script src="{% static 'simulator/js/user-guide.js' %}"></script>
 {% endblock %}

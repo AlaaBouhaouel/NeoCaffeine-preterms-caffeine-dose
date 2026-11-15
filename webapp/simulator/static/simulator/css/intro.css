@@ -1,0 +1,395 @@
+/* Purpose: Three-card introduction overlay over the landing page (from neocaffeine-intro.html), on the platform theme tokens and font; follows the light/dark switch. About 35% of the screen wide on large screens, nearly full width on phones. Card switching is pure CSS (hidden radio buttons). */
+
+.nc-intro-overlay {
+  --nc-bg: var(--color-canvas);
+  --nc-card: var(--color-panel);
+  --nc-ink: var(--color-text-strong);
+  --nc-text: var(--color-text);
+  --nc-muted: var(--color-text-muted);
+  --nc-line: var(--color-border);
+  --nc-accent: var(--color-amber);
+  --nc-accent-soft: color-mix(in srgb, var(--color-amber) 14%, transparent);
+  --nc-ok: var(--color-positive);
+  --nc-trace: var(--color-cyan);
+  --nc-mono: 'JetBrains Mono', ui-monospace, monospace;
+
+  position: fixed;
+  inset: 0;
+  z-index: 900;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+  background: var(--color-overlay);
+  color: var(--nc-ink);
+  font-family: var(--nc-mono);
+}
+
+.nc-intro-overlay[hidden] {
+  display: none;
+}
+
+.nc-intro-panel {
+  width: clamp(340px, 30vw, 680px);
+  height: 80vh;
+  max-height: calc(100vh - 32px);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  padding: 18px 18px 14px;
+  background: var(--nc-bg);
+  border: 1px solid var(--nc-line);
+  border-radius: 14px;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4);
+  outline: none;
+}
+
+.nc-intro {
+  position: relative;
+  width: 100%;
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.nc-close {
+  margin-left: auto;
+  width: 36px;
+  height: 36px;
+  padding: 0;
+  font: inherit;
+  font-size: 22px;
+  line-height: 1;
+  color: var(--nc-muted);
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.nc-close:hover {
+  color: var(--nc-ink);
+  border-color: var(--nc-line);
+}
+
+.nc-close:focus-visible {
+  outline: 2px solid var(--nc-accent);
+  outline-offset: 2px;
+}
+
+.nc-intro input[type="radio"] {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+  width: 1px;
+  height: 1px;
+  margin: 0;
+}
+
+.nc-brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-weight: 700;
+  font-size: 18px;
+  margin-bottom: 14px;
+}
+
+.nc-tag {
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--nc-accent);
+  border: 1px solid var(--nc-accent);
+  border-radius: 4px;
+  padding: 1px 7px;
+}
+
+.nc-stage {
+  position: relative;
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.nc-card {
+  display: none;
+  cursor: pointer;
+  background: var(--nc-card);
+  border: 1px solid var(--nc-line);
+  border-radius: 12px;
+  padding: clamp(10px, 1.8vh, 20px) clamp(14px, 2vh, 20px) clamp(8px, 1.5vh, 16px);
+  user-select: none;
+  animation: nc-in 0.35s ease;
+}
+
+.nc-card:hover {
+  border-color: var(--nc-accent);
+}
+
+#nc-1:checked ~ .nc-stage .nc-card--1,
+#nc-2:checked ~ .nc-stage .nc-card--2,
+#nc-3:checked ~ .nc-stage .nc-card--3 {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-height: 0;
+}
+
+@keyframes nc-in {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: none; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .nc-card { animation: none; }
+}
+
+.nc-step {
+  font-size: 12px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--nc-accent);
+  margin: 0 0 clamp(4px, 1vh, 10px);
+}
+
+.nc-card h2 {
+  font-size: clamp(16px, 2.8vh, 24px);
+  line-height: 1.25;
+  margin: 0 0 clamp(6px, 1.2vh, 12px);
+  color: var(--nc-ink);
+}
+
+.nc-card p {
+  font-size: clamp(12px, 1.75vh, 15px);
+  line-height: 1.45;
+  color: var(--nc-text);
+  margin: 0 0 clamp(4px, 1vh, 10px);
+}
+
+.nc-card p.nc-muted {
+  color: var(--nc-muted);
+  font-size: clamp(11px, 1.5vh, 13px);
+}
+
+.nc-card p.nc-gap {
+  margin-top: clamp(6px, 1.2vh, 14px);
+}
+
+.nc-card strong {
+  color: var(--nc-accent);
+}
+
+.nc-visual,
+.nc-scene {
+  flex: 1 1 0;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  margin: 16px 0;
+  border: 1px solid var(--nc-line);
+  border-radius: 10px;
+  padding: 14px 14px 10px;
+}
+
+.nc-visual {
+  background: var(--color-inset);
+}
+
+.nc-scene {
+  flex-grow: 2;
+  margin-top: 4px;
+  background: linear-gradient(180deg, var(--nc-accent-soft) 0%, var(--color-inset) 70%);
+}
+
+.nc-visual svg,
+.nc-scene svg {
+  display: block;
+  flex: 1 1 0;
+  min-height: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.nc-intro svg [fill="var(--line)"] { fill: var(--nc-line); }
+.nc-intro svg [fill="var(--muted)"] { fill: var(--nc-muted); }
+.nc-intro svg [fill="var(--trace)"] { fill: var(--nc-trace); }
+.nc-intro svg [fill="var(--accent)"] { fill: var(--nc-accent); }
+.nc-intro svg [fill="var(--accent-soft)"] { fill: var(--nc-accent-soft); }
+.nc-intro svg [fill="var(--ok)"] { fill: var(--nc-ok); }
+.nc-intro svg [stroke="var(--trace)"] { stroke: var(--nc-trace); }
+.nc-intro svg [stroke="var(--accent)"] { stroke: var(--nc-accent); }
+.nc-intro svg [stroke="var(--muted)"] { stroke: var(--nc-muted); }
+
+.nc-caption {
+  font-size: 12px;
+  color: var(--nc-muted);
+  margin-top: 8px;
+}
+
+.nc-hint {
+  margin-top: auto;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+  font-size: 13px;
+  color: var(--nc-muted);
+  border-top: 1px solid var(--nc-line);
+  padding-top: 14px;
+}
+
+.nc-hint b {
+  color: var(--nc-accent);
+  font-weight: 600;
+}
+
+.nc-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: clamp(4px, 0.8vh, 8px);
+  margin: 4px 0 0;
+}
+
+.nc-chip {
+  font-size: clamp(11px, 1.5vh, 13px);
+  padding: clamp(3px, 0.6vh, 6px) 10px;
+  border: 1px dashed var(--nc-accent);
+  border-radius: 999px;
+  color: var(--nc-accent);
+  background: var(--nc-accent-soft);
+}
+
+.nc-promise {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: clamp(4px, 0.8vh, 8px);
+  margin: clamp(6px, 1.2vh, 14px) 0 4px;
+}
+
+.nc-promise div {
+  border: 1px solid var(--nc-line);
+  border-radius: 10px;
+  padding: clamp(4px, 0.8vh, 8px) 12px;
+  font-size: clamp(11px, 1.5vh, 13px);
+  line-height: 1.3;
+  color: var(--nc-text);
+  background: var(--color-inset);
+}
+
+.nc-promise b {
+  display: inline;
+  font-size: clamp(11px, 1.4vh, 12px);
+  color: var(--nc-ok);
+  margin-right: 8px;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.nc-actions {
+  display: flex;
+  gap: 8px;
+  flex-wrap: nowrap;
+  margin-top: clamp(8px, 1.5vh, 16px);
+}
+
+.nc-btn {
+  display: inline-flex;
+  align-items: center;
+  min-height: clamp(32px, 4.5vh, 40px);
+  font-family: var(--nc-mono);
+  font-size: clamp(12px, 1.7vh, 14px);
+  white-space: nowrap;
+  text-decoration: none;
+  cursor: pointer;
+  padding: 0 clamp(10px, 1.4vw, 16px);
+  border-radius: 8px;
+  border: 1px solid var(--nc-accent);
+}
+
+.nc-btn--primary {
+  background: var(--nc-accent);
+  color: var(--color-on-amber);
+  font-weight: 600;
+}
+
+.nc-btn--ghost {
+  background: transparent;
+  color: var(--nc-accent);
+}
+
+.nc-btn:focus-visible,
+.nc-dot:focus-visible {
+  outline: 2px solid var(--nc-accent);
+  outline-offset: 2px;
+}
+
+.nc-dots {
+  flex: none;
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  margin-top: 12px;
+}
+
+.nc-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--nc-line);
+  cursor: pointer;
+  transition: width 0.2s;
+}
+
+#nc-1:checked ~ .nc-dots .nc-dot--1,
+#nc-2:checked ~ .nc-dots .nc-dot--2,
+#nc-3:checked ~ .nc-dots .nc-dot--3 {
+  background: var(--nc-accent);
+  width: 26px;
+  border-radius: 6px;
+}
+
+#nc-1:focus-visible ~ .nc-stage .nc-card--1,
+#nc-2:focus-visible ~ .nc-stage .nc-card--2,
+#nc-3:focus-visible ~ .nc-stage .nc-card--3 {
+  outline: 2px solid var(--nc-accent);
+  outline-offset: 3px;
+}
+
+@media (max-width: 760px) {
+  .nc-intro-overlay {
+    padding: 8px;
+  }
+
+  .nc-intro-panel {
+    width: 100%;
+    height: auto;
+    max-height: none;
+    padding: 14px 12px 12px;
+  }
+
+  .nc-stage {
+    display: block;
+  }
+
+  #nc-3:checked ~ .nc-stage .nc-card--3 {
+    justify-content: center;
+  }
+
+  .nc-scene {
+    flex: none;
+    margin: 16px 0;
+  }
+
+  .nc-scene svg {
+    flex: none;
+    height: auto;
+  }
+}
+
+@media (max-width: 560px) {
+  .nc-hint span {
+    font-size: 12px;
+  }
+}

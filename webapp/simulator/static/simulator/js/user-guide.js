@@ -272,7 +272,8 @@
     button.addEventListener('click', tour.open)
   })
   window.simulatorUserGuide = { open: tour.open }
-  if (!readDone(guide.storageKey)) {
+  const introOpen = window.simulatorIntro && window.simulatorIntro.isOpen()
+  if (!introOpen && !readDone(guide.storageKey)) {
     window.setTimeout(tour.open, AUTO_OPEN_DELAY_MS)
   }
 })()
